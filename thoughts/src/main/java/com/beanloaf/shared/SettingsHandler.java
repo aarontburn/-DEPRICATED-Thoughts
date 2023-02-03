@@ -30,7 +30,6 @@ public class SettingsHandler {
         }
         try {
             settingsFile.createNewFile();
-
             FileWriter fWriter = new FileWriter(settingsFile);
             HashMap<String, Object> textContent = new HashMap<String, Object>();
             textContent.put("isDarkMode", defaultIsDarkMode);
@@ -65,7 +64,6 @@ public class SettingsHandler {
     private Object readFileContents(Options option) {
         try (FileReader reader = new FileReader(settingsFile)) {
             JSONObject json = (JSONObject) new JSONParser().parse(reader);
-
             switch (option) {
                 case isDarkMode:
                     return json.get("isDarkMode");
@@ -78,10 +76,9 @@ public class SettingsHandler {
 
                 case windowWidth:
                     return json.get("windowHeight");
-
             }
-
         } catch (Exception e) {
+            e.printStackTrace();
         }
         return null;
     }

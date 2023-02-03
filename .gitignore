@@ -1,3 +1,7 @@
 
 storage/
 test.java
+.vscode/settings.json
+serviceAccountKey.json
+thoughts/target/classes/com/beanloaf/main/test.class
+thoughts/target/classes/com/beanloaf/main/test$1.class

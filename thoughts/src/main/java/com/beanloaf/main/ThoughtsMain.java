@@ -18,6 +18,7 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.awt.event.WindowEvent;
 import java.util.Arrays;
 
 import javax.swing.BorderFactory;
@@ -48,6 +49,7 @@ import com.beanloaf.objects.ListTab;
 import com.beanloaf.objects.Settings;
 import com.beanloaf.objects.ThoughtObject;
 import com.beanloaf.shared.CheckForFolders;
+import com.beanloaf.shared.SettingsHandler;
 import com.beanloaf.shared.TextAreaMouseListener;
 import com.beanloaf.tMainEventHandlers.FileActionButtonPressed;
 import com.beanloaf.tMainEventHandlers.KeyChange;
@@ -61,14 +63,14 @@ import com.beanloaf.tMainEventHandlers.ListTabPressed;
 public class ThoughtsMain {
 
     public ThoughtObject selectedFile;
+    public JFrame window;
+    public JPanel container;
+
 
     public ArrayList<File> unsortedFiles = new ArrayList<>();
     public ArrayList<File> sortedFiles = new ArrayList<>();
     public ArrayList<ThoughtObject> unsortedThoughtList = new ArrayList<>();
     public ArrayList<ThoughtObject> sortedThoughtList = new ArrayList<>();
-
-    public JFrame window;
-    public JPanel container;
 
     /* Input Fields */
     public JLabel dateLabel;
@@ -92,6 +94,8 @@ public class ThoughtsMain {
     public ArrayList<String> tagList = new ArrayList<>();
 
     public boolean ready = false;
+
+    public SettingsHandler settings = new SettingsHandler();
 
     /**
      * Number of tags on the displayed
@@ -125,6 +129,7 @@ public class ThoughtsMain {
     }
 
     private void onStartUp() {
+        // check for settings
         new CheckForFolders().createDataFolder();
         refreshThoughtList();
 
@@ -137,14 +142,24 @@ public class ThoughtsMain {
         this.ready = true;
     }
 
-    private void createGUI() {
 
+    private void createGUI() {
         this.window = new JFrame("Thoughts");
         this.window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.window.setFocusable(true);
+        this.window.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent windowEvent) {
+                System.out.println("here");
 
-        // open the window in full screen by default
-        // this.window.setExtendedState(JFrame.MAXIMIZED_BOTH);
+            }
+        });
+
+        int extendedState = 0;
+        if (settings.getIsMaximized() == true) {
+            extendedState = JFrame.MAXIMIZED_BOTH;
+        }
+        this.window.setExtendedState(extendedState);
 
         this.window.setSize(1650, 1080);
         KeyboardFocusManager.getCurrentKeyboardFocusManager()

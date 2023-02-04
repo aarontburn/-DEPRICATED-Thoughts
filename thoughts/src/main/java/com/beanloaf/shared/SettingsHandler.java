@@ -1,20 +1,17 @@
 package com.beanloaf.shared;
 
-import java.io.File;
+import java.awt.Dimension;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.awt.Dimension;
 import java.io.IOException;
 import java.util.HashMap;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
+import com.beanloaf.common.TC;
+
 public class SettingsHandler {
-
-    private final String SETTINGS_FILE_NAME = "settings.json";
-    private final File settingsFile = new File(SETTINGS_FILE_NAME);
-
     // Default values
     private final boolean defaultIsDarkMode = true;
     private final boolean defaultIsMaximized = true;
@@ -33,7 +30,7 @@ public class SettingsHandler {
     }
 
     public void check() {
-        if (this.settingsFile.isFile()) {
+        if (TC.SETTINGS_DIRECTORY.isFile()) {
             return;
         } else {
             this.isDarkMode = this.defaultIsDarkMode;
@@ -46,8 +43,8 @@ public class SettingsHandler {
 
     public void createSettingsFile() {
         try {
-            this.settingsFile.createNewFile();
-            FileWriter fWriter = new FileWriter(settingsFile);
+            TC.SETTINGS_DIRECTORY.createNewFile();
+            FileWriter fWriter = new FileWriter(TC.SETTINGS_DIRECTORY);
             HashMap<String, Object> textContent = new HashMap<String, Object>();
 
             textContent.put("isDarkMode", this.isDarkMode);
@@ -107,7 +104,7 @@ public class SettingsHandler {
     }
 
     private void readFileContents() {
-        try (FileReader reader = new FileReader(settingsFile)) {
+        try (FileReader reader = new FileReader(TC.SETTINGS_DIRECTORY)) {
             JSONObject json = (JSONObject) new JSONParser().parse(reader);
 
             this.isDarkMode = (boolean) json.get("isDarkMode");

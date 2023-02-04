@@ -151,9 +151,7 @@ public class ThoughtsMain {
     }
 
     private void createGUI() {
-        // FlatMaterialDarkerContrastIJTheme.setup();
-        // FlatXcodeDarkIJTheme.setup();
-        FlatLaf.registerCustomDefaultsSource( "com.beanloaf.res.theme" );
+        FlatLaf.registerCustomDefaultsSource("com.beanloaf.res.theme");
         ThoughtsTheme.setup();
 
         this.window = new JFrame("Thoughts");
@@ -313,14 +311,9 @@ public class ThoughtsMain {
         });
         leftPanel.add(refreshButton);
 
-        // UIManager.put("TabbedPane.contentBorderInsets",
-        //         new Insets(-2, -2, -2, -2));
-
-
         this.leftTabs = new JTabbedPane(JTabbedPane.LEFT);
         this.leftTabs.setTabLayoutPolicy(JTabbedPane.WRAP_TAB_LAYOUT);
         this.leftTabs.setFont(TC.h4);
-        // this.leftTabs.setBackground(Color.LIGHT_GRAY);
         this.leftTabs.addMouseListener(new ListTabPressed(this));
         this.leftTabs.setPreferredSize(new Dimension(200, 200));
         this.leftPanel.add(this.leftTabs, c);
@@ -805,12 +798,6 @@ public class ThoughtsMain {
                 boolean cellHasFocus) {
 
             JLabel c = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-            // c.setBackground(Color.black);
-            // c.setForeground(Color.white);
-
-            // if (isSelected) {
-            //     c.setBackground(Color.darkGray);
-            // }
 
             c.setHorizontalAlignment(JLabel.CENTER);
             c.setPreferredSize(new Dimension(25, 25));

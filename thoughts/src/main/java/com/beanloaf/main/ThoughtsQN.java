@@ -16,8 +16,8 @@ import javax.swing.JTextArea;
 import com.beanloaf.common.TC;
 import com.beanloaf.shared.CheckForFolders;
 import com.beanloaf.shared.SaveNewFile;
+import com.beanloaf.shared.TabPressed;
 import com.beanloaf.shared.TextAreaMouseListener;
-import com.beanloaf.tqnEventHandlers.TabPressed;
 
 /**
  * The note-taking portion of Thoughts; supposed to run as fast as possible.

@@ -27,14 +27,6 @@ public class ListTabPressed extends MouseAdapter {
         ListTab list = (ListTab) listContainer.getComponent(0);
         list.getMouseEvent().setContentFields(0);
         main.refreshThoughtList();
-
         new KeyChange(main).checkEmpty();
-
-
     }
-
-    public void d(Object obj) {
-        System.out.println(obj);
-    }
-
 }

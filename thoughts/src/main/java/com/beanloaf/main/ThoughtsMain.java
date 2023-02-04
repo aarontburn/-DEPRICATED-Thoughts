@@ -15,10 +15,11 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
-import java.awt.event.WindowEvent;
 import java.util.Arrays;
 
 import javax.swing.BorderFactory;
@@ -50,6 +51,7 @@ import com.beanloaf.objects.Settings;
 import com.beanloaf.objects.ThoughtObject;
 import com.beanloaf.shared.CheckForFolders;
 import com.beanloaf.shared.SettingsHandler;
+import com.beanloaf.shared.TabPressed;
 import com.beanloaf.shared.TextAreaMouseListener;
 import com.beanloaf.tMainEventHandlers.FileActionButtonPressed;
 import com.beanloaf.tMainEventHandlers.KeyChange;
@@ -66,7 +68,6 @@ public class ThoughtsMain {
     public JFrame window;
     public JPanel container;
 
-
     public ArrayList<File> unsortedFiles = new ArrayList<>();
     public ArrayList<File> sortedFiles = new ArrayList<>();
     public ArrayList<ThoughtObject> unsortedThoughtList = new ArrayList<>();
@@ -76,8 +77,7 @@ public class ThoughtsMain {
     public JLabel dateLabel;
 
     /* Right Panel Input Fields */
-    public JTextArea titleLabel, tagLabel;
-    public JTextArea textContentArea;
+    public JTextArea titleLabel, tagLabel, bodyArea;
     public UndoManager undo = new UndoManager();
     public JButton sortButton, deleteButton, newFileButton;
     /* Right Panel Ghost Text */
@@ -129,7 +129,6 @@ public class ThoughtsMain {
     }
 
     private void onStartUp() {
-        // check for settings
         new CheckForFolders().createDataFolder();
         refreshThoughtList();
 
@@ -142,16 +141,17 @@ public class ThoughtsMain {
         this.ready = true;
     }
 
-
     private void createGUI() {
         this.window = new JFrame("Thoughts");
         this.window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.window.setFocusable(true);
-        this.window.addWindowListener(new java.awt.event.WindowAdapter() {
+        this.window.addWindowListener(new WindowAdapter() {
             @Override
-            public void windowClosing(WindowEvent windowEvent) {
-                System.out.println("here");
-
+            public void windowClosing(WindowEvent e) {
+                settings.check();
+                settings.changeWindowDimension(window.getSize());
+                settings.changeIsMaximized(
+                        window.getExtendedState() == JFrame.MAXIMIZED_BOTH);
             }
         });
 
@@ -160,15 +160,14 @@ public class ThoughtsMain {
             extendedState = JFrame.MAXIMIZED_BOTH;
         }
         this.window.setExtendedState(extendedState);
+        this.window.setSize(settings.getWindowWidth(), settings.getWindowHeight());
 
-        this.window.setSize(1650, 1080);
         KeyboardFocusManager.getCurrentKeyboardFocusManager()
                 .addKeyEventDispatcher(new KeyBinds());
 
         this.container = new JPanel();
         this.container.setLayout(new GridBagLayout());
         this.container.setBackground(Color.darkGray);
-
         this.window.add(this.container);
 
         createTopPanel();
@@ -483,6 +482,8 @@ public class ThoughtsMain {
         titleLabel.setCaretColor(Color.white);
         titleLabel.getDocument().putProperty("filterNewlines", true);
         titleLabel.getDocument().addUndoableEditListener(undo);
+        titleLabel.addKeyListener(new TabPressed(titleLabel));
+
         titleLabel.setLayout(new GridBagLayout());
 
         GridBagConstraints et = new GridBagConstraints();
@@ -512,6 +513,7 @@ public class ThoughtsMain {
         tagLabel.setCaretColor(Color.white);
         tagLabel.getDocument().putProperty("filterNewlines", true);
         tagLabel.getDocument().addUndoableEditListener(undo);
+        tagLabel.addKeyListener(new TabPressed(tagLabel));
         tagLabel.setLayout(new GridBagLayout());
         cc.gridx = 0;
         cc.gridy = 1;
@@ -536,20 +538,20 @@ public class ThoughtsMain {
         /* Bottom */
         GridBagConstraints botc = new GridBagConstraints();
 
-        textContentArea = new JTextArea(TC.DEFAULT_BODY);
-        textContentArea.setBackground(new Color(32, 32, 32));
-        textContentArea.setForeground(Color.white);
-        textContentArea.setFont(TC.p);
-        textContentArea.setLineWrap(true);
-        textContentArea.setWrapStyleWord(true);
-        textContentArea.getDocument().addDocumentListener(new KeyChange(this));
-        textContentArea.getDocument().putProperty("labelType", textContentArea);
-        textContentArea.setName("textContentArea");
-        textContentArea.setPreferredSize(new Dimension(0, 0));
-        textContentArea.addMouseListener(new TextAreaMouseListener());
-        textContentArea.getDocument().addUndoableEditListener(undo);
-        textContentArea.setCaretColor(Color.white);
-        textContentArea.setLayout(new GridBagLayout());
+        bodyArea = new JTextArea(TC.DEFAULT_BODY);
+        bodyArea.setBackground(new Color(32, 32, 32));
+        bodyArea.setForeground(Color.white);
+        bodyArea.setFont(TC.p);
+        bodyArea.setLineWrap(true);
+        bodyArea.setWrapStyleWord(true);
+        bodyArea.getDocument().addDocumentListener(new KeyChange(this));
+        bodyArea.getDocument().putProperty("labelType", bodyArea);
+        bodyArea.setName("bodyArea");
+        bodyArea.setPreferredSize(new Dimension(0, 0));
+        bodyArea.addMouseListener(new TextAreaMouseListener());
+        bodyArea.getDocument().addUndoableEditListener(undo);
+        bodyArea.setCaretColor(Color.white);
+        bodyArea.setLayout(new GridBagLayout());
         botc.weightx = 0.1;
         botc.weighty = 0.9;
         botc.gridx = 0;
@@ -563,8 +565,8 @@ public class ThoughtsMain {
         emptyBody.setFont(TC.p);
         emptyBody.setOpaque(false);
         emptyBody.setEnabled(false);
-        textContentArea.add(emptyBody, et);
-        rightPanel.add(textContentArea, botc);
+        bodyArea.add(emptyBody, et);
+        rightPanel.add(bodyArea, botc);
 
         // Buttons
         JPanel buttonPanel = new JPanel();
@@ -692,9 +694,9 @@ public class ThoughtsMain {
         }
     }
 
-    public void selectTitle() {
-        this.titleLabel.requestFocusInWindow();
-        this.titleLabel.selectAll();
+    public void selectTextField(JTextArea textArea) {
+        textArea.requestFocusInWindow();
+        textArea.selectAll();
     }
 
     public class KeyBinds implements KeyEventDispatcher {

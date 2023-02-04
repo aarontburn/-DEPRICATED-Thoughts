@@ -58,7 +58,7 @@ public class ListItemPressed extends MouseAdapter {
         this.main.titleLabel.setText(obj.getTitle());
         this.main.tagLabel.setText(obj.getTag());
         this.main.dateLabel.setText("Created on: " + obj.getDate());
-        this.main.textContentArea.setText(obj.getBody());
+        this.main.bodyArea.setText(obj.getBody());
         this.main.ready = true;
 
     }
@@ -71,7 +71,7 @@ public class ListItemPressed extends MouseAdapter {
         this.main.titleLabel.setText(obj.getTitle());
         this.main.tagLabel.setText(obj.getTag());
         this.main.dateLabel.setText("Created on: " + obj.getDate());
-        this.main.textContentArea.setText(obj.getBody());
+        this.main.bodyArea.setText(obj.getBody());
     }
 
 }

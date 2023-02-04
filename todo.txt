@@ -3,21 +3,19 @@ To do:
     General:
         - Create a user guide
         - Add light mode/dark mode toggle
-        - Create a settings.json file
 
     ThoughtsMain:
         - Add multiple tags per object, split by comma
         - Sort by tag
         - Checkbox to auto save file on edit, else use a save button
         - Watch the storage folder for any changes, and auto refresh
-        - Delete button
         - Export as .txt
             - Choose directory to export
         - Mark as unsorted
         - Google FireBase database integration
         - Add tab to next box
         - Auto sort tag for new file?
-
+        - Add trashcan that deletes files that have been there for more than 30 days
 
     ThoughtsQN:
         - Add button to open ThoughtsMain;
@@ -25,7 +23,6 @@ To do:
 Settings to modify
     - Light/Dark Mode
     - Save file automatically on text change
-    - Remember maximixed or windowed
     - Checkboxes for clearing title/tag/body on save new file
     - KeyBinds
 

@@ -3,6 +3,7 @@ package com.beanloaf.shared;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.awt.Dimension;
 import java.io.IOException;
 import java.util.HashMap;
 
@@ -12,30 +13,47 @@ import org.json.simple.parser.JSONParser;
 public class SettingsHandler {
 
     private final String SETTINGS_FILE_NAME = "settings.json";
-    final File settingsFile = new File(SETTINGS_FILE_NAME);
+    private final File settingsFile = new File(SETTINGS_FILE_NAME);
 
     // Default values
-    final boolean defaultIsDarkMode = true;
-    final boolean defaultIsMaximized = true;
-    final int defaultWindowWidth = 1650;
-    final int defaultWindowHeight = 1080;
+    private final boolean defaultIsDarkMode = true;
+    private final boolean defaultIsMaximized = true;
+    private final double defaultWindowWidth = 1650;
+    private final double defaultWindowHeight = 1080;
+
+    // Setting fields
+    private boolean isDarkMode;
+    private boolean isMaximized;
+    private double windowWidth;
+    private double windowHeight;
 
     public SettingsHandler() {
-        createNewSettingsFile();
+        readFileContents();
+        check();
     }
 
-    public void createNewSettingsFile() {
-        if (settingsFile.isFile()) {
+    public void check() {
+        if (this.settingsFile.isFile()) {
             return;
+        } else {
+            this.isDarkMode = this.defaultIsDarkMode;
+            this.isMaximized = this.defaultIsMaximized;
+            this.windowWidth = this.defaultWindowWidth;
+            this.windowHeight = this.defaultWindowHeight;
+            createSettingsFile();
         }
+    }
+
+    public void createSettingsFile() {
         try {
-            settingsFile.createNewFile();
+            this.settingsFile.createNewFile();
             FileWriter fWriter = new FileWriter(settingsFile);
             HashMap<String, Object> textContent = new HashMap<String, Object>();
-            textContent.put("isDarkMode", defaultIsDarkMode);
-            textContent.put("isMaximized", defaultIsMaximized);
-            textContent.put("windowWidth", defaultWindowWidth);
-            textContent.put("windowHeight", defaultWindowHeight);
+
+            textContent.put("isDarkMode", this.isDarkMode);
+            textContent.put("isMaximized", this.isMaximized);
+            textContent.put("windowWidth", this.windowHeight);
+            textContent.put("windowHeight", this.windowWidth);
             JSONObject objJson = new JSONObject(textContent);
             fWriter.write(objJson.toJSONString());
             fWriter.close();
@@ -45,49 +63,61 @@ public class SettingsHandler {
         }
     }
 
+    public void changeIsDarkMode(boolean b) {
+        this.isDarkMode = b;
+        createSettingsFile();
+    }
+
+    public void changeIsMaximized(boolean b) {
+        this.isMaximized = b;
+        createSettingsFile();
+    }
+
+    public void changeWindowDimension(Dimension newDimension) {
+        this.windowWidth = newDimension.getWidth();
+        this.windowHeight = newDimension.getHeight();
+        createSettingsFile();
+
+    }
+
+    public void changeWindowHeight(int newHeight) {
+        this.windowHeight = newHeight;
+        createSettingsFile();
+    }
+
+    public void changeWindowWidth(int newWidth) {
+        this.windowWidth = newWidth;
+        createSettingsFile();
+    }
+
     public int getWindowWidth() {
-        return (int) readFileContents(Options.windowWidth);
+        return (int) this.windowWidth;
     }
 
     public int getWindowHeight() {
-        return (int) readFileContents(Options.windowHeight);
+        return (int) this.windowHeight;
     }
 
     public boolean getIsDarkMode() {
-        return (boolean) readFileContents(Options.isDarkMode);
+        return this.isDarkMode;
     }
 
     public boolean getIsMaximized() {
-        return (boolean) readFileContents(Options.isMaximized);
+        return this.isMaximized;
     }
 
-    private Object readFileContents(Options option) {
+    private void readFileContents() {
         try (FileReader reader = new FileReader(settingsFile)) {
             JSONObject json = (JSONObject) new JSONParser().parse(reader);
-            switch (option) {
-                case isDarkMode:
-                    return json.get("isDarkMode");
 
-                case isMaximized:
-                    return json.get("isMaximized");
+            this.isDarkMode = (boolean) json.get("isDarkMode");
+            this.isMaximized = (boolean) json.get("isMaximized");
+            this.windowHeight = (double) json.get("windowWidth");
+            this.windowWidth = (double) json.get("windowHeight");
 
-                case windowHeight:
-                    return json.get("windowWidth");
-
-                case windowWidth:
-                    return json.get("windowHeight");
-            }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return null;
-    }
-
-    enum Options {
-        isDarkMode,
-        isMaximized,
-        windowHeight,
-        windowWidth
     }
 
 }

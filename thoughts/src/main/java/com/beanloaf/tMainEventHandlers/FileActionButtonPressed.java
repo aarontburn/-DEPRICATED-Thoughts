@@ -65,7 +65,7 @@ public class FileActionButtonPressed implements ActionListener {
                 ThoughtObject tObj = new SaveNewFile().save();
                 l.setContentFields(tObj);
                 this.main.leftTabs.setSelectedIndex(0);
-                main.selectTitle();
+                main.selectTextField(main.titleLabel);
                 break;
 
             default:

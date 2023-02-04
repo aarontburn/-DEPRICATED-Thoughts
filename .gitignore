@@ -4,3 +4,4 @@ test.java
 serviceAccountKey.json
 
 storage/
+target/

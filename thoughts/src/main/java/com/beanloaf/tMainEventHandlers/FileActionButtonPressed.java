@@ -23,12 +23,13 @@ public class FileActionButtonPressed implements ActionListener {
         JButton component = (JButton) e.getSource();
         String action = component.getName();
         ListItemPressed l = new ListItemPressed(this.main);
-        if (this.main.selectedFile == null) {
-            return;
-        }
+
         switch (action) {
             case "sort":
                 try {
+                    if (this.main.selectedFile == null) {
+                        return;
+                    }
                     String path = this.main.selectedFile.getPath()
                             .toString().split(Pattern.quote(File.separator))[1];
 
@@ -57,6 +58,9 @@ public class FileActionButtonPressed implements ActionListener {
                 break;
 
             case "delete":
+                if (this.main.selectedFile == null) {
+                    return;
+                }
                 this.main.selectedFile.getPath().delete();
                 l.setContentFields(0);
                 break;

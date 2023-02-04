@@ -50,7 +50,7 @@ public class ListItemPressed extends MouseAdapter {
             this.main.leftTabs.setSelectedIndex(0);
         }
 
-        if (this.arrayList != null) {
+        if (this.arrayList != null && this.arrayList.size() > index) {
             obj = this.arrayList.get(index);
             this.main.selectedFile = obj;
         }

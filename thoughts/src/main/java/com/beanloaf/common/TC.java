@@ -1,5 +1,6 @@
 package com.beanloaf.common;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.io.File;
 
@@ -26,4 +27,5 @@ public class TC {
     public static Font h4 = new Font("Lato", Font.PLAIN, 20);
     public static Font h5 = new Font("Lato", Font.PLAIN, 15);
 
+    public static Color darkerGray = new Color(32, 32, 32);
 }

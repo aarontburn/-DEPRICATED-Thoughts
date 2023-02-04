@@ -50,6 +50,7 @@ import com.beanloaf.common.TC;
 import com.beanloaf.objects.ListTab;
 import com.beanloaf.objects.Settings;
 import com.beanloaf.objects.ThoughtObject;
+import com.beanloaf.res.theme.ThoughtsTheme;
 import com.beanloaf.shared.CheckForFolders;
 import com.beanloaf.shared.SettingsHandler;
 import com.beanloaf.shared.TabPressed;
@@ -58,6 +59,7 @@ import com.beanloaf.tMainEventHandlers.FileActionButtonPressed;
 import com.beanloaf.tMainEventHandlers.KeyChange;
 import com.beanloaf.tMainEventHandlers.ListItemPressed;
 import com.beanloaf.tMainEventHandlers.ListTabPressed;
+import com.formdev.flatlaf.FlatLaf;
 
 /**
  * 
@@ -117,7 +119,6 @@ public class ThoughtsMain {
         } catch (Exception e) {
         }
 
-
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
@@ -150,9 +151,20 @@ public class ThoughtsMain {
     }
 
     private void createGUI() {
+        // FlatMaterialDarkerContrastIJTheme.setup();
+        // FlatXcodeDarkIJTheme.setup();
+        FlatLaf.registerCustomDefaultsSource( "com.beanloaf.res.theme" );
+        ThoughtsTheme.setup();
+
         this.window = new JFrame("Thoughts");
+
+        JFrame.setDefaultLookAndFeelDecorated(true);
+        this.window.getRootPane().putClientProperty("JRootPane.titleBarBackground", TC.darkerGray);
+        this.window.getRootPane().putClientProperty("JRootPane.titleBarForeground", Color.white);
+
         this.window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.window.setFocusable(true);
+
         this.window.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -301,13 +313,14 @@ public class ThoughtsMain {
         });
         leftPanel.add(refreshButton);
 
-        UIManager.put("TabbedPane.contentBorderInsets",
-                new Insets(-2, -2, -2, -2));
+        // UIManager.put("TabbedPane.contentBorderInsets",
+        //         new Insets(-2, -2, -2, -2));
+
 
         this.leftTabs = new JTabbedPane(JTabbedPane.LEFT);
         this.leftTabs.setTabLayoutPolicy(JTabbedPane.WRAP_TAB_LAYOUT);
         this.leftTabs.setFont(TC.h4);
-        this.leftTabs.setBackground(Color.LIGHT_GRAY);
+        // this.leftTabs.setBackground(Color.LIGHT_GRAY);
         this.leftTabs.addMouseListener(new ListTabPressed(this));
         this.leftTabs.setPreferredSize(new Dimension(200, 200));
         this.leftPanel.add(this.leftTabs, c);
@@ -445,12 +458,7 @@ public class ThoughtsMain {
         scroll.setBorder(null);
 
         scroll.getVerticalScrollBar().setBackground(Color.lightGray);
-        scroll.getVerticalScrollBar().setUI(new BasicScrollBarUI() {
-            @Override
-            protected void configureScrollBarColors() {
-                this.thumbColor = Color.gray;
-            }
-        });
+        scroll.getVerticalScrollBar().setUI(new ScrollBar());
         return scroll;
     }
 
@@ -554,7 +562,7 @@ public class ThoughtsMain {
         bodyArea.getDocument().addDocumentListener(new KeyChange(this));
         bodyArea.getDocument().putProperty("labelType", bodyArea);
         bodyArea.setName("bodyArea");
-        bodyArea.setPreferredSize(new Dimension(0, 0));
+        // bodyArea.setPreferredSize(new Dimension(0, 0));
         bodyArea.addFocusListener(new TextAreaFocusListener());
         bodyArea.getDocument().addUndoableEditListener(undo);
         bodyArea.setCaretColor(Color.white);
@@ -566,6 +574,14 @@ public class ThoughtsMain {
         botc.insets = new Insets(5, 5, 5, 5);
         botc.fill = GridBagConstraints.BOTH;
 
+        JScrollPane bodyScroll = new JScrollPane(bodyArea,
+                JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        bodyScroll.setBorder(null);
+        bodyScroll.setPreferredSize(new Dimension(0, 0));
+        bodyScroll.getVerticalScrollBar().setBackground(Color.lightGray);
+        bodyScroll.getVerticalScrollBar().setUI(new ScrollBar());
+        rightPanel.add(bodyScroll, botc);
+
         // Ghost text for body
         emptyBody = new JLabel("");
         emptyBody.setForeground(Color.white);
@@ -573,7 +589,6 @@ public class ThoughtsMain {
         emptyBody.setOpaque(false);
         emptyBody.setEnabled(false);
         bodyArea.add(emptyBody, et);
-        rightPanel.add(bodyArea, botc);
 
         // Buttons
         JPanel buttonPanel = new JPanel();
@@ -706,6 +721,32 @@ public class ThoughtsMain {
         textArea.selectAll();
     }
 
+    public class ScrollBar extends BasicScrollBarUI {
+        @Override
+        protected void configureScrollBarColors() {
+            this.thumbColor = Color.gray;
+        }
+
+        @Override
+        protected JButton createDecreaseButton(int orientation) {
+            return createZeroButton();
+        }
+
+        @Override
+        protected JButton createIncreaseButton(int orientation) {
+            return createZeroButton();
+        }
+
+        protected JButton createZeroButton() {
+            JButton button = new JButton();
+            Dimension zeroDim = new Dimension(0, 0);
+            button.setPreferredSize(zeroDim);
+            button.setMinimumSize(zeroDim);
+            button.setMaximumSize(zeroDim);
+            return button;
+        }
+    }
+
     public class KeyBinds implements KeyEventDispatcher {
         @Override
         public boolean dispatchKeyEvent(KeyEvent e) {
@@ -764,8 +805,13 @@ public class ThoughtsMain {
                 boolean cellHasFocus) {
 
             JLabel c = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-            c.setBackground(Color.black);
-            c.setForeground(Color.white);
+            // c.setBackground(Color.black);
+            // c.setForeground(Color.white);
+
+            // if (isSelected) {
+            //     c.setBackground(Color.darkGray);
+            // }
+
             c.setHorizontalAlignment(JLabel.CENTER);
             c.setPreferredSize(new Dimension(25, 25));
             return c;

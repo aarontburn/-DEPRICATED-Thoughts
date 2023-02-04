@@ -1,7 +1,7 @@
 
 test.java
-.vscode/settings.json
+.vscode/
 serviceAccountKey.json
-
+thoughts/settings.json
 storage/
 target/

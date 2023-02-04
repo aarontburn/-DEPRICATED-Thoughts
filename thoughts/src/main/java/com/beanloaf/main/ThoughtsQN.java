@@ -17,7 +17,7 @@ import com.beanloaf.common.TC;
 import com.beanloaf.shared.CheckForFolders;
 import com.beanloaf.shared.SaveNewFile;
 import com.beanloaf.shared.TabPressed;
-import com.beanloaf.shared.TextAreaMouseListener;
+import com.beanloaf.shared.TextAreaFocusListener;
 
 /**
  * The note-taking portion of Thoughts; supposed to run as fast as possible.
@@ -34,7 +34,7 @@ public class ThoughtsQN {
     public JTextArea titleTextArea, bodyTextArea, tagTextArea;
 
     /* Event Handlers */
-    TextAreaMouseListener mListener = new TextAreaMouseListener();
+    TextAreaFocusListener mListener = new TextAreaFocusListener();
 
     public static void main(String[] args) {
         new ThoughtsQN();
@@ -124,7 +124,7 @@ public class ThoughtsQN {
         titleTextArea.setLineWrap(true);
         titleTextArea.setPreferredSize(new Dimension(0, 10));
         titleTextArea.addKeyListener(new TabPressed(titleTextArea));
-        titleTextArea.addMouseListener(mListener);
+        titleTextArea.addFocusListener(mListener);
         titleTextArea.setCaretColor(Color.white);
         titleTextArea.getDocument().putProperty("filterNewlines", true);
         titlePanel.add(titleTextArea, BorderLayout.CENTER);
@@ -137,7 +137,7 @@ public class ThoughtsQN {
         tagTextArea.setPreferredSize(new Dimension(0, 10));
         tagTextArea.setWrapStyleWord(true);
         tagTextArea.addKeyListener(new TabPressed(tagTextArea));
-        tagTextArea.addMouseListener(mListener);
+        tagTextArea.addFocusListener(mListener);
         tagTextArea.setCaretColor(Color.white);
         tagTextArea.getDocument().putProperty("filterNewlines", true);
         tagPanel.add(tagTextArea, BorderLayout.CENTER);
@@ -150,7 +150,7 @@ public class ThoughtsQN {
         bodyTextArea.setPreferredSize(new Dimension(0, 10));
         bodyTextArea.setWrapStyleWord(true);
         bodyTextArea.addKeyListener(new TabPressed(bodyTextArea));
-        bodyTextArea.addMouseListener(mListener);
+        bodyTextArea.addFocusListener(mListener);
         bodyTextArea.setCaretColor(Color.white);
         bodyPanel.add(bodyTextArea, BorderLayout.CENTER);
     }

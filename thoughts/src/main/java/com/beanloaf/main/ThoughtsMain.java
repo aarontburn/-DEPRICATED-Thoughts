@@ -35,6 +35,7 @@ import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
 import javax.swing.plaf.basic.BasicScrollBarUI;
@@ -52,7 +53,7 @@ import com.beanloaf.objects.ThoughtObject;
 import com.beanloaf.shared.CheckForFolders;
 import com.beanloaf.shared.SettingsHandler;
 import com.beanloaf.shared.TabPressed;
-import com.beanloaf.shared.TextAreaMouseListener;
+import com.beanloaf.shared.TextAreaFocusListener;
 import com.beanloaf.tMainEventHandlers.FileActionButtonPressed;
 import com.beanloaf.tMainEventHandlers.KeyChange;
 import com.beanloaf.tMainEventHandlers.ListItemPressed;
@@ -116,7 +117,14 @@ public class ThoughtsMain {
         } catch (Exception e) {
         }
 
-        new ThoughtsMain();
+
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                new ThoughtsMain();
+
+            }
+        });
 
     }
 
@@ -475,15 +483,14 @@ public class ThoughtsMain {
         titleLabel.setOpaque(false);
         titleLabel.setForeground(Color.white);
         titleLabel.setFont(TC.h1);
-        titleLabel.getDocument().addDocumentListener(new KeyChange(this));
-        titleLabel.getDocument().putProperty("labelType", titleLabel);
         titleLabel.setName("titleLabel");
-        titleLabel.addMouseListener(new TextAreaMouseListener());
         titleLabel.setCaretColor(Color.white);
         titleLabel.getDocument().putProperty("filterNewlines", true);
         titleLabel.getDocument().addUndoableEditListener(undo);
+        titleLabel.getDocument().addDocumentListener(new KeyChange(this));
+        titleLabel.getDocument().putProperty("labelType", titleLabel);
         titleLabel.addKeyListener(new TabPressed(titleLabel));
-
+        titleLabel.addFocusListener(new TextAreaFocusListener());
         titleLabel.setLayout(new GridBagLayout());
 
         GridBagConstraints et = new GridBagConstraints();
@@ -509,7 +516,7 @@ public class ThoughtsMain {
         tagLabel.getDocument().addDocumentListener(new KeyChange(this));
         tagLabel.getDocument().putProperty("labelType", tagLabel);
         tagLabel.setName("tagLabel");
-        tagLabel.addMouseListener(new TextAreaMouseListener());
+        tagLabel.addFocusListener(new TextAreaFocusListener());
         tagLabel.setCaretColor(Color.white);
         tagLabel.getDocument().putProperty("filterNewlines", true);
         tagLabel.getDocument().addUndoableEditListener(undo);
@@ -548,7 +555,7 @@ public class ThoughtsMain {
         bodyArea.getDocument().putProperty("labelType", bodyArea);
         bodyArea.setName("bodyArea");
         bodyArea.setPreferredSize(new Dimension(0, 0));
-        bodyArea.addMouseListener(new TextAreaMouseListener());
+        bodyArea.addFocusListener(new TextAreaFocusListener());
         bodyArea.getDocument().addUndoableEditListener(undo);
         bodyArea.setCaretColor(Color.white);
         bodyArea.setLayout(new GridBagLayout());

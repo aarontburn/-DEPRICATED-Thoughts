@@ -1,13 +1,23 @@
 package com.beanloaf.shared;
 
-import java.awt.event.FocusListener;
 import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 
 import javax.swing.JTextArea;
 
 import com.beanloaf.common.TC;
+import com.beanloaf.main.ThoughtsMain;
 
 public class TextAreaFocusListener implements FocusListener {
+    ThoughtsMain main;
+    public TextAreaFocusListener(ThoughtsMain main) {
+        this.main = main;
+    }
+
+    public TextAreaFocusListener() {
+        this.main = null;
+    }
+
     @Override
     public void focusGained(FocusEvent e) {
         JTextArea j = (JTextArea) e.getComponent();
@@ -22,6 +32,9 @@ public class TextAreaFocusListener implements FocusListener {
 
     @Override
     public void focusLost(FocusEvent e) {
-        // Do nothing
+        if (main != null) {
+            main.refreshThoughtList();
+
+        }
     }
 }

@@ -24,7 +24,7 @@ public class ListItemPressed extends MouseAdapter {
     public ListItemPressed(ThoughtsMain main,
             ListTab list,
             ArrayList<ThoughtObject> arrayList) {
-        
+
         this.main = main;
         this.arrayList = arrayList;
         this.list = list;
@@ -34,9 +34,11 @@ public class ListItemPressed extends MouseAdapter {
         int selectedIndex = this.list.getSelectedIndex();
         setContentFields(selectedIndex);
         this.main.undo.discardAllEdits();
+
     }
 
     public void setContentFields(int index) {
+        main.refreshThoughtList();
         this.main.ready = false;
         ThoughtObject obj = new ThoughtObject(
                 "",
@@ -53,6 +55,7 @@ public class ListItemPressed extends MouseAdapter {
         if (this.arrayList != null && this.arrayList.size() > index) {
             obj = this.arrayList.get(index);
             this.main.selectedFile = obj;
+
         }
 
         this.main.titleLabel.setText(obj.getTitle());

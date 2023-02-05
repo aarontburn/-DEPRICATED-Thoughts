@@ -67,7 +67,6 @@ public class KeyChange implements DocumentListener {
                 } else {
                     this.main.emptyTitle.setText("");
                 }
-
                 if (this.main.selectedFile != null) {
                     fileEdit.editTitle(j.getText());
                 }
@@ -92,13 +91,11 @@ public class KeyChange implements DocumentListener {
                 }
                 if (this.main.selectedFile != null) {
                     fileEdit.editBody(j.getText());
-
                 }
                 break;
 
             default:
-                throw new IllegalArgumentException(
-                        "An illegal argument was passed into textChanged of name: " + labelName);
+                throw new IllegalArgumentException(labelName);
         }
     }
 

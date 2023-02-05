@@ -10,15 +10,18 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.KeyEventDispatcher;
 import java.awt.KeyboardFocusManager;
+import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListCellRenderer;
@@ -43,6 +46,10 @@ import javax.swing.undo.UndoManager;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+
+import java.awt.Toolkit;
+import java.awt.event.AWTEventListener;
+import java.awt.AWTEvent;
 
 import com.beanloaf.common.TC;
 import com.beanloaf.objects.ListTab;
@@ -127,7 +134,6 @@ public class ThoughtsMain {
 
     public ThoughtsMain() {
         createGUI();
-        this.window.setLocationRelativeTo(null);
         this.window.setVisible(true);
         onStartUp();
 
@@ -154,7 +160,7 @@ public class ThoughtsMain {
         this.window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.window.setFocusable(true);
         this.window.setSize(settings.getWindowWidth(), settings.getWindowHeight());
-
+        this.window.setLocation(new Point(settings.getWindowX(), settings.getWindowY()));
         this.window.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -162,6 +168,7 @@ public class ThoughtsMain {
                 settings.changeWindowDimension(window.getSize());
                 settings.changeIsMaximized(
                         window.getExtendedState() == JFrame.MAXIMIZED_BOTH);
+                settings.changeWindowPosition(window.getLocation());
             }
         });
 
@@ -178,11 +185,34 @@ public class ThoughtsMain {
         this.container.setLayout(new GridBagLayout());
         this.window.add(this.container);
 
-        createTopPanel();
+        Toolkit.getDefaultToolkit().addAWTEventListener(new AWTEventListener() {
+            @Override
+            public void eventDispatched(AWTEvent event) {
+                if (!ready) {
+                    return;
+                }
+                /*
+                 * 501 is mouse pressed
+                 * 502 is mouse released
+                 * 500 is mouse clicked
+                 * 
+                 * 504 is mouse entered
+                 * 505 is mouse exit
+                 */
+
+                if (event.getID() == 501
+                        && !event.getSource().getClass().getSimpleName().equals("JTextArea")) {
+                            KeyboardFocusManager.getCurrentKeyboardFocusManager().clearFocusOwner();
+                }
+
+            }
+        }, AWTEvent.MOUSE_EVENT_MASK);
+
+        // createTopPanel();
         createCenterPanel();
         createLeftPanel();
         createRightPanel();
-        createBottomPanel();
+        // createBottomPanel();
 
     }
 
@@ -203,6 +233,7 @@ public class ThoughtsMain {
         testButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                System.out.println(window.getLocation());
 
             }
         });
@@ -281,7 +312,7 @@ public class ThoughtsMain {
                 refreshThoughtList();
             }
         });
-        leftPanel.add(refreshButton);
+        // leftPanel.add(refreshButton);
 
         this.leftTabs = new JTabbedPane(JTabbedPane.LEFT);
         this.leftTabs.setTabLayoutPolicy(JTabbedPane.WRAP_TAB_LAYOUT);
@@ -413,6 +444,7 @@ public class ThoughtsMain {
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scroll.setBorder(null);
         scroll.getVerticalScrollBar().setUI(new ScrollBar());
+        scroll.getVerticalScrollBar().setUnitIncrement(12);
         return scroll;
     }
 
@@ -448,7 +480,7 @@ public class ThoughtsMain {
         titleLabel.getDocument().addDocumentListener(new KeyChange(this));
         titleLabel.getDocument().putProperty("labelType", titleLabel);
         titleLabel.addKeyListener(new TabPressed(titleLabel));
-        titleLabel.addFocusListener(new TextAreaFocusListener());
+        titleLabel.addFocusListener(new TextAreaFocusListener(this));
         titleLabel.setLayout(new GridBagLayout());
 
         GridBagConstraints et = new GridBagConstraints();
@@ -472,7 +504,7 @@ public class ThoughtsMain {
         tagLabel.getDocument().addDocumentListener(new KeyChange(this));
         tagLabel.getDocument().putProperty("labelType", tagLabel);
         tagLabel.setName("tagLabel");
-        tagLabel.addFocusListener(new TextAreaFocusListener());
+        tagLabel.addFocusListener(new TextAreaFocusListener(this));
         tagLabel.getDocument().putProperty("filterNewlines", true);
         tagLabel.getDocument().addUndoableEditListener(undo);
         tagLabel.addKeyListener(new TabPressed(tagLabel));
@@ -506,7 +538,7 @@ public class ThoughtsMain {
         bodyArea.getDocument().addDocumentListener(new KeyChange(this));
         bodyArea.getDocument().putProperty("labelType", bodyArea);
         bodyArea.setName("bodyArea");
-        bodyArea.addFocusListener(new TextAreaFocusListener());
+        bodyArea.addFocusListener(new TextAreaFocusListener(this));
         bodyArea.getDocument().addUndoableEditListener(undo);
         bodyArea.setLayout(new GridBagLayout());
         botc.weightx = 0.1;
@@ -564,16 +596,29 @@ public class ThoughtsMain {
 
     }
 
+    private Map<String, ThoughtObject> thoughtMap = new HashMap<>();
+
     private ThoughtObject readFileContents(File filePath) {
-        try (FileReader reader = new FileReader(filePath)) {
-            JSONObject json = (JSONObject) new JSONParser().parse(reader);
-            reader.close();
-            return new ThoughtObject(
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            if (thoughtMap.containsKey(filePath.getName())) {
+                return thoughtMap.get(filePath.getName());
+            }
+            StringBuilder sb = new StringBuilder();
+            String line = reader.readLine();
+            while (line != null) {
+                sb.append(line);
+                line = reader.readLine();
+            }
+            JSONObject json = (JSONObject) new JSONParser().parse(sb.toString());
+            ThoughtObject thought = new ThoughtObject(
                     json.get("title").toString().trim(),
                     json.get("date").toString().trim(),
                     json.get("tag").toString().trim(),
                     json.get("body").toString().trim(),
                     filePath);
+            thoughtMap.put(filePath.getName(), thought);
+            return thought;
         } catch (Exception e) {
             System.err.println(
                     String.format(
@@ -583,6 +628,7 @@ public class ThoughtsMain {
     }
 
     public void refreshThoughtList() {
+        long startTime = System.currentTimeMillis();
         File[] unsortedFileDirectory = TC.UNSORTED_DIRECTORY_PATH.listFiles();
         File[] sortedFileDirectory = TC.SORTED_DIRECTORY_PATH.listFiles();
         // Resets number of tags to 2
@@ -603,22 +649,22 @@ public class ThoughtsMain {
         tagList.clear();
 
         /* UNSORTED FILES */
-        unsortedFiles.addAll(Arrays.asList(unsortedFileDirectory));
-        for (int i = 0; i < unsortedFiles.size(); i++) {
-            ThoughtObject content = readFileContents(unsortedFiles.get(i));
+        for (File file : unsortedFileDirectory) {
+            ThoughtObject content = readFileContents(file);
             if (content != null) {
                 unsortedThoughtList.add(content);
                 unsortedListModel.addElement(content.getTitle());
+                unsortedFiles.add(file);
             }
         }
 
         /* SORTED FILES */
-        sortedFiles.addAll(Arrays.asList(sortedFileDirectory));
-        for (int i = 0; i < sortedFiles.size(); i++) {
-            ThoughtObject content = readFileContents(sortedFiles.get(i));
+        for (File file : sortedFileDirectory) {
+            ThoughtObject content = readFileContents(file);
             if (content != null) {
                 sortedThoughtList.add(content);
                 sortedListModel.addElement(content.getTitle());
+                sortedFiles.add(file);
             }
         }
         createUnsortedTab();
@@ -630,6 +676,9 @@ public class ThoughtsMain {
         } catch (Exception e) {
             leftTabs.setSelectedIndex(selectedTab - 1);
         }
+
+        long endTime = System.currentTimeMillis();
+        System.out.println("Total refresh time: " + (endTime - startTime) + "ms");
     }
 
     public void setTagModel() {

@@ -11,16 +11,13 @@ public class EditFile {
 
     public void editTitle(String newTitle) {
         this.thoughtsMain.selectedFile.editTitle(newTitle);
-        this.thoughtsMain.refreshThoughtList();
     }
 
     public void editTag(String newTag) {
         this.thoughtsMain.selectedFile.editTag(newTag);
-        this.thoughtsMain.refreshThoughtList();
     }
 
     public void editBody(String newBody) {
         this.thoughtsMain.selectedFile.editBody(newBody);
-        this.thoughtsMain.refreshThoughtList();
     }
 }

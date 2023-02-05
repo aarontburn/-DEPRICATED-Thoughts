@@ -14,7 +14,10 @@ public class TabPressed extends KeyAdapter {
 
     @Override
     public void keyPressed(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_TAB) {
+        if (e.getKeyCode() == KeyEvent.VK_TAB
+                || (e.getKeyCode() == KeyEvent.VK_ENTER
+                        && (textArea.getName().equals("titleLabel") 
+                        || (textArea.getName().equals("tagLabel"))))) {
             if (e.getModifiersEx() > 0) {
                 textArea.transferFocusBackward();
             } else {

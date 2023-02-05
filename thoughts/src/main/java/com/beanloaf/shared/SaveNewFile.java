@@ -52,31 +52,56 @@ public class SaveNewFile {
     }
 
     public ThoughtObject save() {
-        if (title.equalsIgnoreCase(TC.DEFAULT_TITLE)
-                && body.equalsIgnoreCase(TC.DEFAULT_BODY)) {
+
+        if (title.equalsIgnoreCase(TC.DEFAULT_TITLE) && body.equalsIgnoreCase(TC.DEFAULT_BODY)) {
             return null;
         }
-        String fileDT = getCurrentDateTime().split("!")[0];
-        String contentDT = getCurrentDateTime().split("!")[1];
+        String[] dateTime = getCurrentDateTime().split("!");
+        String fileDT = dateTime[0];
+        String contentDT = dateTime[1];
+        String unsortedFileName = TC.UNSORTED_DIRECTORY_PATH + "/" + fileDT + ".json";
+        File newFile = new File(unsortedFileName);
         try {
-            String unsortedFileName = TC.UNSORTED_DIRECTORY_PATH + "/" + fileDT + ".json";
-            File newFile = new File(unsortedFileName);
             if (newFile.createNewFile()) {
-                ThoughtObject tObj = new ThoughtObject(
-                        title,
-                        contentDT,
-                        tag,
-                        body,
-                        newFile);
-
+                ThoughtObject tObj = new ThoughtObject(title, contentDT, tag, body, newFile);
                 tObj.saveFile();
                 return tObj;
             }
         } catch (IOException er) {
             er.printStackTrace();
         }
+
+
         return null;
     }
+
+    // public ThoughtObject save() {
+    // if (title.equalsIgnoreCase(TC.DEFAULT_TITLE)
+    // && body.equalsIgnoreCase(TC.DEFAULT_BODY)) {
+    // return null;
+    // }
+    // String fileDT = getCurrentDateTime().split("!")[0];
+    // String contentDT = getCurrentDateTime().split("!")[1];
+    // try {
+    // String unsortedFileName = TC.UNSORTED_DIRECTORY_PATH + "/" + fileDT +
+    // ".json";
+    // File newFile = new File(unsortedFileName);
+    // if (newFile.createNewFile()) {
+    // ThoughtObject tObj = new ThoughtObject(
+    // title,
+    // contentDT,
+    // tag,
+    // body,
+    // newFile);
+
+    // tObj.saveFile();
+    // return tObj;
+    // }
+    // } catch (IOException er) {
+    // er.printStackTrace();
+    // }
+    // return null;
+    // }
 
     private String getCurrentDateTime() {
         Date d = new Date();

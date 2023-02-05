@@ -1,6 +1,7 @@
 package com.beanloaf.shared;
 
 import java.awt.Dimension;
+import java.awt.Point;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -17,12 +18,16 @@ public class SettingsHandler {
     private final boolean defaultIsMaximized = true;
     private final double defaultWindowWidth = 1650;
     private final double defaultWindowHeight = 1080;
+    private final double defaultWindowX = 0;
+    private final double defaultWindowY = 0;
 
     // Setting fields
     private boolean isDarkMode;
     private boolean isMaximized;
     private double windowWidth;
     private double windowHeight;
+    private double windowX;
+    private double windowY;
 
     public SettingsHandler() {
         readFileContents();
@@ -37,6 +42,8 @@ public class SettingsHandler {
             this.isMaximized = this.defaultIsMaximized;
             this.windowWidth = this.defaultWindowWidth;
             this.windowHeight = this.defaultWindowHeight;
+            this.windowX = this.defaultWindowX;
+            this.windowY = this.defaultWindowY;
             createSettingsFile();
         }
     }
@@ -51,6 +58,9 @@ public class SettingsHandler {
             textContent.put("isMaximized", this.isMaximized);
             textContent.put("windowWidth", this.windowHeight);
             textContent.put("windowHeight", this.windowWidth);
+            textContent.put("windowX", this.windowX);
+            textContent.put("windowY", this.windowY);
+
             JSONObject objJson = new JSONObject(textContent);
             fWriter.write(objJson.toJSONString());
             fWriter.close();
@@ -58,6 +68,13 @@ public class SettingsHandler {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void changeWindowPosition(Point point) {
+        this.windowX = point.getX();
+        this.windowY = point.getY();
+        createSettingsFile();
+
     }
 
     public void changeIsDarkMode(boolean b) {
@@ -74,18 +91,17 @@ public class SettingsHandler {
         this.windowWidth = newDimension.getWidth();
         this.windowHeight = newDimension.getHeight();
         createSettingsFile();
-
     }
 
-    public void changeWindowHeight(int newHeight) {
-        this.windowHeight = newHeight;
-        createSettingsFile();
+    public int getWindowX() {
+        return (int) this.windowX;
     }
 
-    public void changeWindowWidth(int newWidth) {
-        this.windowWidth = newWidth;
-        createSettingsFile();
+    public int getWindowY() {
+        return (int) this.windowY;
     }
+
+    
 
     public int getWindowWidth() {
         return (int) this.windowWidth;
@@ -111,6 +127,8 @@ public class SettingsHandler {
             this.isMaximized = (boolean) json.get("isMaximized");
             this.windowHeight = (double) json.get("windowWidth");
             this.windowWidth = (double) json.get("windowHeight");
+            this.windowX = (double) json.get("windowX");
+            this.windowY = (double) json.get("windowY");
 
         } catch (Exception e) {
             e.printStackTrace();

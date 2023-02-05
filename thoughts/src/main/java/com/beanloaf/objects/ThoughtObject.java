@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Objects;
 
 import org.json.simple.JSONObject;
 
@@ -24,24 +25,18 @@ public class ThoughtObject {
         this.body = body;
         this.file = file;
     }
-    
 
     public void saveFile() {
-        try {
-            FileWriter fWriter = new FileWriter(this.file);
-            HashMap<String, String> textContent = new HashMap<String, String>();
+        try (FileWriter fWriter = new FileWriter(this.file)) {
+            HashMap<String, String> textContent = new HashMap<>();
             textContent.put("title", this.title);
             textContent.put("date", this.date);
             textContent.put("tag", this.tag);
             textContent.put("body", this.body);
-            JSONObject objJson = new JSONObject(textContent);
-            fWriter.write(objJson.toJSONString());
-            fWriter.close();
-
+            fWriter.write(new JSONObject(textContent).toJSONString());
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
     public void editTitle(String newTitle) {
@@ -110,8 +105,34 @@ public class ThoughtObject {
     }
 
     @Override
+    public boolean equals(Object otherObject) {
+        if (otherObject.getClass() != this.getClass() || otherObject == null) {
+            return false;
+        }
+
+        ThoughtObject other = (ThoughtObject) otherObject;
+
+        if (this.getTitle().equals(other.getTitle())
+                && this.getDate().equals(other.getDate())
+                && this.getBody().equals(other.getBody())
+                && this.getTag().equals(other.getTag())
+                && this.getPath().equals(other.getPath())) {
+            return true;
+
+        }
+
+        return false;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.title, this.date, this.tag, this.body, this.file);
+    }
+
+    @Override
     public String toString() {
-        return String.format("<%s> <%s> <%s>", this.title, this.tag, this.body);
+        return String.format("<%s> <%s>", this.title, this.tag);
     }
 
 }

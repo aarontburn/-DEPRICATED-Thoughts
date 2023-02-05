@@ -31,7 +31,7 @@ public class FileActionButtonPressed implements ActionListener {
                         return;
                     }
                     String path = this.main.selectedFile.getPath()
-                            .toString().split(Pattern.quote(File.separator))[1];
+                            .toString().split(Pattern.quote(File.separator))[2];
 
                     if (path.equals("unsorted")) {
                         // Moves the file to sorted
@@ -49,7 +49,7 @@ public class FileActionButtonPressed implements ActionListener {
 
                         l.setContentFields(0);
                     } else {
-                        throw new IllegalArgumentException();
+                        throw new IllegalArgumentException(path);
                     }
 
                 } catch (Exception er) {

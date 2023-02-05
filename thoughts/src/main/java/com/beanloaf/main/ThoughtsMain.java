@@ -10,8 +10,6 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.KeyEventDispatcher;
 import java.awt.KeyboardFocusManager;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -48,7 +46,6 @@ import org.json.simple.parser.JSONParser;
 
 import com.beanloaf.common.TC;
 import com.beanloaf.objects.ListTab;
-import com.beanloaf.objects.Settings;
 import com.beanloaf.objects.ThoughtObject;
 import com.beanloaf.res.theme.ThoughtsTheme;
 import com.beanloaf.shared.CheckForFolders;
@@ -59,7 +56,6 @@ import com.beanloaf.tMainEventHandlers.FileActionButtonPressed;
 import com.beanloaf.tMainEventHandlers.KeyChange;
 import com.beanloaf.tMainEventHandlers.ListItemPressed;
 import com.beanloaf.tMainEventHandlers.ListTabPressed;
-import com.formdev.flatlaf.FlatLaf;
 
 /**
  * 
@@ -151,17 +147,13 @@ public class ThoughtsMain {
     }
 
     private void createGUI() {
-        FlatLaf.registerCustomDefaultsSource("com.beanloaf.res.theme");
         ThoughtsTheme.setup();
+        JFrame.setDefaultLookAndFeelDecorated(true);
 
         this.window = new JFrame("Thoughts");
-
-        JFrame.setDefaultLookAndFeelDecorated(true);
-        this.window.getRootPane().putClientProperty("JRootPane.titleBarBackground", TC.darkerGray);
-        this.window.getRootPane().putClientProperty("JRootPane.titleBarForeground", Color.white);
-
         this.window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.window.setFocusable(true);
+        this.window.setSize(settings.getWindowWidth(), settings.getWindowHeight());
 
         this.window.addWindowListener(new WindowAdapter() {
             @Override
@@ -173,19 +165,17 @@ public class ThoughtsMain {
             }
         });
 
-        int extendedState = 0;
+        int extendedState = JFrame.NORMAL;
         if (settings.getIsMaximized() == true) {
             extendedState = JFrame.MAXIMIZED_BOTH;
         }
         this.window.setExtendedState(extendedState);
-        this.window.setSize(settings.getWindowWidth(), settings.getWindowHeight());
 
         KeyboardFocusManager.getCurrentKeyboardFocusManager()
                 .addKeyEventDispatcher(new KeyBinds());
 
         this.container = new JPanel();
         this.container.setLayout(new GridBagLayout());
-        this.container.setBackground(Color.darkGray);
         this.window.add(this.container);
 
         createTopPanel();
@@ -207,7 +197,6 @@ public class ThoughtsMain {
 
         JPanel topPanel = new JPanel();
         topPanel.setBorder(BorderFactory.createLineBorder(Color.black));
-        topPanel.setBackground(Color.DARK_GRAY);
 
         JButton testButton = new JButton("test");
         topPanel.add(testButton);
@@ -232,18 +221,6 @@ public class ThoughtsMain {
 
         JPanel bottomPanel = new JPanel();
         bottomPanel.setBorder(BorderFactory.createLineBorder(Color.black));
-        bottomPanel.setBackground(Color.DARK_GRAY);
-
-        JButton openSettingsButton = new JButton("Settings");
-        openSettingsButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new Settings();
-
-            }
-        });
-        bottomPanel.add(openSettingsButton);
-
         this.container.add(bottomPanel, c);
     }
 
@@ -256,13 +233,9 @@ public class ThoughtsMain {
         c.weighty = 1;
         c.fill = GridBagConstraints.BOTH;
 
-        UIManager.put("SplitPaneDivider.draggingColor", Color.gray);
-
         this.splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
         this.splitPane.resetToPreferredSizes();
-        this.splitPane.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
-        this.splitPane.setDividerSize(5);
-        this.splitPane.setBackground(Color.darkGray);
+        this.splitPane.setDividerSize(10);
         this.splitPane.setUI(new BasicSplitPaneUI() {
             @Override
             public BasicSplitPaneDivider createDefaultDivider() {
@@ -272,7 +245,7 @@ public class ThoughtsMain {
 
                     @Override
                     public void paint(Graphics g) {
-                        g.setColor(Color.gray);
+                        g.setColor(new Color(48, 48, 48));
                         g.fillRect(0, 0, getSize().width, getSize().height);
                         super.paint(g);
                     }
@@ -293,7 +266,6 @@ public class ThoughtsMain {
         c.fill = GridBagConstraints.BOTH;
 
         this.leftPanel = new JPanel();
-        this.leftPanel.setBackground(Color.darkGray);
         this.leftPanel.setLayout(new GridBagLayout());
         this.leftPanel.setPreferredSize(new Dimension(450, 0));
         this.leftPanel.setMinimumSize(new Dimension(0, 0));
@@ -326,7 +298,6 @@ public class ThoughtsMain {
         GridBagConstraints cc = new GridBagConstraints();
 
         JPanel unsortedPanel = new JPanel();
-        unsortedPanel.setBackground(Color.DARK_GRAY);
         unsortedPanel.setLayout(new GridBagLayout());
 
         this.leftTabs.add(createScrollView(unsortedPanel),
@@ -339,15 +310,13 @@ public class ThoughtsMain {
 
         cc.fill = GridBagConstraints.HORIZONTAL;
         cc.weightx = 1;
-        cc.weighty = 0.1;
         cc.gridx = 0;
 
         JLabel unsortedLabel = new JLabel("Unsorted");
         unsortedLabel.setHorizontalAlignment(SwingConstants.CENTER);
         unsortedLabel.setFont(TC.h3);
-        unsortedLabel.setForeground(Color.white);
         cc.gridy = 0;
-        cc.weighty = 0.1;
+        cc.weighty = 0.01;
         cc.anchor = GridBagConstraints.NORTH;
         unsortedPanel.add(unsortedLabel, cc);
 
@@ -366,7 +335,6 @@ public class ThoughtsMain {
         GridBagConstraints cc = new GridBagConstraints();
 
         JPanel sortedPanel = new JPanel();
-        sortedPanel.setBackground(Color.DARK_GRAY);
         sortedPanel.setLayout(new GridBagLayout());
         leftTabs.add(createScrollView(sortedPanel), "Sorted");
 
@@ -377,15 +345,13 @@ public class ThoughtsMain {
 
         cc.fill = GridBagConstraints.HORIZONTAL;
         cc.weightx = 1;
-        cc.weighty = 0.1;
         cc.gridx = 0;
 
         JLabel sortedLabel = new JLabel("Sorted");
         sortedLabel.setHorizontalAlignment(SwingConstants.CENTER);
         sortedLabel.setFont(TC.h3);
-        sortedLabel.setForeground(Color.white);
         cc.gridy = 0;
-        cc.weighty = 0.1;
+        cc.weighty = 0.01;
         cc.anchor = GridBagConstraints.NORTH;
         sortedPanel.add(sortedLabel, cc);
 
@@ -407,7 +373,6 @@ public class ThoughtsMain {
         GridBagConstraints cc = new GridBagConstraints();
 
         JPanel tagPanel = new JPanel();
-        tagPanel.setBackground(Color.DARK_GRAY);
         tagPanel.setLayout(new GridBagLayout());
         leftTabs.add(createScrollView(tagPanel), tagName);
 
@@ -419,16 +384,14 @@ public class ThoughtsMain {
 
         cc.fill = GridBagConstraints.HORIZONTAL;
         cc.weightx = 1;
-        cc.weighty = 0.1;
         cc.gridx = 0;
 
         JLabel tagNameLabel = new JLabel(tagName);
         tagNameLabel.setHorizontalAlignment(SwingConstants.CENTER);
         tagNameLabel.setFont(TC.h3);
-        tagNameLabel.setForeground(Color.white);
 
         cc.gridy = 0;
-        cc.weighty = 0.1;
+        cc.weighty = 0.01;
         cc.anchor = GridBagConstraints.NORTH;
         tagPanel.add(tagNameLabel, cc);
 
@@ -446,18 +409,15 @@ public class ThoughtsMain {
 
     private JScrollPane createScrollView(JPanel panel) {
         JScrollPane scroll = new JScrollPane(panel,
-                JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scroll.setBorder(null);
-
-        scroll.getVerticalScrollBar().setBackground(Color.lightGray);
         scroll.getVerticalScrollBar().setUI(new ScrollBar());
         return scroll;
     }
 
     private void createRightPanel() {
         JPanel rightPanel = new JPanel();
-        rightPanel.setBackground(Color.DARK_GRAY);
         rightPanel.setLayout(new GridBagLayout());
         rightPanel.setPreferredSize(new Dimension(750, 0));
         rightPanel.setMinimumSize(new Dimension(0, 0));
@@ -466,7 +426,6 @@ public class ThoughtsMain {
         /* Top */
         GridBagConstraints topc = new GridBagConstraints();
         JPanel topLabel = new JPanel();
-        topLabel.setBackground(Color.DARK_GRAY);
         topLabel.setLayout(new GridBagLayout());
         topc.gridx = 0;
         topc.gridy = 0;
@@ -482,10 +441,8 @@ public class ThoughtsMain {
         titleLabel = new JTextArea(TC.DEFAULT_TITLE);
         titleLabel.setColumns(6);
         titleLabel.setOpaque(false);
-        titleLabel.setForeground(Color.white);
         titleLabel.setFont(TC.h1);
         titleLabel.setName("titleLabel");
-        titleLabel.setCaretColor(Color.white);
         titleLabel.getDocument().putProperty("filterNewlines", true);
         titleLabel.getDocument().addUndoableEditListener(undo);
         titleLabel.getDocument().addDocumentListener(new KeyChange(this));
@@ -499,7 +456,6 @@ public class ThoughtsMain {
         et.weighty = 0.1;
         et.anchor = GridBagConstraints.NORTHWEST;
         emptyTitle = new JLabel("");
-        emptyTitle.setForeground(Color.white);
         emptyTitle.setFont(TC.h1);
         emptyTitle.setOpaque(false);
         emptyTitle.setEnabled(false);
@@ -511,14 +467,12 @@ public class ThoughtsMain {
 
         tagLabel = new JTextArea(TC.DEFAULT_TAG);
         tagLabel.setColumns(9);
-        tagLabel.setForeground(new Color(220, 220, 220));
         tagLabel.setOpaque(false);
         tagLabel.setFont(TC.h3);
         tagLabel.getDocument().addDocumentListener(new KeyChange(this));
         tagLabel.getDocument().putProperty("labelType", tagLabel);
         tagLabel.setName("tagLabel");
         tagLabel.addFocusListener(new TextAreaFocusListener());
-        tagLabel.setCaretColor(Color.white);
         tagLabel.getDocument().putProperty("filterNewlines", true);
         tagLabel.getDocument().addUndoableEditListener(undo);
         tagLabel.addKeyListener(new TabPressed(tagLabel));
@@ -528,7 +482,6 @@ public class ThoughtsMain {
 
         // Ghost text for the tag
         emptyTag = new JLabel("");
-        emptyTag.setForeground(Color.white);
         emptyTag.setFont(TC.h3);
         emptyTag.setOpaque(false);
         emptyTag.setEnabled(false);
@@ -536,7 +489,6 @@ public class ThoughtsMain {
         topLabel.add(tagLabel, cc);
 
         dateLabel = new JLabel("Created on: " + TC.DEFAULT_DATE);
-        dateLabel.setForeground(new Color(220, 220, 220));
         dateLabel.setFont(TC.h4);
         cc.gridx = 0;
         cc.gridy = 2;
@@ -548,17 +500,14 @@ public class ThoughtsMain {
 
         bodyArea = new JTextArea(TC.DEFAULT_BODY);
         bodyArea.setBackground(new Color(32, 32, 32));
-        bodyArea.setForeground(Color.white);
         bodyArea.setFont(TC.p);
         bodyArea.setLineWrap(true);
         bodyArea.setWrapStyleWord(true);
         bodyArea.getDocument().addDocumentListener(new KeyChange(this));
         bodyArea.getDocument().putProperty("labelType", bodyArea);
         bodyArea.setName("bodyArea");
-        // bodyArea.setPreferredSize(new Dimension(0, 0));
         bodyArea.addFocusListener(new TextAreaFocusListener());
         bodyArea.getDocument().addUndoableEditListener(undo);
-        bodyArea.setCaretColor(Color.white);
         bodyArea.setLayout(new GridBagLayout());
         botc.weightx = 0.1;
         botc.weighty = 0.9;
@@ -568,16 +517,14 @@ public class ThoughtsMain {
         botc.fill = GridBagConstraints.BOTH;
 
         JScrollPane bodyScroll = new JScrollPane(bodyArea,
-                JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+                JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         bodyScroll.setBorder(null);
         bodyScroll.setPreferredSize(new Dimension(0, 0));
-        bodyScroll.getVerticalScrollBar().setBackground(Color.lightGray);
         bodyScroll.getVerticalScrollBar().setUI(new ScrollBar());
         rightPanel.add(bodyScroll, botc);
 
         // Ghost text for body
         emptyBody = new JLabel("");
-        emptyBody.setForeground(Color.white);
         emptyBody.setFont(TC.p);
         emptyBody.setOpaque(false);
         emptyBody.setEnabled(false);
@@ -599,16 +546,19 @@ public class ThoughtsMain {
 
         sortButton = new JButton("Sort/Unsort");
         sortButton.setName("sort");
+        sortButton.setFont(TC.h4);
         sortButton.addActionListener(new FileActionButtonPressed(this));
         buttonPanel.add(sortButton, bc);
 
         deleteButton = new JButton("Delete");
         deleteButton.setName("delete");
+        deleteButton.setFont(TC.h4);
         deleteButton.addActionListener(new FileActionButtonPressed(this));
         buttonPanel.add(deleteButton, bc);
 
         newFileButton = new JButton("New File");
         newFileButton.setName("newFile");
+        newFileButton.setFont(TC.h4);
         newFileButton.addActionListener(new FileActionButtonPressed(this));
         buttonPanel.add(newFileButton, bc);
 

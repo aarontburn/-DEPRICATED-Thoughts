@@ -198,9 +198,12 @@ public class ThoughtsMain {
                  * 504 is mouse entered
                  * 505 is mouse exit
                  */
-
+                String eventName = event.getSource().getClass().getSimpleName();
                 if (event.getID() == 501
-                        && !event.getSource().getClass().getSimpleName().equals("JTextArea")) {
+                        && !eventName.equals("JTextArea") 
+                        && !eventName.equals("JTabbedPane")
+                        && !eventName.equals("ListTab")
+                        && !eventName.equals("JButton")) {
                     KeyboardFocusManager.getCurrentKeyboardFocusManager().clearFocusOwner();
                     refreshThoughtList();
                 }
@@ -591,7 +594,7 @@ public class ThoughtsMain {
 
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             // if (thoughtMap.containsKey(filePath.getName())) {
-            //     return thoughtMap.get(filePath.getName());
+            // return thoughtMap.get(filePath.getName());
             // }
             StringBuilder sb = new StringBuilder();
             String line = reader.readLine();

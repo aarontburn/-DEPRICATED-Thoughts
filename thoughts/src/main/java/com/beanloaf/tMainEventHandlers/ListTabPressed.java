@@ -27,7 +27,6 @@ public class ListTabPressed extends MouseAdapter {
         JPanel listContainer = (JPanel) panel.getComponent(1);
         ListTab list = (ListTab) listContainer.getComponent(0);
         list.getMouseEvent().setContentFields(0);
-        main.refreshThoughtList();
         new KeyChange(main).checkEmpty();
     }
 }

@@ -17,6 +17,8 @@ To do:
         - Auto sort tag for new file?
         - Add trashcan that deletes files that have been there for more than 30 days
 
+        - Scrollbar position resets on refresh
+
     ThoughtsQN:
         - Add button to open ThoughtsMain;
 

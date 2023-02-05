@@ -121,7 +121,6 @@ public class ThoughtsMain {
                     UIManager.getCrossPlatformLookAndFeelClassName());
         } catch (Exception e) {
         }
-
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
@@ -202,13 +201,14 @@ public class ThoughtsMain {
 
                 if (event.getID() == 501
                         && !event.getSource().getClass().getSimpleName().equals("JTextArea")) {
-                            KeyboardFocusManager.getCurrentKeyboardFocusManager().clearFocusOwner();
+                    KeyboardFocusManager.getCurrentKeyboardFocusManager().clearFocusOwner();
+                    refreshThoughtList();
                 }
 
             }
         }, AWTEvent.MOUSE_EVENT_MASK);
 
-        // createTopPanel();
+        createTopPanel();
         createCenterPanel();
         createLeftPanel();
         createRightPanel();
@@ -233,7 +233,7 @@ public class ThoughtsMain {
         testButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                System.out.println(window.getLocation());
+                System.out.println(selectedFile.getTitle());
 
             }
         });
@@ -601,9 +601,9 @@ public class ThoughtsMain {
     private ThoughtObject readFileContents(File filePath) {
 
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
-            if (thoughtMap.containsKey(filePath.getName())) {
-                return thoughtMap.get(filePath.getName());
-            }
+            // if (thoughtMap.containsKey(filePath.getName())) {
+            //     return thoughtMap.get(filePath.getName());
+            // }
             StringBuilder sb = new StringBuilder();
             String line = reader.readLine();
             while (line != null) {

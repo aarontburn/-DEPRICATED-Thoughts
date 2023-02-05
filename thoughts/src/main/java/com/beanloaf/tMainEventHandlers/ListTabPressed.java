@@ -21,12 +21,15 @@ public class ListTabPressed extends MouseAdapter {
     @Override
     public void mousePressed(MouseEvent e) {
         JTabbedPane tabs = main.leftTabs;
-        JScrollPane scroll = (JScrollPane) tabs.getSelectedComponent();
-        System.out.println(scroll);
+        tabs.setSelectedIndex(1); // This is a workaround for a weird bug.
 
+        JScrollPane scroll = (JScrollPane) tabs.getSelectedComponent();
         JPanel panel = (JPanel) scroll.getViewport().getView();
         JPanel listContainer = (JPanel) panel.getComponent(1);
         ListTab list = (ListTab) listContainer.getComponent(0);
+
+        System.out.println(e.getButton());
+
         list.getMouseEvent().setContentFields(0);
         main.refreshThoughtList();
         new KeyChange(main).checkEmpty();

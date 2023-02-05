@@ -233,7 +233,7 @@ public class ThoughtsMain {
         testButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                System.out.println(selectedFile.getTitle());
+                // System.out.println("Current file: " + selectedFile.getTitle());
 
             }
         });
@@ -302,23 +302,12 @@ public class ThoughtsMain {
         this.leftPanel.setMinimumSize(new Dimension(0, 0));
         this.splitPane.setLeftComponent(leftPanel);
 
-        JButton refreshButton = new JButton("Refresh");
-        refreshButton.setFont(TC.h5);
-        refreshButton.setForeground(Color.BLACK);
-        refreshButton.setBackground(Color.LIGHT_GRAY);
-        refreshButton.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                refreshThoughtList();
-            }
-        });
-        // leftPanel.add(refreshButton);
-
         this.leftTabs = new JTabbedPane(JTabbedPane.LEFT);
-        this.leftTabs.setTabLayoutPolicy(JTabbedPane.WRAP_TAB_LAYOUT);
         this.leftTabs.setFont(TC.h4);
         this.leftTabs.addMouseListener(new ListTabPressed(this));
         this.leftTabs.setPreferredSize(new Dimension(200, 200));
+        this.leftTabs.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
+
         this.leftPanel.add(this.leftTabs, c);
         createUnsortedTab();
         createSortedTab();

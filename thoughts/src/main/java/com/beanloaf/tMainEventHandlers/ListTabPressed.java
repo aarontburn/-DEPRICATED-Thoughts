@@ -22,6 +22,8 @@ public class ListTabPressed extends MouseAdapter {
     public void mousePressed(MouseEvent e) {
         JTabbedPane tabs = main.leftTabs;
         JScrollPane scroll = (JScrollPane) tabs.getSelectedComponent();
+        System.out.println(scroll);
+
         JPanel panel = (JPanel) scroll.getViewport().getView();
         JPanel listContainer = (JPanel) panel.getComponent(1);
         ListTab list = (ListTab) listContainer.getComponent(0);

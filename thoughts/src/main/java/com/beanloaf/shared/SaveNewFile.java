@@ -52,26 +52,29 @@ public class SaveNewFile {
     }
 
     public ThoughtObject save() {
-
         if (title.equalsIgnoreCase(TC.DEFAULT_TITLE) && body.equalsIgnoreCase(TC.DEFAULT_BODY)) {
             return null;
         }
-        String[] dateTime = getCurrentDateTime().split("!");
-        String fileDT = dateTime[0];
-        String contentDT = dateTime[1];
-        String unsortedFileName = TC.UNSORTED_DIRECTORY_PATH + "/" + fileDT + ".json";
-        File newFile = new File(unsortedFileName);
+        final String[] dateTime = getCurrentDateTime().split("!");
+        final String fileDT = dateTime[0];
+        final String contentDT = dateTime[1];
+        final String unsortedFileName = TC.UNSORTED_DIRECTORY_PATH + "/" + fileDT + ".json";
+        final String sortedFileName = TC.SORTED_DIRECTORY_PATH + "/" + fileDT + ".json";
+        final File newFile = new File(unsortedFileName);
+        final File checkSorted = new File(sortedFileName);
+
         try {
-            if (newFile.createNewFile()) {
+            if (!newFile.isFile() && !checkSorted.isFile()) {
+                newFile.createNewFile();
                 ThoughtObject tObj = new ThoughtObject(title, contentDT, tag, body, newFile);
                 tObj.saveFile();
                 return tObj;
+            } else {
+
             }
-        } catch (IOException er) {
+        } catch (Exception er) {
             er.printStackTrace();
         }
-
-
         return null;
     }
 

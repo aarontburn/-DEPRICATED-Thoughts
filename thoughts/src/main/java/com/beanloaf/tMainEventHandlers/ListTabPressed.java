@@ -21,7 +21,7 @@ public class ListTabPressed extends MouseAdapter {
     @Override
     public void mousePressed(MouseEvent e) {
         JTabbedPane tabs = main.leftTabs;
-        tabs.setSelectedIndex(1); // This is a workaround for a weird bug.
+        tabs.setSelectedIndex(tabs.getTabCount() - 1); // This is a workaround for a weird bug.
         JScrollPane scroll = (JScrollPane) tabs.getSelectedComponent();
         JPanel panel = (JPanel) scroll.getViewport().getView();
         JPanel listContainer = (JPanel) panel.getComponent(1);

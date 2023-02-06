@@ -199,11 +199,13 @@ public class ThoughtsMain {
                  * 505 is mouse exit
                  */
                 String eventName = event.getSource().getClass().getSimpleName();
+                // System.out.println(event.getSource());
                 if (event.getID() == 501
-                        && !eventName.equals("JTextArea") 
+                        && !eventName.equals("JTextArea")
                         && !eventName.equals("JTabbedPane")
                         && !eventName.equals("ListTab")
-                        && !eventName.equals("JButton")) {
+                        && !eventName.equals("JButton")
+                        && !eventName.equals("JScrollPane")) {
                     KeyboardFocusManager.getCurrentKeyboardFocusManager().clearFocusOwner();
                     refreshThoughtList();
                 }
@@ -211,7 +213,7 @@ public class ThoughtsMain {
             }
         }, AWTEvent.MOUSE_EVENT_MASK);
 
-        createTopPanel();
+        // createTopPanel();
         createCenterPanel();
         createLeftPanel();
         createRightPanel();
@@ -619,6 +621,23 @@ public class ThoughtsMain {
         return null;
     }
 
+    /**
+     * Refreshes through all files in the sorted/unsorted directory.
+     * 
+     * IMPORTANT: THIS SHOULD BE CALLED AS FEW TIMES IN A ROW AS POSSIBLE.
+     * 
+     * Currently called by:
+     * - createGUI();
+     * 
+     * - TextAreaFocusListener.focusLost();
+     * 
+     * - ListItemPressed.setContentFields();
+     * - - FileActionButtonPressed.actionPerformed();
+     * - - ListTabbedPressed.mousePressed();
+     * 
+     * 
+     * 
+     */
     public void refreshThoughtList() {
         long startTime = System.currentTimeMillis();
         File[] unsortedFileDirectory = TC.UNSORTED_DIRECTORY_PATH.listFiles();

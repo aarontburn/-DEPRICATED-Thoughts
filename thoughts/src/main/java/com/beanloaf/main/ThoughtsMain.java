@@ -1,9 +1,11 @@
 package com.beanloaf.main;
 
+import java.awt.AWTEvent;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -11,6 +13,8 @@ import java.awt.Insets;
 import java.awt.KeyEventDispatcher;
 import java.awt.KeyboardFocusManager;
 import java.awt.Point;
+import java.awt.Toolkit;
+import java.awt.event.AWTEventListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -47,10 +51,6 @@ import javax.swing.undo.UndoManager;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-
-import java.awt.Toolkit;
-import java.awt.event.AWTEventListener;
-import java.awt.AWTEvent;
 
 import com.beanloaf.common.TC;
 import com.beanloaf.objects.ListTab;
@@ -597,7 +597,10 @@ public class ThoughtsMain {
         botc.gridy = 3;
         rightPanel.add(settingsPanel, botc);
 
-        
+        JPanel clearFieldsPanel = new JPanel();
+        clearFieldsPanel.setLayout(new GridBagLayout());
+        clearFieldsPanel.setBorder(BorderFactory.createLineBorder(Color.blue));
+        settingsPanel.add(clearFieldsPanel);
 
         GridBagConstraints sp = new GridBagConstraints();
         sp.weightx = 0.1;
@@ -606,12 +609,13 @@ public class ThoughtsMain {
         JLabel clearFieldsLabel = new JLabel("Clear fields on save");
         clearFieldsLabel.setFont(TC.h5);
         sp.gridy = 0;
-        settingsPanel.add(clearFieldsLabel, sp);
+        sp.gridx = 1;
+        clearFieldsPanel.add(clearFieldsLabel, sp);
 
         sp.gridy = 1;
-        settingsPanel.add(createCheckBox("Title"), sp);
-        settingsPanel.add(createCheckBox("Tag"), sp);
-        settingsPanel.add(createCheckBox("Body"), sp);
+        clearFieldsPanel.add(createCheckBox("Title"), sp);
+        clearFieldsPanel.add(createCheckBox("Tag"), sp);
+        clearFieldsPanel.add(createCheckBox("Body"), sp);
 
     }
 
@@ -626,9 +630,6 @@ public class ThoughtsMain {
     private ThoughtObject readFileContents(File filePath) {
 
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
-            // if (thoughtMap.containsKey(filePath.getName())) {
-            // return thoughtMap.get(filePath.getName());
-            // }
             StringBuilder sb = new StringBuilder();
             String line = reader.readLine();
             while (line != null) {
@@ -665,8 +666,6 @@ public class ThoughtsMain {
      * - ListItemPressed.setContentFields();
      * - - FileActionButtonPressed.actionPerformed();
      * - - ListTabbedPressed.mousePressed();
-     * 
-     * 
      * 
      */
     public void refreshThoughtList() {

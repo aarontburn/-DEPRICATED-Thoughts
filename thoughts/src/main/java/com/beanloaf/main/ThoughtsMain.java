@@ -12,6 +12,7 @@ import java.awt.Insets;
 import java.awt.KeyEventDispatcher;
 import java.awt.KeyboardFocusManager;
 import java.awt.Point;
+import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.AWTEventListener;
 import java.awt.event.KeyEvent;
@@ -30,6 +31,7 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
@@ -181,8 +183,7 @@ public class ThoughtsMain {
         KeyboardFocusManager.getCurrentKeyboardFocusManager()
                 .addKeyEventDispatcher(new KeyBinds());
 
-        this.container = new JPanel();
-        this.container.setLayout(new GridBagLayout());
+        this.container = new JPanel(new GridBagLayout());
         this.window.add(this.container);
 
         Toolkit.getDefaultToolkit().addAWTEventListener(new AWTEventListener() {
@@ -300,8 +301,7 @@ public class ThoughtsMain {
         c.weighty = 1;
         c.fill = GridBagConstraints.BOTH;
 
-        this.leftPanel = new JPanel();
-        this.leftPanel.setLayout(new GridBagLayout());
+        this.leftPanel = new JPanel(new GridBagLayout());
         this.leftPanel.setPreferredSize(new Dimension(450, 0));
         this.leftPanel.setMinimumSize(new Dimension(0, 0));
         this.splitPane.setLeftComponent(leftPanel);
@@ -321,8 +321,7 @@ public class ThoughtsMain {
     private void createUnsortedTab() {
         GridBagConstraints cc = new GridBagConstraints();
 
-        JPanel unsortedPanel = new JPanel();
-        unsortedPanel.setLayout(new GridBagLayout());
+        JPanel unsortedPanel = new JPanel(new GridBagLayout());
 
         this.leftTabs.add(createScrollView(unsortedPanel),
                 "Unsorted");
@@ -344,9 +343,8 @@ public class ThoughtsMain {
         cc.anchor = GridBagConstraints.NORTH;
         unsortedPanel.add(unsortedLabel, cc);
 
-        JPanel listContainer = new JPanel();
+        JPanel listContainer = new JPanel(new BorderLayout());
         listContainer.setOpaque(false);
-        listContainer.setLayout(new BorderLayout());
         cc.gridy = 1;
         cc.weighty = 1;
         unsortedPanel.add(listContainer, cc);
@@ -358,8 +356,7 @@ public class ThoughtsMain {
     private void createSortedTab() {
         GridBagConstraints cc = new GridBagConstraints();
 
-        JPanel sortedPanel = new JPanel();
-        sortedPanel.setLayout(new GridBagLayout());
+        JPanel sortedPanel = new JPanel(new GridBagLayout());
         leftTabs.add(createScrollView(sortedPanel), "Sorted");
 
         JLabel tabLabel = new JLabel("Sorted", SwingConstants.CENTER);
@@ -379,9 +376,8 @@ public class ThoughtsMain {
         cc.anchor = GridBagConstraints.NORTH;
         sortedPanel.add(sortedLabel, cc);
 
-        JPanel listContainer = new JPanel();
+        JPanel listContainer = new JPanel(new BorderLayout());
         listContainer.setOpaque(false);
-        listContainer.setLayout(new BorderLayout());
         cc.gridy = 1;
         cc.weighty = 1;
         sortedPanel.add(listContainer, cc);
@@ -396,8 +392,7 @@ public class ThoughtsMain {
 
         GridBagConstraints cc = new GridBagConstraints();
 
-        JPanel tagPanel = new JPanel();
-        tagPanel.setLayout(new GridBagLayout());
+        JPanel tagPanel = new JPanel(new GridBagLayout());
         leftTabs.add(createScrollView(tagPanel), tagName);
 
         JLabel tabLabel = new JLabel(tagName, SwingConstants.CENTER);
@@ -419,9 +414,8 @@ public class ThoughtsMain {
         cc.anchor = GridBagConstraints.NORTH;
         tagPanel.add(tagNameLabel, cc);
 
-        JPanel listContainer = new JPanel();
+        JPanel listContainer = new JPanel(new BorderLayout());
         listContainer.setOpaque(false);
-        listContainer.setLayout(new BorderLayout());
         cc.gridy = 1;
         cc.weighty = 1;
         tagPanel.add(listContainer, cc);
@@ -442,23 +436,39 @@ public class ThoughtsMain {
     }
 
     private void createRightPanel() {
-        JPanel rightPanel = new JPanel();
-        rightPanel.setLayout(new GridBagLayout());
+        JPanel rightPanel = new JPanel(new GridBagLayout());
         rightPanel.setPreferredSize(new Dimension(750, 0));
         rightPanel.setMinimumSize(new Dimension(0, 0));
         splitPane.setRightComponent(rightPanel);
 
         /* Top */
         GridBagConstraints topc = new GridBagConstraints();
-        JPanel topLabel = new JPanel();
-        topLabel.setLayout(new GridBagLayout());
         topc.gridx = 0;
         topc.gridy = 0;
         topc.weightx = 0.1;
         topc.weighty = 0.1;
         topc.insets = new Insets(10, 10, 0, 0);
         topc.anchor = GridBagConstraints.WEST;
-        rightPanel.add(topLabel, topc);
+
+        JPanel topContainer = new JPanel(new GridBagLayout());
+        rightPanel.add(topContainer, topc);
+
+        GridBagConstraints tc = new GridBagConstraints();
+        tc.gridy = 0;
+        tc.weighty = 0.1;
+
+        JPanel lockTextPanel = new JPanel();
+        lockTextPanel.setLayout(new BoxLayout(lockTextPanel, BoxLayout.Y_AXIS));
+        tc.gridx = 0;
+        tc.weightx = 0.1;
+        topContainer.add(lockTextPanel, tc);
+
+        lockTextPanel.add(createCheckBox());
+
+        JPanel topLabel = new JPanel(new GridBagLayout());
+        tc.gridx = 1;
+        tc.weightx = 0.1;
+        topContainer.add(topLabel, tc);
 
         GridBagConstraints cc = new GridBagConstraints();
         cc.anchor = GridBagConstraints.LINE_START;
@@ -556,8 +566,7 @@ public class ThoughtsMain {
         bodyArea.add(emptyBody, et);
 
         // Buttons
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new GridBagLayout());
+        JPanel buttonPanel = new JPanel(new GridBagLayout());
         botc.weightx = 0.3;
         botc.weighty = 0.05;
         botc.gridx = 0;
@@ -586,13 +595,14 @@ public class ThoughtsMain {
         newFileButton.setFont(TC.h4);
         newFileButton.addActionListener(new FileActionButtonPressed(this));
         buttonPanel.add(newFileButton, bc);
-        
 
     }
 
-    private JCheckBox createCheckBox(String boxName) {
-        JCheckBox checkBox = new JCheckBox(boxName);
+    private JCheckBox createCheckBox() {
+        JCheckBox checkBox = new JCheckBox();
         checkBox.setFont(TC.h5);
+        checkBox.setIcon(
+                new ImageIcon("thoughts/src/main/java/com/beanloaf/res/icons/lock_resized.png"));
         return checkBox;
     }
 

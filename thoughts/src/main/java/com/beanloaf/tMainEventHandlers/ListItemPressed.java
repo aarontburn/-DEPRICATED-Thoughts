@@ -1,5 +1,6 @@
 package com.beanloaf.tMainEventHandlers;
 
+import java.awt.Color;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -34,8 +35,8 @@ public class ListItemPressed extends MouseAdapter {
         int selectedIndex = this.list.getSelectedIndex();
         setContentFields(selectedIndex);
         this.main.undo.discardAllEdits();
-
     }
+
 
     public void setContentFields(int index) {
         main.refreshThoughtList();

@@ -5,7 +5,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -28,6 +27,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -586,36 +586,7 @@ public class ThoughtsMain {
         newFileButton.setFont(TC.h4);
         newFileButton.addActionListener(new FileActionButtonPressed(this));
         buttonPanel.add(newFileButton, bc);
-
-        // Settings Panel
-        JPanel settingsPanel = new JPanel();
-        settingsPanel.setLayout(new GridBagLayout());
-        settingsPanel.setBorder(BorderFactory.createLineBorder(Color.white));
-        botc.weightx = 0.3;
-        botc.weighty = 0.1;
-        botc.gridx = 0;
-        botc.gridy = 3;
-        rightPanel.add(settingsPanel, botc);
-
-        JPanel clearFieldsPanel = new JPanel();
-        clearFieldsPanel.setLayout(new GridBagLayout());
-        clearFieldsPanel.setBorder(BorderFactory.createLineBorder(Color.blue));
-        settingsPanel.add(clearFieldsPanel);
-
-        GridBagConstraints sp = new GridBagConstraints();
-        sp.weightx = 0.1;
-        sp.weighty = 0.1;
-
-        JLabel clearFieldsLabel = new JLabel("Clear fields on save");
-        clearFieldsLabel.setFont(TC.h5);
-        sp.gridy = 0;
-        sp.gridx = 1;
-        clearFieldsPanel.add(clearFieldsLabel, sp);
-
-        sp.gridy = 1;
-        clearFieldsPanel.add(createCheckBox("Title"), sp);
-        clearFieldsPanel.add(createCheckBox("Tag"), sp);
-        clearFieldsPanel.add(createCheckBox("Body"), sp);
+        
 
     }
 

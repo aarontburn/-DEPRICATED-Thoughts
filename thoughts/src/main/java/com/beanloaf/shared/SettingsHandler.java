@@ -20,6 +20,8 @@ public class SettingsHandler {
     private final double defaultWindowHeight = 1080;
     private final double defaultWindowX = 0;
     private final double defaultWindowY = 0;
+    private final boolean defaultLockTitle = false;
+    private final boolean defaultLockTag = false;
 
     // Setting fields
     private boolean isDarkMode;
@@ -28,6 +30,8 @@ public class SettingsHandler {
     private double windowHeight;
     private double windowX;
     private double windowY;
+    private boolean lockTitle;
+    private boolean lockTag;
 
     public SettingsHandler() {
         readFileContents();
@@ -44,6 +48,8 @@ public class SettingsHandler {
             this.windowHeight = this.defaultWindowHeight;
             this.windowX = this.defaultWindowX;
             this.windowY = this.defaultWindowY;
+            this.lockTitle = this.defaultLockTitle;
+            this.lockTag = this.defaultLockTag;
             createSettingsFile();
         }
     }
@@ -60,6 +66,8 @@ public class SettingsHandler {
             textContent.put("windowHeight", this.windowWidth);
             textContent.put("windowX", this.windowX);
             textContent.put("windowY", this.windowY);
+            textContent.put("lockTitle", this.lockTitle);
+            textContent.put("lockTag", this.lockTag);
 
             JSONObject objJson = new JSONObject(textContent);
             fWriter.write(objJson.toJSONString());
@@ -74,7 +82,6 @@ public class SettingsHandler {
         this.windowX = point.getX();
         this.windowY = point.getY();
         createSettingsFile();
-
     }
 
     public void changeIsDarkMode(boolean b) {
@@ -93,6 +100,22 @@ public class SettingsHandler {
         createSettingsFile();
     }
 
+    public void changeLockTitle(boolean b) {
+        this.lockTitle = b;
+    }
+
+    public void changeLockTag(boolean b) {
+        this.lockTag = b;
+    }
+
+    public boolean getLockTitle() {
+        return this.lockTitle;
+    }
+
+    public boolean getLockTag() {
+        return this.lockTag;
+    }
+
     public int getWindowX() {
         return (int) this.windowX;
     }
@@ -100,8 +123,6 @@ public class SettingsHandler {
     public int getWindowY() {
         return (int) this.windowY;
     }
-
-    
 
     public int getWindowWidth() {
         return (int) this.windowWidth;
@@ -129,6 +150,8 @@ public class SettingsHandler {
             this.windowWidth = (double) json.get("windowHeight");
             this.windowX = (double) json.get("windowX");
             this.windowY = (double) json.get("windowY");
+            this.lockTitle = (boolean) json.get("lockTitle");
+            this.lockTag = (boolean) json.get("lockTag");
 
         } catch (Exception e) {
             e.printStackTrace();

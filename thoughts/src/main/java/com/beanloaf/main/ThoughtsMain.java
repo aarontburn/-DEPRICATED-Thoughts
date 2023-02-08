@@ -27,9 +27,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
@@ -64,6 +64,8 @@ import com.beanloaf.tMainEventHandlers.FileActionButtonPressed;
 import com.beanloaf.tMainEventHandlers.KeyChange;
 import com.beanloaf.tMainEventHandlers.ListItemPressed;
 import com.beanloaf.tMainEventHandlers.ListTabPressed;
+import java.awt.event.ItemListener;
+import java.awt.event.ItemEvent;
 
 /**
  * 
@@ -434,6 +436,7 @@ public class ThoughtsMain {
     }
 
     private void createRightPanel() {
+        /* Houses the entire right panel */
         JPanel rightPanel = new JPanel(new GridBagLayout());
         rightPanel.setPreferredSize(new Dimension(750, 0));
         rightPanel.setMinimumSize(new Dimension(0, 0));
@@ -449,7 +452,6 @@ public class ThoughtsMain {
         topc.anchor = GridBagConstraints.WEST;
 
         JPanel topLabel = new JPanel(new GridBagLayout());
-        topLabel.setBorder(BorderFactory.createLineBorder(Color.white));
         rightPanel.add(topLabel, topc);
 
         GridBagConstraints cc = new GridBagConstraints();
@@ -463,8 +465,7 @@ public class ThoughtsMain {
         JPanel titlePanel = new JPanel(new GridBagLayout());
         titlePanelConstraints.gridx = 0;
         titlePanelConstraints.weightx = 0.1;
-        titlePanel.add(createCheckBox());
-
+        titlePanel.add(createCheckBox("lockTitle"));
 
         titleLabel = new JTextArea(TC.DEFAULT_TITLE);
         titleLabel.setColumns(6);
@@ -488,15 +489,25 @@ public class ThoughtsMain {
         emptyTitle.setOpaque(false);
         emptyTitle.setEnabled(false);
         emptyTitle.setVerticalAlignment(JLabel.CENTER);
-        titlePanel.add(emptyTitle, et);
 
+        titlePanel.add(emptyTitle, et);
         titlePanelConstraints.gridx = 1;
         titlePanelConstraints.weightx = 0.9;
-
-
         titlePanel.add(titleLabel, titlePanelConstraints);
+
         cc.gridx = 0;
         topLabel.add(titlePanel, cc);
+
+        GridBagConstraints tagPanelConstraints = new GridBagConstraints();
+        tagPanelConstraints.gridy = 0;
+        tagPanelConstraints.weighty = 0.1;
+        tagPanelConstraints.anchor = GridBagConstraints.LINE_START;
+
+        JPanel tagPanel = new JPanel(new GridBagLayout());
+        tagPanelConstraints.gridx = 0;
+        tagPanelConstraints.weightx = 0.1;
+
+        tagPanel.add(createCheckBox("lockTag"));
 
         tagLabel = new JTextArea(TC.DEFAULT_TAG);
         tagLabel.setColumns(9);
@@ -510,7 +521,6 @@ public class ThoughtsMain {
         tagLabel.getDocument().addUndoableEditListener(undo);
         tagLabel.addKeyListener(new TabPressed(tagLabel));
         tagLabel.setLayout(new GridBagLayout());
-        cc.gridx = 0;
         cc.gridy = 1;
 
         // Ghost text for the tag
@@ -520,7 +530,10 @@ public class ThoughtsMain {
         emptyTag.setEnabled(false);
         tagLabel.add(emptyTag, et);
 
-        topLabel.add(tagLabel, cc);
+        tagPanelConstraints.gridx = 1;
+        tagPanelConstraints.weightx = 0.9;
+        tagPanel.add(tagLabel, titlePanelConstraints);
+        topLabel.add(tagPanel, cc);
 
         dateLabel = new JLabel("Created on: " + TC.DEFAULT_DATE);
         dateLabel.setFont(TC.h4);
@@ -597,11 +610,29 @@ public class ThoughtsMain {
 
     }
 
-    private JCheckBox createCheckBox() {
+    private JCheckBox createCheckBox(String actionName) {
+        final String imagePath = "thoughts/src/main/java/com/beanloaf/res/icons/";
         JCheckBox checkBox = new JCheckBox();
-        // checkBox.setIcon(
-        // new
-        // ImageIcon("thoughts/src/main/java/com/beanloaf/res/icons/lock_resized.png"));
+        checkBox.setIcon(new ImageIcon(imagePath + "closed_lock.png"));
+        checkBox.setSelectedIcon(new ImageIcon(imagePath + "open_lock_1.png"));
+        checkBox.setName(actionName);
+        checkBox.setRolloverEnabled(false);
+        checkBox.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                JCheckBox box = (JCheckBox) e.getSource();
+                System.out.println(box.isSelected());
+
+                switch (box.getName()) {
+
+                }
+
+
+
+
+
+            }
+    });
         return checkBox;
     }
 

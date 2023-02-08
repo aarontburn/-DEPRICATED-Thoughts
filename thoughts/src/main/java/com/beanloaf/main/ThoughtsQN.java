@@ -16,7 +16,7 @@ import javax.swing.JTextArea;
 import com.beanloaf.common.TC;
 import com.beanloaf.shared.CheckForFolders;
 import com.beanloaf.shared.SaveNewFile;
-import com.beanloaf.shared.TabPressed;
+import com.beanloaf.shared.TabKeyPressed;
 import com.beanloaf.shared.TextAreaFocusListener;
 
 /**
@@ -123,7 +123,7 @@ public class ThoughtsQN {
         titleTextArea.setFont(TC.h1);
         titleTextArea.setLineWrap(true);
         titleTextArea.setPreferredSize(new Dimension(0, 10));
-        titleTextArea.addKeyListener(new TabPressed(titleTextArea));
+        titleTextArea.addKeyListener(new TabKeyPressed(titleTextArea));
         titleTextArea.addFocusListener(mListener);
         titleTextArea.setCaretColor(Color.white);
         titleTextArea.getDocument().putProperty("filterNewlines", true);
@@ -136,7 +136,7 @@ public class ThoughtsQN {
         tagTextArea.setFont(TC.p);
         tagTextArea.setPreferredSize(new Dimension(0, 10));
         tagTextArea.setWrapStyleWord(true);
-        tagTextArea.addKeyListener(new TabPressed(tagTextArea));
+        tagTextArea.addKeyListener(new TabKeyPressed(tagTextArea));
         tagTextArea.addFocusListener(mListener);
         tagTextArea.setCaretColor(Color.white);
         tagTextArea.getDocument().putProperty("filterNewlines", true);
@@ -149,7 +149,7 @@ public class ThoughtsQN {
         bodyTextArea.setFont(TC.p);
         bodyTextArea.setPreferredSize(new Dimension(0, 10));
         bodyTextArea.setWrapStyleWord(true);
-        bodyTextArea.addKeyListener(new TabPressed(bodyTextArea));
+        bodyTextArea.addKeyListener(new TabKeyPressed(bodyTextArea));
         bodyTextArea.addFocusListener(mListener);
         bodyTextArea.setCaretColor(Color.white);
         bodyPanel.add(bodyTextArea, BorderLayout.CENTER);

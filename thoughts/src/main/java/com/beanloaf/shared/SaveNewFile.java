@@ -19,35 +19,8 @@ public class SaveNewFile {
         this.body = body;
     }
 
-    public SaveNewFile(String type, String input) {
-        switch (type) {
-            case "title":
-                this.title = input;
-                this.tag = TC.DEFAULT_TAG;
-                this.body = TC.DEFAULT_BODY;
-                break;
-
-            case "tag":
-                this.title = TC.DEFAULT_TITLE;
-                this.tag = input;
-                this.body = TC.DEFAULT_BODY;
-                break;
-
-            case "body":
-                this.title = TC.DEFAULT_TITLE;
-                this.tag = TC.DEFAULT_TAG;
-                this.body = input;
-                break;
-
-            default:
-                throw new IllegalArgumentException();
-        }
-    }
-
     public SaveNewFile() {
-        this.title = "";
-        this.tag = "";
-        this.body = "";
+        this("", "", "");
     }
 
     public ThoughtObject save() {
@@ -60,10 +33,9 @@ public class SaveNewFile {
         final String unsortedFileName = TC.UNSORTED_DIRECTORY_PATH + "/" + fileDT + ".json";
         final String sortedFileName = TC.SORTED_DIRECTORY_PATH + "/" + fileDT + ".json";
         final File newFile = new File(unsortedFileName);
-        final File checkSorted = new File(sortedFileName);
 
         try {
-            if (!newFile.isFile() && !checkSorted.isFile()) {
+            if (!newFile.isFile() && !new File(sortedFileName).isFile()) {
                 newFile.createNewFile();
                 ThoughtObject tObj = new ThoughtObject(title, contentDT, tag, body, newFile);
                 tObj.saveFile();
@@ -76,35 +48,7 @@ public class SaveNewFile {
         }
         return null;
     }
-
-    // public ThoughtObject save() {
-    // if (title.equalsIgnoreCase(TC.DEFAULT_TITLE)
-    // && body.equalsIgnoreCase(TC.DEFAULT_BODY)) {
-    // return null;
-    // }
-    // String fileDT = getCurrentDateTime().split("!")[0];
-    // String contentDT = getCurrentDateTime().split("!")[1];
-    // try {
-    // String unsortedFileName = TC.UNSORTED_DIRECTORY_PATH + "/" + fileDT +
-    // ".json";
-    // File newFile = new File(unsortedFileName);
-    // if (newFile.createNewFile()) {
-    // ThoughtObject tObj = new ThoughtObject(
-    // title,
-    // contentDT,
-    // tag,
-    // body,
-    // newFile);
-
-    // tObj.saveFile();
-    // return tObj;
-    // }
-    // } catch (IOException er) {
-    // er.printStackTrace();
-    // }
-    // return null;
-    // }
-
+    
     private String getCurrentDateTime() {
         Date d = new Date();
         SimpleDateFormat fileFormat = new SimpleDateFormat("MM-dd-yyyy HH-mm-ss");

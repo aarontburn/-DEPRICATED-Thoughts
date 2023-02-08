@@ -58,7 +58,7 @@ import com.beanloaf.objects.ThoughtObject;
 import com.beanloaf.res.theme.ThoughtsTheme;
 import com.beanloaf.shared.CheckForFolders;
 import com.beanloaf.shared.SettingsHandler;
-import com.beanloaf.shared.TabPressed;
+import com.beanloaf.shared.TabKeyPressed;
 import com.beanloaf.shared.TextAreaFocusListener;
 import com.beanloaf.tMainEventHandlers.FileActionButtonPressed;
 import com.beanloaf.tMainEventHandlers.KeyChange;
@@ -86,7 +86,7 @@ public class ThoughtsMain {
     public JLabel dateLabel;
 
     /* Right Panel Input Fields */
-    public JTextArea titleLabel, tagLabel, bodyArea;
+    public JTextArea titleLabel, tagLabel, bodyLabel;
     public UndoManager undo = new UndoManager();
     public JButton sortButton, deleteButton, newFileButton;
     /* Right Panel Ghost Text */
@@ -192,6 +192,7 @@ public class ThoughtsMain {
                 if (!ready) {
                     return;
                 }
+
                 /*
                  * 501 is mouse pressed
                  * 502 is mouse released
@@ -436,6 +437,8 @@ public class ThoughtsMain {
     }
 
     private void createRightPanel() {
+        // TODO refractor this ENTIRE method
+
         /* Houses the entire right panel */
         JPanel rightPanel = new JPanel(new GridBagLayout());
         rightPanel.setPreferredSize(new Dimension(750, 0));
@@ -476,7 +479,7 @@ public class ThoughtsMain {
         titleLabel.getDocument().addUndoableEditListener(undo);
         titleLabel.getDocument().addDocumentListener(new KeyChange(this));
         titleLabel.getDocument().putProperty("labelType", titleLabel);
-        titleLabel.addKeyListener(new TabPressed(titleLabel));
+        titleLabel.addKeyListener(new TabKeyPressed(this, titleLabel));
         titleLabel.addFocusListener(new TextAreaFocusListener(this));
         titleLabel.setLayout(new GridBagLayout());
 
@@ -519,7 +522,7 @@ public class ThoughtsMain {
         tagLabel.addFocusListener(new TextAreaFocusListener(this));
         tagLabel.getDocument().putProperty("filterNewlines", true);
         tagLabel.getDocument().addUndoableEditListener(undo);
-        tagLabel.addKeyListener(new TabPressed(tagLabel));
+        tagLabel.addKeyListener(new TabKeyPressed(this, tagLabel));
         tagLabel.setLayout(new GridBagLayout());
         cc.gridy = 1;
 
@@ -545,17 +548,17 @@ public class ThoughtsMain {
         /* Bottom */
         GridBagConstraints botc = new GridBagConstraints();
 
-        bodyArea = new JTextArea(TC.DEFAULT_BODY);
-        bodyArea.setBackground(new Color(32, 32, 32));
-        bodyArea.setFont(TC.p);
-        bodyArea.setLineWrap(true);
-        bodyArea.setWrapStyleWord(true);
-        bodyArea.getDocument().addDocumentListener(new KeyChange(this));
-        bodyArea.getDocument().putProperty("labelType", bodyArea);
-        bodyArea.setName("bodyArea");
-        bodyArea.addFocusListener(new TextAreaFocusListener(this));
-        bodyArea.getDocument().addUndoableEditListener(undo);
-        bodyArea.setLayout(new GridBagLayout());
+        bodyLabel = new JTextArea(TC.DEFAULT_BODY);
+        bodyLabel.setBackground(new Color(32, 32, 32));
+        bodyLabel.setFont(TC.p);
+        bodyLabel.setLineWrap(true);
+        bodyLabel.setWrapStyleWord(true);
+        bodyLabel.getDocument().addDocumentListener(new KeyChange(this));
+        bodyLabel.getDocument().putProperty("labelType", bodyLabel);
+        bodyLabel.setName("bodyLabel");
+        bodyLabel.addFocusListener(new TextAreaFocusListener(this));
+        bodyLabel.getDocument().addUndoableEditListener(undo);
+        bodyLabel.setLayout(new GridBagLayout());
         botc.weightx = 0.1;
         botc.weighty = 0.9;
         botc.gridx = 0;
@@ -563,7 +566,7 @@ public class ThoughtsMain {
         botc.insets = new Insets(5, 5, 5, 5);
         botc.fill = GridBagConstraints.BOTH;
 
-        JScrollPane bodyScroll = new JScrollPane(bodyArea,
+        JScrollPane bodyScroll = new JScrollPane(bodyLabel,
                 JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         bodyScroll.setBorder(null);
         bodyScroll.setPreferredSize(new Dimension(0, 0));
@@ -575,7 +578,7 @@ public class ThoughtsMain {
         emptyBody.setFont(TC.p);
         emptyBody.setOpaque(false);
         emptyBody.setEnabled(false);
-        bodyArea.add(emptyBody, et);
+        bodyLabel.add(emptyBody, et);
 
         // Buttons
         JPanel buttonPanel = new JPanel(new GridBagLayout());
@@ -611,28 +614,39 @@ public class ThoughtsMain {
     }
 
     private JCheckBox createCheckBox(String actionName) {
-        final String imagePath = "thoughts/src/main/java/com/beanloaf/res/icons/";
         JCheckBox checkBox = new JCheckBox();
-        checkBox.setIcon(new ImageIcon(imagePath + "closed_lock.png"));
-        checkBox.setSelectedIcon(new ImageIcon(imagePath + "open_lock_1.png"));
+        checkBox.setIcon(new ImageIcon(TC.ICON_DIRECTORY + "closed_lock.png"));
+        checkBox.setSelectedIcon(new ImageIcon(TC.ICON_DIRECTORY + "open_lock_1.png"));
         checkBox.setName(actionName);
         checkBox.setRolloverEnabled(false);
+
+        switch (actionName) {
+            case "lockTitle":
+                checkBox.setSelected(settings.isTitleLocked());
+                break;
+            case "lockTag":
+                checkBox.setSelected(settings.isTagLocked());
+                break;
+            default:
+                throw new IllegalArgumentException();
+        }
+
         checkBox.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
                 JCheckBox box = (JCheckBox) e.getSource();
-                System.out.println(box.isSelected());
-
                 switch (box.getName()) {
-
+                    case "lockTitle":
+                        settings.changeLockTitle(box.isSelected());
+                        break;
+                    case "lockTag":
+                        settings.changeLockTag(box.isSelected());
+                        break;
+                    default:
+                        throw new IllegalArgumentException();
                 }
-
-
-
-
-
             }
-    });
+        });
         return checkBox;
     }
 

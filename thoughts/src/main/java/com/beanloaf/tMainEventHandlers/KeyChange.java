@@ -43,7 +43,7 @@ public class KeyChange implements DocumentListener {
             this.main.emptyTag.setText("");
         }
 
-        if (this.main.bodyArea.getText().isBlank()) {
+        if (this.main.bodyLabel.getText().isBlank()) {
             this.main.emptyTitle.setText(TC.DEFAULT_TITLE);
         } else {
             this.main.emptyBody.setText("");
@@ -83,7 +83,7 @@ public class KeyChange implements DocumentListener {
                 }
                 break;
 
-            case "bodyArea":
+            case "bodyLabel":
                 if (j.getText().isBlank()) {
                     this.main.emptyBody.setText(TC.DEFAULT_BODY);
                 } else {

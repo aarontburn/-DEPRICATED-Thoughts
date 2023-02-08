@@ -34,7 +34,14 @@ public class SettingsHandler {
     private boolean lockTag;
 
     public SettingsHandler() {
-        readFileContents();
+        try {
+            readFileContents();
+        } catch (Exception e) {
+            System.err.println("Error in settings.json. Regenerating file...");
+            if (TC.SETTINGS_DIRECTORY.delete()) {
+                System.err.println("Successfully deleted settings.json.");
+            }
+        }
         check();
     }
 
@@ -42,6 +49,7 @@ public class SettingsHandler {
         if (TC.SETTINGS_DIRECTORY.isFile()) {
             return;
         } else {
+            System.err.println("Creating new settings.json");
             this.isDarkMode = this.defaultIsDarkMode;
             this.isMaximized = this.defaultIsMaximized;
             this.windowWidth = this.defaultWindowWidth;
@@ -102,17 +110,19 @@ public class SettingsHandler {
 
     public void changeLockTitle(boolean b) {
         this.lockTitle = b;
+        createSettingsFile();
     }
 
     public void changeLockTag(boolean b) {
         this.lockTag = b;
+        createSettingsFile();
     }
 
-    public boolean getLockTitle() {
+    public boolean isTitleLocked() {
         return this.lockTitle;
     }
 
-    public boolean getLockTag() {
+    public boolean isTagLocked() {
         return this.lockTag;
     }
 

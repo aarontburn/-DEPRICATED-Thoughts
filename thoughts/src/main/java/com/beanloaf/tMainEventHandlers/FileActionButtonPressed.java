@@ -66,7 +66,22 @@ public class FileActionButtonPressed implements ActionListener {
                 break;
 
             case "newFile":
-                ThoughtObject tObj = new SaveNewFile().save();
+                String title, tag, body;
+                title = tag = body = "";
+
+                if (!main.settings.isTitleLocked()) {
+                    title = main.titleLabel.getText();
+                }
+
+                if (!main.settings.isTagLocked()) {
+                    tag = main.tagLabel.getText();
+                }
+
+                // if (main.settings.isBodyLocked()) {
+                // body = main.bodyLabel.getText();
+                // }
+
+                ThoughtObject tObj = new SaveNewFile(title, tag, body).save();
                 l.setContentFields(tObj);
                 this.main.leftTabs.setSelectedIndex(0);
                 main.selectTextField(main.titleLabel);

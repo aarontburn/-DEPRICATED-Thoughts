@@ -13,6 +13,8 @@ public class TC {
     public static final File UNSORTED_DIRECTORY_PATH = new File("thoughts/storage/unsorted/");
     public static final File SORTED_DIRECTORY_PATH = new File("thoughts/storage/sorted/");
     public static final File SETTINGS_DIRECTORY = new File("thoughts/settings.json");
+
+    public static final String ICON_DIRECTORY = "thoughts/src/main/java/com/beanloaf/res/icons/";
     
     public static final String DEFAULT_TITLE = "<untitled>";
     public static final String DEFAULT_BODY = "<description>";

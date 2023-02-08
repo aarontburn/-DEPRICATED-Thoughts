@@ -27,6 +27,7 @@ Settings to modify
     - Save file automatically on text change
     - Checkboxes for clearing title/tag/body on save new file
     - KeyBinds
+    - change date/time format
 
 
 Current Keybinds:

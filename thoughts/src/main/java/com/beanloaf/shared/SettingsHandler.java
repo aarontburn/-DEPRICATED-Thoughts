@@ -22,6 +22,8 @@ public class SettingsHandler {
     private final double defaultWindowY = 0;
     private final boolean defaultLockTitle = false;
     private final boolean defaultLockTag = false;
+    private final boolean defaultLockBody = false;
+
 
     // Setting fields
     private boolean isDarkMode;
@@ -32,6 +34,7 @@ public class SettingsHandler {
     private double windowY;
     private boolean lockTitle;
     private boolean lockTag;
+    private boolean lockBody;
 
     public SettingsHandler() {
         try {
@@ -58,6 +61,7 @@ public class SettingsHandler {
             this.windowY = this.defaultWindowY;
             this.lockTitle = this.defaultLockTitle;
             this.lockTag = this.defaultLockTag;
+            this.lockBody = this.defaultLockBody;
             createSettingsFile();
         }
     }
@@ -76,6 +80,7 @@ public class SettingsHandler {
             textContent.put("windowY", this.windowY);
             textContent.put("lockTitle", this.lockTitle);
             textContent.put("lockTag", this.lockTag);
+            textContent.put("lockBody", this.lockBody);
 
             JSONObject objJson = new JSONObject(textContent);
             fWriter.write(objJson.toJSONString());
@@ -118,12 +123,21 @@ public class SettingsHandler {
         createSettingsFile();
     }
 
+    public void changeLockBody(boolean b) {
+        this.lockBody = b;
+        createSettingsFile();
+    }
+
     public boolean isTitleLocked() {
         return this.lockTitle;
     }
 
     public boolean isTagLocked() {
         return this.lockTag;
+    }
+
+    public boolean isBodyLocked() {
+        return this.lockBody;
     }
 
     public int getWindowX() {
@@ -162,6 +176,7 @@ public class SettingsHandler {
             this.windowY = (double) json.get("windowY");
             this.lockTitle = (boolean) json.get("lockTitle");
             this.lockTag = (boolean) json.get("lockTag");
+            this.lockBody = (boolean) json.get("lockBody");
 
         } catch (Exception e) {
             e.printStackTrace();

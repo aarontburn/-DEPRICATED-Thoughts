@@ -77,9 +77,9 @@ public class FileActionButtonPressed implements ActionListener {
                     tag = main.tagLabel.getText();
                 }
 
-                // if (main.settings.isBodyLocked()) {
-                // body = main.bodyLabel.getText();
-                // }
+                if (!main.settings.isBodyLocked()) {
+                    body = main.bodyLabel.getText();
+                }
 
                 ThoughtObject tObj = new SaveNewFile(title, tag, body).save();
                 l.setContentFields(tObj);

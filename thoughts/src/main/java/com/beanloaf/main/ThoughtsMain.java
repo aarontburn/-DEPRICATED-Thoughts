@@ -468,7 +468,7 @@ public class ThoughtsMain {
         JPanel titlePanel = new JPanel(new GridBagLayout());
         titlePanelConstraints.gridx = 0;
         titlePanelConstraints.weightx = 0.1;
-        titlePanel.add(createCheckBox("lockTitle"));
+        titlePanel.add(createCheckBox("lockTitle"), titlePanelConstraints);
 
         titleLabel = new JTextArea(TC.DEFAULT_TITLE);
         titleLabel.setColumns(6);
@@ -510,7 +510,7 @@ public class ThoughtsMain {
         tagPanelConstraints.gridx = 0;
         tagPanelConstraints.weightx = 0.1;
 
-        tagPanel.add(createCheckBox("lockTag"));
+        tagPanel.add(createCheckBox("lockTag"), tagPanelConstraints);
 
         tagLabel = new JTextArea(TC.DEFAULT_TAG);
         tagLabel.setColumns(9);
@@ -547,6 +547,12 @@ public class ThoughtsMain {
 
         /* Bottom */
         GridBagConstraints botc = new GridBagConstraints();
+        botc.weightx = 0.1;
+        botc.weighty = 0.001;
+        botc.gridx = 0;
+        botc.gridy = 1;
+        botc.anchor = GridBagConstraints.NORTHEAST;
+        rightPanel.add(createCheckBox("lockBody"), botc);
 
         bodyLabel = new JTextArea(TC.DEFAULT_BODY);
         bodyLabel.setBackground(new Color(32, 32, 32));
@@ -562,8 +568,9 @@ public class ThoughtsMain {
         botc.weightx = 0.1;
         botc.weighty = 0.9;
         botc.gridx = 0;
-        botc.gridy = 1;
+        botc.gridy = 2;
         botc.insets = new Insets(5, 5, 5, 5);
+        botc.anchor = GridBagConstraints.CENTER;
         botc.fill = GridBagConstraints.BOTH;
 
         JScrollPane bodyScroll = new JScrollPane(bodyLabel,
@@ -585,7 +592,7 @@ public class ThoughtsMain {
         botc.weightx = 0.3;
         botc.weighty = 0.05;
         botc.gridx = 0;
-        botc.gridy = 2;
+        botc.gridy = 3;
         rightPanel.add(buttonPanel, botc);
 
         GridBagConstraints bc = new GridBagConstraints();
@@ -627,6 +634,10 @@ public class ThoughtsMain {
             case "lockTag":
                 checkBox.setSelected(settings.isTagLocked());
                 break;
+            case "lockBody":
+                checkBox.setSelected(settings.isBodyLocked());
+
+                break;
             default:
                 throw new IllegalArgumentException();
         }
@@ -641,6 +652,9 @@ public class ThoughtsMain {
                         break;
                     case "lockTag":
                         settings.changeLockTag(box.isSelected());
+                        break;
+                    case "lockBody":
+                        settings.changeLockBody(box.isSelected());
                         break;
                     default:
                         throw new IllegalArgumentException();

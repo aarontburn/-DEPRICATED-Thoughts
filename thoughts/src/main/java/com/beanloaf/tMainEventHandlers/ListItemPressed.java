@@ -1,6 +1,5 @@
 package com.beanloaf.tMainEventHandlers;
 
-import java.awt.Color;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;

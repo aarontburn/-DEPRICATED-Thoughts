@@ -12,7 +12,6 @@ import java.awt.Insets;
 import java.awt.KeyEventDispatcher;
 import java.awt.KeyboardFocusManager;
 import java.awt.Point;
-import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.AWTEventListener;
 import java.awt.event.KeyEvent;
@@ -31,7 +30,6 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
@@ -450,28 +448,23 @@ public class ThoughtsMain {
         topc.insets = new Insets(10, 10, 0, 0);
         topc.anchor = GridBagConstraints.WEST;
 
-        JPanel topContainer = new JPanel(new GridBagLayout());
-        rightPanel.add(topContainer, topc);
-
-        GridBagConstraints tc = new GridBagConstraints();
-        tc.gridy = 0;
-        tc.weighty = 0.1;
-
-        JPanel lockTextPanel = new JPanel();
-        lockTextPanel.setLayout(new BoxLayout(lockTextPanel, BoxLayout.Y_AXIS));
-        tc.gridx = 0;
-        tc.weightx = 0.1;
-        topContainer.add(lockTextPanel, tc);
-
-        lockTextPanel.add(createCheckBox());
-
         JPanel topLabel = new JPanel(new GridBagLayout());
-        tc.gridx = 1;
-        tc.weightx = 0.1;
-        topContainer.add(topLabel, tc);
+        topLabel.setBorder(BorderFactory.createLineBorder(Color.white));
+        rightPanel.add(topLabel, topc);
 
         GridBagConstraints cc = new GridBagConstraints();
         cc.anchor = GridBagConstraints.LINE_START;
+
+        GridBagConstraints titlePanelConstraints = new GridBagConstraints();
+        titlePanelConstraints.gridy = 0;
+        titlePanelConstraints.weighty = 0.1;
+        titlePanelConstraints.anchor = GridBagConstraints.LINE_START;
+
+        JPanel titlePanel = new JPanel(new GridBagLayout());
+        titlePanelConstraints.gridx = 0;
+        titlePanelConstraints.weightx = 0.1;
+        titlePanel.add(createCheckBox());
+
 
         titleLabel = new JTextArea(TC.DEFAULT_TITLE);
         titleLabel.setColumns(6);
@@ -494,11 +487,16 @@ public class ThoughtsMain {
         emptyTitle.setFont(TC.h1);
         emptyTitle.setOpaque(false);
         emptyTitle.setEnabled(false);
-        titleLabel.add(emptyTitle, et);
+        emptyTitle.setVerticalAlignment(JLabel.CENTER);
+        titlePanel.add(emptyTitle, et);
 
+        titlePanelConstraints.gridx = 1;
+        titlePanelConstraints.weightx = 0.9;
+
+
+        titlePanel.add(titleLabel, titlePanelConstraints);
         cc.gridx = 0;
-        cc.gridy = 0;
-        topLabel.add(titleLabel, cc);
+        topLabel.add(titlePanel, cc);
 
         tagLabel = new JTextArea(TC.DEFAULT_TAG);
         tagLabel.setColumns(9);
@@ -521,6 +519,7 @@ public class ThoughtsMain {
         emptyTag.setOpaque(false);
         emptyTag.setEnabled(false);
         tagLabel.add(emptyTag, et);
+
         topLabel.add(tagLabel, cc);
 
         dateLabel = new JLabel("Created on: " + TC.DEFAULT_DATE);
@@ -600,9 +599,9 @@ public class ThoughtsMain {
 
     private JCheckBox createCheckBox() {
         JCheckBox checkBox = new JCheckBox();
-        checkBox.setFont(TC.h5);
-        checkBox.setIcon(
-                new ImageIcon("thoughts/src/main/java/com/beanloaf/res/icons/lock_resized.png"));
+        // checkBox.setIcon(
+        // new
+        // ImageIcon("thoughts/src/main/java/com/beanloaf/res/icons/lock_resized.png"));
         return checkBox;
     }
 

@@ -14,6 +14,8 @@ import java.awt.KeyboardFocusManager;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.AWTEventListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -64,8 +66,9 @@ import com.beanloaf.tMainEventHandlers.FileActionButtonPressed;
 import com.beanloaf.tMainEventHandlers.KeyChange;
 import com.beanloaf.tMainEventHandlers.ListItemPressed;
 import com.beanloaf.tMainEventHandlers.ListTabPressed;
-import java.awt.event.ItemListener;
-import java.awt.event.ItemEvent;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 
 /**
  * 
@@ -105,6 +108,7 @@ public class ThoughtsMain {
     public boolean ready = false;
 
     public SettingsHandler settings = new SettingsHandler();
+    public FirebaseHandler db = new FirebaseHandler();
 
     /**
      * Number of tags on the displayed
@@ -214,7 +218,7 @@ public class ThoughtsMain {
             }
         }, AWTEvent.MOUSE_EVENT_MASK);
 
-        // createTopPanel();
+        createTopPanel();
         createCenterPanel();
         createLeftPanel();
         createRightPanel();
@@ -234,13 +238,38 @@ public class ThoughtsMain {
         JPanel topPanel = new JPanel();
         topPanel.setBorder(BorderFactory.createLineBorder(Color.black));
 
-        JButton testButton = new JButton("test");
+        JButton testButton = new JButton("upload");
         topPanel.add(testButton);
         testButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                // System.out.println("Current file: " + selectedFile.getTitle());
+                db.update(selectedFile.getTitle(),
+                        selectedFile.getTag(),
+                        selectedFile.getDate(),
+                        selectedFile.getBody());
+            }
+        });
 
+        JButton testButton1 = new JButton("read data");
+        topPanel.add(testButton1);
+        testButton1.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                db.getDatabase().child("x").addListenerForSingleValueEvent(new ValueEventListener() {
+
+                    @Override
+                    public void onDataChange(DataSnapshot snapshot) {
+                        System.out.println(snapshot.getValue());
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError error) {
+                        // TODO Auto-generated method stub
+
+                    }
+
+                });
             }
         });
 
@@ -636,7 +665,6 @@ public class ThoughtsMain {
                 break;
             case "lockBody":
                 checkBox.setSelected(settings.isBodyLocked());
-
                 break;
             default:
                 throw new IllegalArgumentException();

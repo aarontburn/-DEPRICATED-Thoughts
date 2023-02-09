@@ -24,7 +24,6 @@ public class SettingsHandler {
     private final boolean defaultLockTag = false;
     private final boolean defaultLockBody = false;
 
-
     // Setting fields
     private boolean isDarkMode;
     private boolean isMaximized;

@@ -54,7 +54,6 @@ import javax.swing.undo.UndoManager;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
-import com.beanloaf.common.TC;
 import com.beanloaf.events.FileActionButtonPressed;
 import com.beanloaf.events.FirebaseHandler;
 import com.beanloaf.events.KeyChange;
@@ -65,6 +64,7 @@ import com.beanloaf.events.TabKeyPressed;
 import com.beanloaf.events.TextAreaFocusListener;
 import com.beanloaf.objects.ListTab;
 import com.beanloaf.objects.ThoughtObject;
+import com.beanloaf.res.TC;
 import com.beanloaf.res.theme.ThoughtsTheme;
 
 /**

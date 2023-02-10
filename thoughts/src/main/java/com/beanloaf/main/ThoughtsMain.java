@@ -49,6 +49,8 @@ import javax.swing.border.Border;
 import javax.swing.plaf.basic.BasicScrollBarUI;
 import javax.swing.plaf.basic.BasicSplitPaneDivider;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 import javax.swing.undo.UndoManager;
 
 import org.json.simple.JSONObject;
@@ -103,12 +105,13 @@ public class ThoughtsMain {
     public ArrayList<String> tagList = new ArrayList<>();
 
     public boolean ready = false;
+    public boolean isOnline = true;
 
     public SettingsHandler settings = new SettingsHandler();
     public JLabel pushLabel, pullLabel;
+    public JButton pullButton, pushButton;
 
-
-    public FirebaseHandler db = new FirebaseHandler(this);
+    public FirebaseHandler db;
 
     /**
      * Number of tags on the displayed
@@ -132,10 +135,8 @@ public class ThoughtsMain {
             @Override
             public void run() {
                 new ThoughtsMain();
-
             }
         });
-
     }
 
     public ThoughtsMain() {
@@ -151,6 +152,10 @@ public class ThoughtsMain {
         }
         if (!TC.SORTED_DIRECTORY_PATH.isDirectory()) {
             TC.SORTED_DIRECTORY_PATH.mkdir();
+        }
+
+        if (this.isOnline) {
+            db = new FirebaseHandler(this);
         }
 
         refreshThoughtList();
@@ -509,27 +514,29 @@ public class ThoughtsMain {
         settingsConstraints.insets = new Insets(10, 15, 0, 0);
         settingsConstraints.anchor = GridBagConstraints.LINE_START;
 
-        JButton pushButton = new JButton("Push");
-        pushButton.setPreferredSize(new Dimension(100, 35));
+        Dimension buttonDim = new Dimension(90, 35);
+        pushButton = new JButton("Push");
+        pushButton.setPreferredSize(buttonDim);
         pushButton.setFont(TC.h4);
         settingsConstraints.gridx = 0;
         settingsBar.add(pushButton, settingsConstraints);
         pushButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                db.push();
+                if (db != null) {
+                    db.push();
+                }
             }
         });
 
-        
-        pushLabel = new JLabel("0 files not pushed.");
+        pushLabel = new JLabel("");
         pushLabel.setFont(TC.h5);
         settingsConstraints.gridx = 1;
         settingsConstraints.weightx = 0.1;
-        settingsBar.add(pushLabel,settingsConstraints);
+        settingsBar.add(pushLabel, settingsConstraints);
 
-        JButton pullButton = new JButton("Pull");
-        pullButton.setPreferredSize(new Dimension(100, 35));
+        pullButton = new JButton("Pull");
+        pullButton.setPreferredSize(buttonDim);
         settingsConstraints.gridx = 2;
         settingsConstraints.weightx = 0.001;
         pullButton.setFont(TC.h4);
@@ -537,20 +544,39 @@ public class ThoughtsMain {
         pullButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                db.pull();
+                if (db != null) {
+                    db.push();
+                }
             }
         });
 
-        pullLabel = new JLabel("0 files can be pulled.");
+        pullLabel = new JLabel("");
         pullLabel.setFont(TC.h5);
         settingsConstraints.gridx = 3;
+        settingsConstraints.weightx = 0.3;
+        settingsBar.add(pullLabel, settingsConstraints);
+
+        JButton settingsButton = new JButton();
+        settingsButton.setBorderPainted(false);
+        settingsButton.setContentAreaFilled(false);
+        settingsButton.setOpaque(false);
+        settingsButton.setIcon(new ImageIcon(TC.ICON_DIRECTORY + "/gear.png"));
+        settingsButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("here");
+                
+            }
+        });
+        settingsConstraints.gridx = 4;
         settingsConstraints.weightx = 0.9;
-        settingsBar.add(pullLabel,settingsConstraints);
+        settingsConstraints.anchor = GridBagConstraints.LINE_END;
+        settingsBar.add(settingsButton, settingsConstraints);
+
 
         /* End of Settings */
         topc.weightx = 0.1;
         topc.weighty = 0.1;
-        
 
         topc.fill = GridBagConstraints.NONE;
         topc.gridy = 1;
@@ -858,6 +884,10 @@ public class ThoughtsMain {
             leftTabs.setSelectedIndex(selectedTab);
         } catch (Exception e) {
             leftTabs.setSelectedIndex(selectedTab - 1);
+        }
+
+        if (this.isOnline && this.db.getList() != null) {
+            this.db.refreshPushPullLabels();
         }
 
         long endTime = System.currentTimeMillis();

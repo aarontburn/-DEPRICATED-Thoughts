@@ -28,6 +28,8 @@ public class FirebaseHandler implements ValueEventListener {
     private static final String KEY_PATH = "serviceAccountKey.json";
     private DatabaseReference ref;
 
+    public boolean isOnline;
+
     private ArrayList<ThoughtObject> objectList = null;
 
     public FirebaseHandler(ThoughtsMain main) {
@@ -37,7 +39,6 @@ public class FirebaseHandler implements ValueEventListener {
         }
         try {
             final FileInputStream serviceAccount = new FileInputStream(KEY_PATH);
-
             final FirebaseOptions options = FirebaseOptions.builder()
                     .setCredentials(GoogleCredentials.fromStream(serviceAccount))
                     .setDatabaseUrl(DATABASE_URL)
@@ -46,11 +47,12 @@ public class FirebaseHandler implements ValueEventListener {
             firebaseDatabase = FirebaseDatabase.getInstance(DATABASE_URL);
             ref = firebaseDatabase.getReference("<USERNAME>");
             ref.addValueEventListener(this);
+            isOnline = true;
 
             System.out.println("Sucessfully synced with firebase.");
 
-        } catch (IOException ioe) {
-            System.out.println(ioe.getMessage());
+        } catch (Exception e) {
+            isOnline = false;
         }
 
     }
@@ -89,8 +91,10 @@ public class FirebaseHandler implements ValueEventListener {
      * Pushes all files in the sorted directory into database.
      * 
      * Note: THIS ONLY PUSHES SORTED FILES.
+     * 
+     * @return True if the push was successful, false otherwise.
      */
-    public void push() {
+    public boolean push() {
         try {
             File[] sortedFileDirectory = TC.SORTED_DIRECTORY_PATH.listFiles();
             for (File file : sortedFileDirectory) {
@@ -99,24 +103,28 @@ public class FirebaseHandler implements ValueEventListener {
                     update(tObj);
                 }
             }
-            System.out.println("Successfully pushed files to database.");
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
+            return false;
         }
     }
 
     /**
      * Pulls all files from database and puts them in sorted.
+     * 
+     * @return True if the pull was successful, false otherwise.
      */
-    public void pull() {
+    public boolean pull() {
         try {
             for (ThoughtObject tObj : this.objectList) {
                 new SaveNewFile(tObj).fbSave();
             }
             this.main.refreshThoughtList();
-            System.out.println("Successfully pulled data from database.");
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
+            return false;
         }
     }
 
@@ -146,6 +154,7 @@ public class FirebaseHandler implements ValueEventListener {
     @Override
     @SuppressWarnings("unchecked")
     public void onDataChange(DataSnapshot dataSnapshot) {
+        System.out.println("onDataChange() fired");
         objectList = new ArrayList<>();
         for (DataSnapshot data : dataSnapshot.getChildren()) {
             final Map<String, String> value = (Map<String, String>) data.getValue();
@@ -157,21 +166,31 @@ public class FirebaseHandler implements ValueEventListener {
 
             this.objectList.add(new ThoughtObject(title, date, tag, body, new File(filePath)));
         }
-        setPullLabelText();
-        setPushLabelText();
+        refreshPushPullLabels();
     }
 
-    public void setPullLabelText() {
-        int diff = this.objectList.size() - this.main.sortedThoughtList.size();
-        if (diff < 0) {
-            diff *= -1;
+    public void refreshPushPullLabels() {
+        if (!isOnline) {
+            this.main.pullLabel.setText("Not connected.");
+            this.main.pushLabel.setText("Not connected.");
+            this.main.pullButton.setEnabled(isOnline);
+            this.main.pushButton.setEnabled(isOnline);
+            return;
         }
-        this.main.pullLabel.setText(String.valueOf(diff) + " files can be pulled.");
-    }
 
-    public void setPushLabelText() {
-        int diff = this.main.sortedThoughtList.size() - this.objectList.size();
-        this.main.pullLabel.setText(String.valueOf(diff) + " files can be pulled.");
+
+        /* Pull */
+        int diffPull = this.objectList.size() - this.main.sortedThoughtList.size();
+        if (diffPull < 0) {
+            diffPull = 0;
+        }
+        this.main.pullLabel.setText(String.valueOf(diffPull) + " files can be pulled.");
+        /* Push */
+        int diffPush = this.main.sortedThoughtList.size() - this.objectList.size();
+        if (diffPush < 0) {
+            diffPush = 0;
+        }
+        this.main.pushLabel.setText(String.valueOf(diffPush) + " files not pushed.");
     }
 
     @Override

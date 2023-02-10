@@ -31,23 +31,16 @@ public class KeyChange implements DocumentListener {
     }
 
     public void checkEmpty() {
-        if (this.main.titleLabel.getText().isBlank()) {
-            this.main.emptyTitle.setText(TC.DEFAULT_TITLE);
-        } else {
-            this.main.emptyTitle.setText("");
-        }
 
-        if (this.main.tagLabel.getText().isBlank()) {
-            this.main.emptyTitle.setText(TC.DEFAULT_TITLE);
-        } else {
-            this.main.emptyTag.setText("");
-        }
-
-        if (this.main.bodyLabel.getText().isBlank()) {
-            this.main.emptyTitle.setText(TC.DEFAULT_TITLE);
-        } else {
-            this.main.emptyBody.setText("");
-        }
+        this.main.emptyTitle.setText(((this.main.titleLabel.getText().isBlank())
+                ? TC.DEFAULT_TITLE
+                : ""));
+        this.main.emptyTag.setText(((this.main.tagLabel.getText().isBlank())
+                ? TC.DEFAULT_TAG
+                : ""));
+        this.main.emptyBody.setText(((this.main.bodyLabel.getText().isBlank())
+                ? TC.DEFAULT_BODY
+                : ""));
 
     }
 

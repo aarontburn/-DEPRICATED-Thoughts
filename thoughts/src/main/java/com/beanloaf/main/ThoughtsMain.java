@@ -550,6 +550,7 @@ public class ThoughtsMain {
         titlePanelConstraints.anchor = GridBagConstraints.LINE_START;
 
         JPanel titlePanel = new JPanel(new GridBagLayout());
+        titlePanel.setOpaque(false);
         titlePanelConstraints.gridx = 0;
         titlePanelConstraints.weightx = 0.1;
         titlePanel.add(createCheckBox("lockTitle"), titlePanelConstraints);

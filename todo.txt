@@ -21,7 +21,11 @@ To do:
 
 
         - Database:
+            - Add authentication system
             - Make it like github where it pushes and pulls data instead of automatically doing it
+
+            - Option to push data on close
+            - Option to pull data on open
 
 
 

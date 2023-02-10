@@ -105,7 +105,7 @@ public class ThoughtsMain {
     public boolean ready = false;
 
     public SettingsHandler settings = new SettingsHandler();
-    public FirebaseHandler db = new FirebaseHandler();
+    public FirebaseHandler db = new FirebaseHandler(this);
 
     /**
      * Number of tags on the displayed
@@ -235,28 +235,21 @@ public class ThoughtsMain {
         JPanel topPanel = new JPanel();
         topPanel.setBorder(BorderFactory.createLineBorder(Color.black));
 
-        JButton testButton = new JButton("upload");
+        JButton testButton = new JButton("Push");
         topPanel.add(testButton);
         testButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                db.update(selectedFile.getTitle(),
-                        selectedFile.getTag(),
-                        selectedFile.getDate(),
-                        selectedFile.getBody(),
-                        selectedFile.getPath().getName());
+                db.push();
             }
         });
 
-        JButton testButton1 = new JButton("read data");
+        JButton testButton1 = new JButton("Pull");
         topPanel.add(testButton1);
         testButton1.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                ArrayList<ThoughtObject> l = db.getAllSorted();
-                for (ThoughtObject obj : l) {
-                    System.out.println(obj);
-                }
+                db.pull();
             }
         });
 
@@ -681,7 +674,7 @@ public class ThoughtsMain {
 
     private Map<String, ThoughtObject> thoughtMap = new HashMap<>();
 
-    private ThoughtObject readFileContents(File filePath) {
+    public ThoughtObject readFileContents(File filePath) {
 
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             StringBuilder sb = new StringBuilder();

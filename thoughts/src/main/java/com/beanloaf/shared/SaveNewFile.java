@@ -39,6 +39,14 @@ public class SaveNewFile {
         this.fileName = file;
     }
 
+    public SaveNewFile(ThoughtObject tObj) {
+        this.title = tObj.getTitle();
+        this.tag = tObj.getTag();
+        this.body = tObj.getBody();
+        this.date = tObj.getDate();
+        this.fileName = tObj.getPath().getName();
+    }
+
     public SaveNewFile() {
         this("", "", "");
     }
@@ -77,11 +85,9 @@ public class SaveNewFile {
         if (this.fileName.isEmpty()) {
             return null;
         }
-
         final String unsortedFileName = TC.UNSORTED_DIRECTORY_PATH + "/" + fileName;
         final String sortedFileName = TC.SORTED_DIRECTORY_PATH + "/" + fileName;
         final File newFile = new File(sortedFileName);
-
 
         try {
             if (!newFile.isFile() && !new File(unsortedFileName).isFile()) {
@@ -90,7 +96,7 @@ public class SaveNewFile {
                 tObj.saveFile();
                 return tObj;
             } else {
-                System.out.println("file exists");
+                System.err.println("File already exists. Skipping...");
             }
 
         } catch (Exception er) {

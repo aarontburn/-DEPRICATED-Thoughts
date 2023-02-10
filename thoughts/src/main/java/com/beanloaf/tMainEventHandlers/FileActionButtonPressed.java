@@ -35,17 +35,18 @@ public class FileActionButtonPressed implements ActionListener {
 
                     if (path.equals("unsorted")) {
                         // Moves the file to sorted
-                        this.main.selectedFile.getPath().renameTo(new File(
-                                this.main.selectedFile.getPath().toString().replace(
-                                        "unsorted", "sorted")));
+                        final String filePath = this.main.selectedFile.getPath().toString()
+                                .replace("unsorted", "sorted");
 
+                        this.main.selectedFile.getPath().renameTo(new File(filePath));
                         l.setContentFields(0);
 
                     } else if (path.equals("sorted")) {
                         // Moves file to unsorted
-                        this.main.selectedFile.getPath().renameTo(new File(
-                                this.main.selectedFile.getPath().toString().replace(
-                                        "sorted", "unsorted")));
+                        final String filePath = this.main.selectedFile.getPath().toString()
+                                .replace("sorted", "unsorted");
+
+                        this.main.selectedFile.getPath().renameTo(new File(filePath));
 
                         l.setContentFields(0);
                     } else {

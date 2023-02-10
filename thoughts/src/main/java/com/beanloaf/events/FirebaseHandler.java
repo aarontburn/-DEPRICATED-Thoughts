@@ -35,11 +35,8 @@ public class FirebaseHandler implements ValueEventListener {
 
     public FirebaseHandler(ThoughtsMain main) {
         this.main = main;
-        if (this.main == null) {
-            throw new IllegalArgumentException("main passed into FirebaseHandler is null");
-        }
         try {
-
+            // Checks to see if the pc is connected to the internet
             URL url = new URL("https://www.google.com");
             URLConnection connection = url.openConnection();
             connection.connect();
@@ -54,10 +51,12 @@ public class FirebaseHandler implements ValueEventListener {
             firebaseDatabase = FirebaseDatabase.getInstance(DATABASE_URL);
             ref = firebaseDatabase.getReference("<USERNAME>");
             ref.addValueEventListener(this);
-            System.out.println("Sucessfully synced with firebase.");
+            System.out.println("Successfully synced with firebase.");
 
         } catch (Exception e) {
             isOnline = false;
+            System.out.println("Not connected to the internet.");
+
             refreshPushPullLabels();
         }
 

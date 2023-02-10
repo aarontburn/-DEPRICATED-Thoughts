@@ -60,13 +60,12 @@ import com.beanloaf.events.FirebaseHandler;
 import com.beanloaf.events.KeyChange;
 import com.beanloaf.events.ListItemPressed;
 import com.beanloaf.events.ListTabPressed;
+import com.beanloaf.events.SettingsHandler;
+import com.beanloaf.events.TabKeyPressed;
+import com.beanloaf.events.TextAreaFocusListener;
 import com.beanloaf.objects.ListTab;
 import com.beanloaf.objects.ThoughtObject;
 import com.beanloaf.res.theme.ThoughtsTheme;
-import com.beanloaf.shared.CheckForFolders;
-import com.beanloaf.shared.SettingsHandler;
-import com.beanloaf.shared.TabKeyPressed;
-import com.beanloaf.shared.TextAreaFocusListener;
 
 /**
  * 
@@ -144,7 +143,13 @@ public class ThoughtsMain {
     }
 
     private void onStartUp() {
-        new CheckForFolders().createDataFolder();
+        if (!TC.UNSORTED_DIRECTORY_PATH.isDirectory()) {
+            TC.UNSORTED_DIRECTORY_PATH.mkdirs();
+        }
+        if (!TC.SORTED_DIRECTORY_PATH.isDirectory()) {
+            TC.SORTED_DIRECTORY_PATH.mkdir();
+        }
+
         refreshThoughtList();
 
         if (this.unsortedThoughtList.size() > 0) {
@@ -155,6 +160,7 @@ public class ThoughtsMain {
 
         this.ready = true;
     }
+
 
     private void createGUI() {
         ThoughtsTheme.setup();

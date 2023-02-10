@@ -1,4 +1,4 @@
-package com.beanloaf.tMainEventHandlers;
+package com.beanloaf.events;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;

@@ -1,4 +1,4 @@
-package com.beanloaf.shared;
+package com.beanloaf.events;
 
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;

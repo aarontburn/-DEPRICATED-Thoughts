@@ -1,4 +1,4 @@
-package com.beanloaf.tMainEventHandlers;
+package com.beanloaf.events;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -9,7 +9,6 @@ import javax.swing.JButton;
 
 import com.beanloaf.main.ThoughtsMain;
 import com.beanloaf.objects.ThoughtObject;
-import com.beanloaf.shared.SaveNewFile;
 
 public class FileActionButtonPressed implements ActionListener {
     ThoughtsMain main;

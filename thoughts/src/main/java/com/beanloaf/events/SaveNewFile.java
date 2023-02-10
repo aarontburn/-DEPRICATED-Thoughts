@@ -1,4 +1,4 @@
-package com.beanloaf.shared;
+package com.beanloaf.events;
 
 import java.io.File;
 import java.text.SimpleDateFormat;

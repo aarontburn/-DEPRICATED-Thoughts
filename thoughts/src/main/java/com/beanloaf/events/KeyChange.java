@@ -1,4 +1,4 @@
-package com.beanloaf.tMainEventHandlers;
+package com.beanloaf.events;
 
 import javax.swing.JTextArea;
 import javax.swing.event.DocumentEvent;
@@ -58,8 +58,6 @@ public class KeyChange implements DocumentListener {
 
         JTextArea j = (JTextArea) e.getDocument().getProperty("labelType");
         String labelName = j.getName();
-        EditFile fileEdit = new EditFile(this.main);
-
         switch (labelName) {
             case "titleLabel":
                 if (j.getText().isBlank()) {
@@ -68,7 +66,7 @@ public class KeyChange implements DocumentListener {
                     this.main.emptyTitle.setText("");
                 }
                 if (this.main.selectedFile != null) {
-                    fileEdit.editTitle(j.getText());
+                    this.main.selectedFile.editTitle(j.getText());
                 }
                 break;
 
@@ -79,7 +77,7 @@ public class KeyChange implements DocumentListener {
                     this.main.emptyTag.setText("");
                 }
                 if (this.main.selectedFile != null) {
-                    fileEdit.editTag(j.getText());
+                    this.main.selectedFile.editTag(j.getText());
                 }
                 break;
 
@@ -90,7 +88,8 @@ public class KeyChange implements DocumentListener {
                     this.main.emptyBody.setText("");
                 }
                 if (this.main.selectedFile != null) {
-                    fileEdit.editBody(j.getText());
+                    this.main.selectedFile.editBody(j.getText());
+
                 }
                 break;
 

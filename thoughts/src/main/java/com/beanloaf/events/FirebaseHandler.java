@@ -1,4 +1,4 @@
-package com.beanloaf.main;
+package com.beanloaf.events;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import com.beanloaf.common.TC;
+import com.beanloaf.main.ThoughtsMain;
 import com.beanloaf.objects.ThoughtObject;
-import com.beanloaf.shared.SaveNewFile;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;

@@ -6,8 +6,8 @@ import javax.swing.DefaultListModel;
 import javax.swing.JList;
 
 import com.beanloaf.common.TC;
+import com.beanloaf.events.ListItemPressed;
 import com.beanloaf.main.ThoughtsMain;
-import com.beanloaf.tMainEventHandlers.ListItemPressed;
 
 public class ListTab extends JList<String> {
 

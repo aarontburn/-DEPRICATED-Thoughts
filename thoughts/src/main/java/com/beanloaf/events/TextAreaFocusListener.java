@@ -1,4 +1,4 @@
-package com.beanloaf.shared;
+package com.beanloaf.events;
 
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;

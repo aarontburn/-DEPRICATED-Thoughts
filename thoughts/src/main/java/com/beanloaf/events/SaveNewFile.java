@@ -4,8 +4,8 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import com.beanloaf.common.TC;
 import com.beanloaf.objects.ThoughtObject;
+import com.beanloaf.res.TC;
 
 public class SaveNewFile {
 

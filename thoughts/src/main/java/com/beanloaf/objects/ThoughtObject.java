@@ -8,7 +8,7 @@ import java.util.Objects;
 
 import org.json.simple.JSONObject;
 
-import com.beanloaf.common.TC;
+import com.beanloaf.res.TC;
 
 public class ThoughtObject {
 

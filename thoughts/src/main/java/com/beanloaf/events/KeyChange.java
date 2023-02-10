@@ -4,8 +4,8 @@ import javax.swing.JTextArea;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-import com.beanloaf.common.TC;
 import com.beanloaf.main.ThoughtsMain;
+import com.beanloaf.res.TC;
 
 public class KeyChange implements DocumentListener {
 

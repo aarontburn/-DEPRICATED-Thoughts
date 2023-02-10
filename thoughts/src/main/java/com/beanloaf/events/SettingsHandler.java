@@ -10,7 +10,7 @@ import java.util.HashMap;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
-import com.beanloaf.common.TC;
+import com.beanloaf.res.TC;
 
 public class SettingsHandler {
     // Default values

@@ -1,4 +1,4 @@
-package com.beanloaf.common;
+package com.beanloaf.res;
 
 import java.awt.Color;
 import java.awt.Font;

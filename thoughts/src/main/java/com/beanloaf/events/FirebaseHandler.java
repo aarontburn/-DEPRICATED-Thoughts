@@ -6,9 +6,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
 
-import com.beanloaf.common.TC;
 import com.beanloaf.main.ThoughtsMain;
 import com.beanloaf.objects.ThoughtObject;
+import com.beanloaf.res.TC;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;

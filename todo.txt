@@ -11,9 +11,6 @@ To do:
         - Watch the storage folder for any changes, and auto refresh
         - Export as .txt
             - Choose directory to export
-        - Mark as unsorted
-        - Google FireBase database integration
-        - Add tab to next box
         - Auto sort tag for new file?
         - Add trashcan that deletes files that have been there for more than 30 days
 
@@ -28,16 +25,14 @@ To do:
             - Option to pull data on open
 
 
-
-    ThoughtsQN:
-        - Add button to open ThoughtsMain;
-
 Settings to modify
     - Light/Dark Mode
     - Save file automatically on text change
     - Checkboxes for clearing title/tag/body on save new file
     - KeyBinds
     - change date/time format
+    - Option to push data on close
+    - Option to pull data on open
 
 
 Current Keybinds:

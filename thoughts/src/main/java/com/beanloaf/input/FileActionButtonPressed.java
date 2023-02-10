@@ -1,4 +1,4 @@
-package com.beanloaf.events;
+package com.beanloaf.input;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
 
 import javax.swing.JButton;
 
+import com.beanloaf.events.SaveNewFile;
 import com.beanloaf.main.ThoughtsMain;
 import com.beanloaf.objects.ThoughtObject;
 
@@ -61,7 +62,15 @@ public class FileActionButtonPressed implements ActionListener {
                 if (this.main.selectedFile == null) {
                     return;
                 }
+                String path = this.main.selectedFile.getPath()
+                        .toString().split(Pattern.quote(File.separator))[2];
+
+                if (path.equals("sorted")) {
+                    this.main.db.delete(this.main.selectedFile);
+                }
+
                 this.main.selectedFile.getPath().delete();
+
                 l.setContentFields(0);
                 break;
 
@@ -84,7 +93,7 @@ public class FileActionButtonPressed implements ActionListener {
                 ThoughtObject tObj = new SaveNewFile(title, tag, body).save();
                 l.setContentFields(tObj);
                 this.main.leftTabs.setSelectedIndex(0);
-                main.selectTextField(main.titleLabel);
+                this.main.selectTextField(this.main.titleLabel);
                 break;
 
             default:

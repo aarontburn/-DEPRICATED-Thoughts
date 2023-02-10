@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
 
-import com.beanloaf.events.ListItemPressed;
+import com.beanloaf.input.ListItemPressed;
 import com.beanloaf.main.ThoughtsMain;
 import com.beanloaf.res.TC;
 

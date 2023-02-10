@@ -105,6 +105,9 @@ public class ThoughtsMain {
     public boolean ready = false;
 
     public SettingsHandler settings = new SettingsHandler();
+    public JLabel pushLabel, pullLabel;
+
+
     public FirebaseHandler db = new FirebaseHandler(this);
 
     /**
@@ -160,7 +163,6 @@ public class ThoughtsMain {
 
         this.ready = true;
     }
-
 
     private void createGUI() {
         ThoughtsTheme.setup();
@@ -236,27 +238,52 @@ public class ThoughtsMain {
         c.gridy = 0;
         c.gridwidth = 2;
         c.weightx = 0.1;
-        c.weighty = 0.12;
+        c.weighty = 0.01;
         c.fill = GridBagConstraints.BOTH;
 
-        JPanel topPanel = new JPanel();
+        JPanel topPanel = new JPanel(new GridBagLayout());
         topPanel.setBorder(BorderFactory.createLineBorder(Color.black));
 
-        JButton testButton = new JButton("Push");
-        topPanel.add(testButton);
-        testButton.addMouseListener(new MouseAdapter() {
+        GridBagConstraints cc = new GridBagConstraints();
+        cc.fill = GridBagConstraints.BOTH;
+        cc.weighty = 0.1;
+
+        JButton button = new JButton("test");
+        cc.weightx = 0.5;
+        cc.gridx = 0;
+        topPanel.add(button, cc);
+
+        cc.weightx = 0.2;
+        JButton pushButton = new JButton("Push");
+        cc.gridx = 1;
+        topPanel.add(pushButton, cc);
+        pushButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 db.push();
             }
         });
 
-        JButton testButton1 = new JButton("Pull");
-        topPanel.add(testButton1);
-        testButton1.addMouseListener(new MouseAdapter() {
+        JButton pullButton = new JButton("Pull");
+        cc.gridx = 2;
+        topPanel.add(pullButton, cc);
+        pullButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 db.pull();
+            }
+        });
+
+        this.container.add(topPanel, c);
+
+        JButton settingsButton = new JButton(new ImageIcon(TC.ICON_DIRECTORY + "/gear.png"));
+        cc.gridx = 3;
+        cc.weightx = 0.01;
+        topPanel.add(settingsButton, cc);
+        pullButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+
             }
         });
 
@@ -466,12 +493,73 @@ public class ThoughtsMain {
         topc.gridx = 0;
         topc.gridy = 0;
         topc.weightx = 0.1;
-        topc.weighty = 0.1;
-        topc.insets = new Insets(10, 10, 0, 0);
+        topc.weighty = 0.005;
         topc.anchor = GridBagConstraints.WEST;
 
+        /* Settings */
+        JPanel settingsBar = new JPanel(new GridBagLayout());
+        topc.fill = GridBagConstraints.BOTH;
+        // settingsBar.setBorder(BorderFactory.createLineBorder(Color.white));
+        rightPanel.add(settingsBar, topc);
+
+        GridBagConstraints settingsConstraints = new GridBagConstraints();
+        settingsConstraints.weightx = 0.01;
+        settingsConstraints.weighty = 0.1;
+        settingsConstraints.fill = GridBagConstraints.VERTICAL;
+        settingsConstraints.insets = new Insets(10, 15, 0, 0);
+        settingsConstraints.anchor = GridBagConstraints.LINE_START;
+
+        JButton pushButton = new JButton("Push");
+        pushButton.setPreferredSize(new Dimension(100, 35));
+        pushButton.setFont(TC.h4);
+        settingsConstraints.gridx = 0;
+        settingsBar.add(pushButton, settingsConstraints);
+        pushButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                db.push();
+            }
+        });
+
+        
+        pushLabel = new JLabel("0 files not pushed.");
+        pushLabel.setFont(TC.h5);
+        settingsConstraints.gridx = 1;
+        settingsConstraints.weightx = 0.1;
+        settingsBar.add(pushLabel,settingsConstraints);
+
+        JButton pullButton = new JButton("Pull");
+        pullButton.setPreferredSize(new Dimension(100, 35));
+        settingsConstraints.gridx = 2;
+        settingsConstraints.weightx = 0.001;
+        pullButton.setFont(TC.h4);
+        settingsBar.add(pullButton, settingsConstraints);
+        pullButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                db.pull();
+            }
+        });
+
+        pullLabel = new JLabel("0 files can be pulled.");
+        pullLabel.setFont(TC.h5);
+        settingsConstraints.gridx = 3;
+        settingsConstraints.weightx = 0.9;
+        settingsBar.add(pullLabel,settingsConstraints);
+
+        /* End of Settings */
+        topc.weightx = 0.1;
+        topc.weighty = 0.1;
+        
+
+        topc.fill = GridBagConstraints.NONE;
+        topc.gridy = 1;
+        topc.insets = new Insets(-30, 10, -50, 0);
+
         JPanel topLabel = new JPanel(new GridBagLayout());
+        // topLabel.setBorder(BorderFactory.createLineBorder(Color.blue));
         rightPanel.add(topLabel, topc);
+        topc.insets = new Insets(0, 0, 0, 0);
 
         GridBagConstraints cc = new GridBagConstraints();
         cc.anchor = GridBagConstraints.LINE_START;
@@ -558,7 +646,6 @@ public class ThoughtsMain {
         dateLabel.setFont(TC.h4);
         cc.gridx = 0;
         cc.gridy = 2;
-        cc.insets = new Insets(10, 0, 0, 0);
         topLabel.add(dateLabel, cc);
 
         /* Bottom */
@@ -566,7 +653,7 @@ public class ThoughtsMain {
         botc.weightx = 0.1;
         botc.weighty = 0.001;
         botc.gridx = 0;
-        botc.gridy = 1;
+        botc.gridy = 2;
         botc.anchor = GridBagConstraints.NORTHEAST;
         rightPanel.add(createCheckBox("lockBody"), botc);
 
@@ -584,7 +671,7 @@ public class ThoughtsMain {
         botc.weightx = 0.1;
         botc.weighty = 0.9;
         botc.gridx = 0;
-        botc.gridy = 2;
+        botc.gridy = 3;
         botc.insets = new Insets(5, 5, 5, 5);
         botc.anchor = GridBagConstraints.CENTER;
         botc.fill = GridBagConstraints.BOTH;
@@ -608,7 +695,7 @@ public class ThoughtsMain {
         botc.weightx = 0.3;
         botc.weighty = 0.05;
         botc.gridx = 0;
-        botc.gridy = 3;
+        botc.gridy = 4;
         rightPanel.add(buttonPanel, botc);
 
         GridBagConstraints bc = new GridBagConstraints();
@@ -641,6 +728,7 @@ public class ThoughtsMain {
         checkBox.setIcon(new ImageIcon(TC.ICON_DIRECTORY + "closed_lock.png"));
         checkBox.setSelectedIcon(new ImageIcon(TC.ICON_DIRECTORY + "open_lock_1.png"));
         checkBox.setName(actionName);
+        checkBox.setOpaque(false);
         checkBox.setRolloverEnabled(false);
 
         switch (actionName) {

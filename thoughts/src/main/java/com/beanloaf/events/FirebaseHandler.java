@@ -15,6 +15,7 @@ import com.google.firebase.FirebaseOptions;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.DatabaseReference.CompletionListener;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
@@ -117,9 +118,29 @@ public class FirebaseHandler implements ValueEventListener {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
 
+    public ArrayList<ThoughtObject> getList() {
+        return this.objectList;
+    }
 
-
+    /**
+     * Deletes a file from the database.
+     * 
+     * @param obj
+     */
+    public void delete(ThoughtObject obj) {
+        final String path = obj.getPath().getName().replace(".json", "");
+        ref.child(path).removeValue(new CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError error, DatabaseReference ref) {
+                if (error == null) {
+                    System.out.println("Successfully deleted file.");
+                } else {
+                    System.err.println("Error occured on deletion.");
+                }
+            }
+        });
     }
 
     @Override
@@ -136,6 +157,21 @@ public class FirebaseHandler implements ValueEventListener {
 
             this.objectList.add(new ThoughtObject(title, date, tag, body, new File(filePath)));
         }
+        setPullLabelText();
+        setPushLabelText();
+    }
+
+    public void setPullLabelText() {
+        int diff = this.objectList.size() - this.main.sortedThoughtList.size();
+        if (diff < 0) {
+            diff *= -1;
+        }
+        this.main.pullLabel.setText(String.valueOf(diff) + " files can be pulled.");
+    }
+
+    public void setPushLabelText() {
+        int diff = this.main.sortedThoughtList.size() - this.objectList.size();
+        this.main.pullLabel.setText(String.valueOf(diff) + " files can be pulled.");
     }
 
     @Override

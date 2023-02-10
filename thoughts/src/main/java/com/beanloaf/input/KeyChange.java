@@ -1,4 +1,4 @@
-package com.beanloaf.events;
+package com.beanloaf.input;
 
 import javax.swing.JTextArea;
 import javax.swing.event.DocumentEvent;

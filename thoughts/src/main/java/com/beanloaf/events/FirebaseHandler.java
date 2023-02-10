@@ -2,7 +2,8 @@ package com.beanloaf.events;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -38,6 +39,12 @@ public class FirebaseHandler implements ValueEventListener {
             throw new IllegalArgumentException("main passed into FirebaseHandler is null");
         }
         try {
+
+            URL url = new URL("https://www.google.com");
+            URLConnection connection = url.openConnection();
+            connection.connect();
+            isOnline = true;
+
             final FileInputStream serviceAccount = new FileInputStream(KEY_PATH);
             final FirebaseOptions options = FirebaseOptions.builder()
                     .setCredentials(GoogleCredentials.fromStream(serviceAccount))
@@ -47,12 +54,11 @@ public class FirebaseHandler implements ValueEventListener {
             firebaseDatabase = FirebaseDatabase.getInstance(DATABASE_URL);
             ref = firebaseDatabase.getReference("<USERNAME>");
             ref.addValueEventListener(this);
-            isOnline = true;
-
             System.out.println("Sucessfully synced with firebase.");
 
         } catch (Exception e) {
             isOnline = false;
+            refreshPushPullLabels();
         }
 
     }
@@ -72,6 +78,10 @@ public class FirebaseHandler implements ValueEventListener {
      * @param fileName
      */
     public void update(String title, String tag, String date, String body, String fileName) {
+        if (!this.isOnline) {
+            System.out.println("Not connected to the internet!");
+            return;
+        }
         final String path = fileName.replace(".json", "");
         ref.child(path).child("Title").setValue(title, null);
         ref.child(path).child("Tag").setValue(tag, null);
@@ -80,6 +90,10 @@ public class FirebaseHandler implements ValueEventListener {
     }
 
     public void update(ThoughtObject obj) {
+        if (!this.isOnline) {
+            System.out.println("Not connected to the internet!");
+            return;
+        }
         final String path = obj.getPath().getName().replace(".json", "");
         ref.child(path).child("Title").setValue(obj.getTitle(), null);
         ref.child(path).child("Tag").setValue(obj.getTag(), null);
@@ -95,6 +109,10 @@ public class FirebaseHandler implements ValueEventListener {
      * @return True if the push was successful, false otherwise.
      */
     public boolean push() {
+        if (!this.isOnline) {
+            System.out.println("Not connected to the internet!");
+            return false;
+        }
         try {
             File[] sortedFileDirectory = TC.SORTED_DIRECTORY_PATH.listFiles();
             for (File file : sortedFileDirectory) {
@@ -116,6 +134,10 @@ public class FirebaseHandler implements ValueEventListener {
      * @return True if the pull was successful, false otherwise.
      */
     public boolean pull() {
+        if (!this.isOnline) {
+            System.out.println("Not connected to the internet!");
+            return false;
+        }
         try {
             for (ThoughtObject tObj : this.objectList) {
                 new SaveNewFile(tObj).fbSave();
@@ -138,6 +160,10 @@ public class FirebaseHandler implements ValueEventListener {
      * @param obj
      */
     public void delete(ThoughtObject obj) {
+        if (!this.isOnline) {
+            System.out.println("Not connected to the internet!");
+            return;
+        }
         final String path = obj.getPath().getName().replace(".json", "");
         ref.child(path).removeValue(new CompletionListener() {
             @Override
@@ -170,14 +196,13 @@ public class FirebaseHandler implements ValueEventListener {
     }
 
     public void refreshPushPullLabels() {
-        if (!isOnline) {
+        if (!this.isOnline) {
             this.main.pullLabel.setText("Not connected.");
             this.main.pushLabel.setText("Not connected.");
             this.main.pullButton.setEnabled(isOnline);
             this.main.pushButton.setEnabled(isOnline);
             return;
         }
-
 
         /* Pull */
         int diffPull = this.objectList.size() - this.main.sortedThoughtList.size();

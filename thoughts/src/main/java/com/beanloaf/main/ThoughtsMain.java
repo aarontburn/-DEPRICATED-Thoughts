@@ -246,49 +246,6 @@ public class ThoughtsMain {
         JPanel topPanel = new JPanel(new GridBagLayout());
         topPanel.setBorder(BorderFactory.createLineBorder(Color.black));
 
-        GridBagConstraints cc = new GridBagConstraints();
-        cc.fill = GridBagConstraints.BOTH;
-        cc.weighty = 0.1;
-
-        JButton button = new JButton("test");
-        cc.weightx = 0.5;
-        cc.gridx = 0;
-        topPanel.add(button, cc);
-
-        cc.weightx = 0.2;
-        JButton pushButton = new JButton("Push");
-        cc.gridx = 1;
-        topPanel.add(pushButton, cc);
-        pushButton.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                db.push();
-            }
-        });
-
-        JButton pullButton = new JButton("Pull");
-        cc.gridx = 2;
-        topPanel.add(pullButton, cc);
-        pullButton.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                db.pull();
-            }
-        });
-
-        this.container.add(topPanel, c);
-
-        JButton settingsButton = new JButton(new ImageIcon(TC.ICON_DIRECTORY + "/gear.png"));
-        cc.gridx = 3;
-        cc.weightx = 0.01;
-        topPanel.add(settingsButton, cc);
-        pullButton.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-
-            }
-        });
-
         this.container.add(topPanel, c);
     }
 
@@ -534,15 +491,15 @@ public class ThoughtsMain {
 
         pullButton = new JButton("Pull");
         pullButton.setPreferredSize(buttonDim);
+        pullButton.setFont(TC.h4);
         settingsConstraints.gridx = 2;
         settingsConstraints.weightx = 0.001;
-        pullButton.setFont(TC.h4);
         settingsBar.add(pullButton, settingsConstraints);
         pullButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (db != null) {
-                    db.push();
+                    db.pull();
                 }
             }
         });
@@ -562,14 +519,13 @@ public class ThoughtsMain {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println("here");
-                
+
             }
         });
         settingsConstraints.gridx = 4;
         settingsConstraints.weightx = 0.9;
         settingsConstraints.anchor = GridBagConstraints.LINE_END;
         settingsBar.add(settingsButton, settingsConstraints);
-
 
         /* End of Settings */
         topc.weightx = 0.1;
@@ -883,7 +839,7 @@ public class ThoughtsMain {
             leftTabs.setSelectedIndex(selectedTab - 1);
         }
 
-        if (this.isOnline && this.db.getList() != null) {
+        if (this.db.isOnline && this.db.getList() != null) {
             this.db.refreshPushPullLabels();
         }
 

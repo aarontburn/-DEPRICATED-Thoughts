@@ -55,6 +55,11 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 import com.beanloaf.common.TC;
+import com.beanloaf.events.FileActionButtonPressed;
+import com.beanloaf.events.FirebaseHandler;
+import com.beanloaf.events.KeyChange;
+import com.beanloaf.events.ListItemPressed;
+import com.beanloaf.events.ListTabPressed;
 import com.beanloaf.objects.ListTab;
 import com.beanloaf.objects.ThoughtObject;
 import com.beanloaf.res.theme.ThoughtsTheme;
@@ -62,10 +67,6 @@ import com.beanloaf.shared.CheckForFolders;
 import com.beanloaf.shared.SettingsHandler;
 import com.beanloaf.shared.TabKeyPressed;
 import com.beanloaf.shared.TextAreaFocusListener;
-import com.beanloaf.tMainEventHandlers.FileActionButtonPressed;
-import com.beanloaf.tMainEventHandlers.KeyChange;
-import com.beanloaf.tMainEventHandlers.ListItemPressed;
-import com.beanloaf.tMainEventHandlers.ListTabPressed;
 
 /**
  * 
@@ -215,7 +216,7 @@ public class ThoughtsMain {
             }
         }, AWTEvent.MOUSE_EVENT_MASK);
 
-        createTopPanel();
+        // createTopPanel();
         createCenterPanel();
         createLeftPanel();
         createRightPanel();

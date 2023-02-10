@@ -537,6 +537,7 @@ public class ThoughtsMain {
 
         JPanel topLabel = new JPanel(new GridBagLayout());
         // topLabel.setBorder(BorderFactory.createLineBorder(Color.blue));
+        topLabel.setOpaque(false);
         rightPanel.add(topLabel, topc);
         topc.insets = new Insets(0, 0, 0, 0);
 

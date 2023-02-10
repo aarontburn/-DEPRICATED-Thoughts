@@ -27,16 +27,21 @@ public class ThoughtObject {
     }
 
     public void saveFile() {
-        try (FileWriter fWriter = new FileWriter(this.file)) {
-            HashMap<String, String> textContent = new HashMap<>();
-            textContent.put("title", this.title);
-            textContent.put("date", this.date);
-            textContent.put("tag", this.tag);
-            textContent.put("body", this.body);
-            fWriter.write(new JSONObject(textContent).toJSONString());
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (this.file != null) {
+            try (FileWriter fWriter = new FileWriter(this.file)) {
+                HashMap<String, String> textContent = new HashMap<>();
+                textContent.put("title", this.title);
+                textContent.put("date", this.date);
+                textContent.put("tag", this.tag);
+                textContent.put("body", this.body);
+                fWriter.write(new JSONObject(textContent).toJSONString());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            System.out.println("here");
         }
+
     }
 
     public void editTitle(String newTitle) {

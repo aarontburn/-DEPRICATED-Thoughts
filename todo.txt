@@ -19,6 +19,12 @@ To do:
 
         - Scrollbar position resets on refresh
 
+
+        - Database:
+            - Make it like github where it pushes and pulls data instead of automatically doing it
+
+
+
     ThoughtsQN:
         - Add button to open ThoughtsMain;
 
@@ -36,6 +42,10 @@ Current Keybinds:
     - CTRL + N = New File
     - CTRL + D = Delete current file
     - CTRL + Q = Sort file
+
+Database file format:
+
+
 
 
 

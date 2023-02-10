@@ -66,9 +66,6 @@ import com.beanloaf.tMainEventHandlers.FileActionButtonPressed;
 import com.beanloaf.tMainEventHandlers.KeyChange;
 import com.beanloaf.tMainEventHandlers.ListItemPressed;
 import com.beanloaf.tMainEventHandlers.ListTabPressed;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.ValueEventListener;
 
 /**
  * 
@@ -246,7 +243,8 @@ public class ThoughtsMain {
                 db.update(selectedFile.getTitle(),
                         selectedFile.getTag(),
                         selectedFile.getDate(),
-                        selectedFile.getBody());
+                        selectedFile.getBody(),
+                        selectedFile.getPath().getName());
             }
         });
 
@@ -255,21 +253,10 @@ public class ThoughtsMain {
         testButton1.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                db.getDatabase().child("x").addListenerForSingleValueEvent(new ValueEventListener() {
-
-                    @Override
-                    public void onDataChange(DataSnapshot snapshot) {
-                        System.out.println(snapshot.getValue());
-
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError error) {
-                        // TODO Auto-generated method stub
-
-                    }
-
-                });
+                ArrayList<ThoughtObject> l = db.getAllSorted();
+                for (ThoughtObject obj : l) {
+                    System.out.println(obj);
+                }
             }
         });
 

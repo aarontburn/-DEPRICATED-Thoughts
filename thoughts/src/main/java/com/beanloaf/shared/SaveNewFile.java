@@ -9,14 +9,34 @@ import com.beanloaf.objects.ThoughtObject;
 
 public class SaveNewFile {
 
-    private final String title;
-    private final String tag;
-    private final String body;
+    private String title;
+    private String date;
+    private String tag;
+    private String body;
+    private String fileName;
 
     public SaveNewFile(String title, String tag, String body) {
         this.title = title;
         this.tag = tag;
         this.body = body;
+        this.date = "";
+        this.fileName = "";
+    }
+
+    public SaveNewFile(String title, String tag, String body, String date) {
+        this.title = title;
+        this.tag = tag;
+        this.body = body;
+        this.date = date;
+        this.fileName = "";
+    }
+
+    public SaveNewFile(String title, String tag, String body, String date, String file) {
+        this.title = title;
+        this.tag = tag;
+        this.body = body;
+        this.date = date;
+        this.fileName = file;
     }
 
     public SaveNewFile() {
@@ -27,9 +47,14 @@ public class SaveNewFile {
         if (title.equalsIgnoreCase(TC.DEFAULT_TITLE) && body.equalsIgnoreCase(TC.DEFAULT_BODY)) {
             return null;
         }
+
         final String[] dateTime = getCurrentDateTime().split("!");
-        final String fileDT = dateTime[0];
-        final String contentDT = dateTime[1];
+        String fileDT = dateTime[0];
+
+        if (this.date.isEmpty()) {
+            this.date = dateTime[1];
+        }
+
         final String unsortedFileName = TC.UNSORTED_DIRECTORY_PATH + "/" + fileDT + ".json";
         final String sortedFileName = TC.SORTED_DIRECTORY_PATH + "/" + fileDT + ".json";
         final File newFile = new File(unsortedFileName);
@@ -37,18 +62,43 @@ public class SaveNewFile {
         try {
             if (!newFile.isFile() && !new File(sortedFileName).isFile()) {
                 newFile.createNewFile();
-                ThoughtObject tObj = new ThoughtObject(title, contentDT, tag, body, newFile);
+                ThoughtObject tObj = new ThoughtObject(this.title, this.date, this.tag, this.body, newFile);
                 tObj.saveFile();
                 return tObj;
-            } else {
-
             }
+
         } catch (Exception er) {
             er.printStackTrace();
         }
         return null;
     }
-    
+
+    public ThoughtObject fbSave() {
+        if (this.fileName.isEmpty()) {
+            return null;
+        }
+
+        final String unsortedFileName = TC.UNSORTED_DIRECTORY_PATH + "/" + fileName;
+        final String sortedFileName = TC.SORTED_DIRECTORY_PATH + "/" + fileName;
+        final File newFile = new File(sortedFileName);
+
+
+        try {
+            if (!newFile.isFile() && !new File(unsortedFileName).isFile()) {
+                newFile.createNewFile();
+                ThoughtObject tObj = new ThoughtObject(this.title, this.date, this.tag, this.body, newFile);
+                tObj.saveFile();
+                return tObj;
+            } else {
+                System.out.println("file exists");
+            }
+
+        } catch (Exception er) {
+            er.printStackTrace();
+        }
+        return null;
+    }
+
     private String getCurrentDateTime() {
         Date d = new Date();
         SimpleDateFormat fileFormat = new SimpleDateFormat("MM-dd-yyyy HH-mm-ss");

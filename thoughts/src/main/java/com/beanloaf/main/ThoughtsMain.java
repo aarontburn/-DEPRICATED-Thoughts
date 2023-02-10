@@ -105,7 +105,6 @@ public class ThoughtsMain {
     public ArrayList<String> tagList = new ArrayList<>();
 
     public boolean ready = false;
-    public boolean isOnline = true;
 
     public SettingsHandler settings = new SettingsHandler();
     public JLabel pushLabel, pullLabel;
@@ -154,9 +153,7 @@ public class ThoughtsMain {
             TC.SORTED_DIRECTORY_PATH.mkdir();
         }
 
-        if (this.isOnline) {
-            db = new FirebaseHandler(this);
-        }
+        db = new FirebaseHandler(this);
 
         refreshThoughtList();
 

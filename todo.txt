@@ -26,13 +26,13 @@ To do:
 
 
 Settings to modify
-    - Light/Dark Mode
-    - Save file automatically on text change
-    - Checkboxes for clearing title/tag/body on save new file
+    - Light/Dark Mode (boolean)
+    - Option to push data on close (boolean)
+    - Option to pull data on open (boolean)
+
     - KeyBinds
     - change date/time format
-    - Option to push data on close
-    - Option to pull data on open
+
 
 
 Current Keybinds:
@@ -41,10 +41,6 @@ Current Keybinds:
     - CTRL + N = New File
     - CTRL + D = Delete current file
     - CTRL + Q = Sort file
-
-Database file format:
-
-
-
-
+    - CTRL + P = Push to database
+    - CTRL + SHIFT + P = Pull from database
 

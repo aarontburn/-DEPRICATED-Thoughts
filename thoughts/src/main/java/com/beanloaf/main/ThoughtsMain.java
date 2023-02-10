@@ -518,8 +518,7 @@ public class ThoughtsMain {
         settingsButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("here");
-
+                new SettingsWindow();
             }
         });
         settingsConstraints.gridx = 4;
@@ -953,6 +952,15 @@ public class ThoughtsMain {
                         sortButton.doClick();
                     }
                     break;
+                case KeyEvent.VK_P: // Push/Pull
+                    if (c) {
+                        if (e.isShiftDown()) { // Pull
+                            pullButton.doClick();
+                        } else { // Push
+                            pushButton.doClick();
+                        }
+                    }
+
             }
 
             return false;

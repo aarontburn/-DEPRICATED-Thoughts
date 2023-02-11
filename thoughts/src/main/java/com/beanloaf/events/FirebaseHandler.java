@@ -211,6 +211,21 @@ public class FirebaseHandler implements ValueEventListener {
         }
 
         /* Pull */
+        /*-
+         * This way will compares file contents rather than number, but will probably
+         * cause performance issues as more files are added.
+         * 
+         *  int newPullFiles = 0;
+         *  for (ThoughtObject obj : this.objectList) {
+         *      for (ThoughtObject mainObj : this.main.sortedThoughtList) {
+         *          if (!mainObj.equals(obj)) {
+         *              newPullFiles++;
+         *          }
+         *      }
+         *  }
+         * 
+         */
+
         int diffPull = this.objectList.size() - this.main.sortedThoughtList.size();
         if (diffPull < 0) {
             diffPull = 0;

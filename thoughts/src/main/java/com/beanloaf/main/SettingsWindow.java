@@ -14,19 +14,19 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
-import com.beanloaf.events.SettingsHandler;
 import com.beanloaf.res.TC;
 import com.beanloaf.res.theme.ThoughtsTheme;
 
 public class SettingsWindow {
 
+    private ThoughtsMain main;
+
     private JFrame window;
     private JPanel container;
     private JTabbedPane tabs;
 
-    private SettingsHandler settings = new SettingsHandler();
-
-    public SettingsWindow() {
+    public SettingsWindow(ThoughtsMain main) {
+        this.main = main;
         createGUI();
         this.window.setVisible(true);
     }
@@ -106,10 +106,10 @@ public class SettingsWindow {
 
         switch (actionName) {
             case "push":
-                checkBox.setSelected(settings.isPushOnClose());
+                checkBox.setSelected(this.main.settings.isPushOnClose());
                 break;
             case "pull":
-                checkBox.setSelected(settings.isPullOnStartup());
+                checkBox.setSelected(this.main.settings.isPullOnStartup());
                 break;
             case "lightMode":
 
@@ -123,10 +123,10 @@ public class SettingsWindow {
             public void itemStateChanged(ItemEvent e) {
                 switch (actionName) {
                     case "push":
-                        settings.changePushOnClose(checkBox.isSelected());
+                        main.settings.changePushOnClose(checkBox.isSelected());
                         break;
                     case "pull":
-                        settings.changePullOnStartup(checkBox.isSelected());
+                        main.settings.changePullOnStartup(checkBox.isSelected());
                         break;
                     case "lightMode":
 

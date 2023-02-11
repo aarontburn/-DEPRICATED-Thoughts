@@ -27,14 +27,7 @@ public class SettingsHandler {
     private boolean pullOnStartup;
 
     public SettingsHandler() {
-        try {
-            readFileContents();
-        } catch (Exception e) {
-            System.err.println("Error in settings.json. Regenerating file...");
-            if (TC.SETTINGS_DIRECTORY.delete()) {
-                System.err.println("Successfully deleted settings.json.");
-            }
-        }
+        readFileContents();
         check();
     }
 
@@ -42,7 +35,7 @@ public class SettingsHandler {
         if (TC.SETTINGS_DIRECTORY.isFile()) {
             return;
         } else {
-            System.err.println("Creating new settings.json");
+            System.err.println("Creating new settings.json...");
             // Default values
             this.isDarkMode = true;
             this.isMaximized = true;
@@ -67,8 +60,8 @@ public class SettingsHandler {
 
             textContent.put("isDarkMode", this.isDarkMode);
             textContent.put("isMaximized", this.isMaximized);
-            textContent.put("windowWidth", this.windowHeight);
-            textContent.put("windowHeight", this.windowWidth);
+            textContent.put("windowWidth", this.windowWidth);
+            textContent.put("windowHeight", this.windowHeight);
             textContent.put("windowX", this.windowX);
             textContent.put("windowY", this.windowY);
             textContent.put("lockTitle", this.lockTitle);
@@ -92,8 +85,8 @@ public class SettingsHandler {
 
             this.isDarkMode = (boolean) json.get("isDarkMode");
             this.isMaximized = (boolean) json.get("isMaximized");
-            this.windowHeight = (double) json.get("windowWidth");
-            this.windowWidth = (double) json.get("windowHeight");
+            this.windowHeight = (double) json.get("windowHeight");
+            this.windowWidth = (double) json.get("windowWidth");
             this.windowX = (double) json.get("windowX");
             this.windowY = (double) json.get("windowY");
             this.lockTitle = (boolean) json.get("lockTitle");
@@ -103,12 +96,16 @@ public class SettingsHandler {
             this.pullOnStartup = (boolean) json.get("pullOnStartup");
 
         } catch (Exception e) {
-            e.printStackTrace();
+            System.err.println("Error in settings.json. Regenerating file...");
+            if (TC.SETTINGS_DIRECTORY.delete()) {
+                System.err.println("Successfully deleted settings.json.");
+            }
         }
     }
 
     public void changePushOnClose(boolean b) {
         this.pushOnClose = b;
+        System.out.println("pushonclose set to: " + this.pushOnClose);
         createSettingsFile();
     }
 

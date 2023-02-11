@@ -14,11 +14,11 @@ import java.awt.KeyboardFocusManager;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.AWTEventListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
@@ -49,8 +49,6 @@ import javax.swing.border.Border;
 import javax.swing.plaf.basic.BasicScrollBarUI;
 import javax.swing.plaf.basic.BasicSplitPaneDivider;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 import javax.swing.undo.UndoManager;
 
 import org.json.simple.JSONObject;
@@ -74,6 +72,8 @@ import com.beanloaf.res.theme.ThoughtsTheme;
  * @author beanloaf
  */
 public class ThoughtsMain {
+
+    private ThoughtsMain main = this;
 
     public ThoughtObject selectedFile;
     public JFrame window;
@@ -179,6 +179,7 @@ public class ThoughtsMain {
             @Override
             public void windowClosing(WindowEvent e) {
                 settings.check();
+
                 if (settings.isPushOnClose()) {
                     pushButton.doClick();
                 }
@@ -217,6 +218,7 @@ public class ThoughtsMain {
                  * 504 is mouse entered
                  * 505 is mouse exit
                  */
+
                 String eventName = event.getSource().getClass().getSimpleName();
                 // System.out.println(eventName);
                 if (event.getID() == 501
@@ -491,6 +493,7 @@ public class ThoughtsMain {
         });
 
         pushLabel = new JLabel("");
+        pushLabel.setOpaque(false);
         pushLabel.setFont(TC.h5);
         settingsConstraints.gridx = 1;
         settingsConstraints.weightx = 0.1;
@@ -502,9 +505,9 @@ public class ThoughtsMain {
         settingsConstraints.gridx = 2;
         settingsConstraints.weightx = 0.001;
         settingsBar.add(pullButton, settingsConstraints);
-        pullButton.addMouseListener(new MouseAdapter() {
+        pullButton.addActionListener(new ActionListener() {
             @Override
-            public void mouseClicked(MouseEvent e) {
+            public void actionPerformed(ActionEvent e) {
                 if (db != null) {
                     db.pull();
                 }
@@ -512,6 +515,7 @@ public class ThoughtsMain {
         });
 
         pullLabel = new JLabel("");
+        pullLabel.setOpaque(false);
         pullLabel.setFont(TC.h5);
         settingsConstraints.gridx = 3;
         settingsConstraints.weightx = 0.3;
@@ -525,7 +529,7 @@ public class ThoughtsMain {
         settingsButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new SettingsWindow();
+                new SettingsWindow(main);
             }
         });
         settingsConstraints.gridx = 4;
@@ -539,7 +543,7 @@ public class ThoughtsMain {
 
         topc.fill = GridBagConstraints.NONE;
         topc.gridy = 1;
-        topc.insets = new Insets(-30, 10, -50, 0);
+        topc.insets = new Insets(-20, 10, -40, 0);
 
         JPanel topLabel = new JPanel(new GridBagLayout());
         // topLabel.setBorder(BorderFactory.createLineBorder(Color.blue));
@@ -600,7 +604,6 @@ public class ThoughtsMain {
         JPanel tagPanel = new JPanel(new GridBagLayout());
         tagPanelConstraints.gridx = 0;
         tagPanelConstraints.weightx = 0.1;
-
         tagPanel.add(createCheckBox("lockTag"), tagPanelConstraints);
 
         tagLabel = new JTextArea(TC.DEFAULT_TAG);

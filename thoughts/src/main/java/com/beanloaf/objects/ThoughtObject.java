@@ -114,9 +114,7 @@ public class ThoughtObject {
         if (otherObject.getClass() != this.getClass() || otherObject == null) {
             return false;
         }
-
         ThoughtObject other = (ThoughtObject) otherObject;
-
         if (this.getTitle().equals(other.getTitle())
                 && this.getDate().equals(other.getDate())
                 && this.getBody().equals(other.getBody())

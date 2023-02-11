@@ -78,15 +78,15 @@ public class FileActionButtonPressed implements ActionListener {
                 String title, tag, body;
                 title = tag = body = "";
 
-                if (!main.settings.isTitleLocked()) {
+                if (main.settings.isTitleLocked()) {
                     title = main.titleLabel.getText();
                 }
 
-                if (!main.settings.isTagLocked()) {
+                if (main.settings.isTagLocked()) {
                     tag = main.tagLabel.getText();
                 }
 
-                if (!main.settings.isBodyLocked()) {
+                if (main.settings.isBodyLocked()) {
                     body = main.bodyLabel.getText();
                 }
 

@@ -103,6 +103,21 @@ public class SettingsWindow {
         c.weightx = 0.9;
         c.anchor = GridBagConstraints.LINE_END;
         c.insets = new Insets(0, 0, 0, 30);
+
+        switch (actionName) {
+            case "push":
+                checkBox.setSelected(settings.isPushOnClose());
+                break;
+            case "pull":
+                checkBox.setSelected(settings.isPullOnStartup());
+                break;
+            case "lightMode":
+
+                break;
+            default:
+                throw new IllegalArgumentException();
+        }
+
         checkBox.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
@@ -113,11 +128,9 @@ public class SettingsWindow {
                     case "pull":
                         settings.changePullOnStartup(checkBox.isSelected());
                         break;
-
                     case "lightMode":
 
                         break;
-
                     default:
                         throw new IllegalArgumentException();
                 }

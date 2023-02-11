@@ -32,6 +32,7 @@ public class FirebaseHandler implements ValueEventListener {
     public boolean isOnline;
 
     private ArrayList<ThoughtObject> objectList = null;
+    private boolean isStartup = false;
 
     public FirebaseHandler(ThoughtsMain main) {
         this.main = main;
@@ -51,6 +52,7 @@ public class FirebaseHandler implements ValueEventListener {
             firebaseDatabase = FirebaseDatabase.getInstance(DATABASE_URL);
             ref = firebaseDatabase.getReference("<USERNAME>");
             ref.addValueEventListener(this);
+
             System.out.println("Successfully synced with firebase.");
 
         } catch (Exception e) {
@@ -191,6 +193,11 @@ public class FirebaseHandler implements ValueEventListener {
 
             this.objectList.add(new ThoughtObject(title, date, tag, body, new File(filePath)));
         }
+        if (!isStartup && this.main.settings.isPullOnStartup()) {
+            isStartup = true;
+            pull();
+        }
+
         refreshPushPullLabels();
     }
 

@@ -179,10 +179,14 @@ public class ThoughtsMain {
             @Override
             public void windowClosing(WindowEvent e) {
                 settings.check();
+                if (settings.isPushOnClose()) {
+                    pushButton.doClick();
+                }
                 settings.changeWindowDimension(window.getSize());
                 settings.changeIsMaximized(
                         window.getExtendedState() == JFrame.MAXIMIZED_BOTH);
                 settings.changeWindowPosition(window.getLocation());
+
             }
         });
 
@@ -474,11 +478,14 @@ public class ThoughtsMain {
         pushButton.setFont(TC.h4);
         settingsConstraints.gridx = 0;
         settingsBar.add(pushButton, settingsConstraints);
-        pushButton.addMouseListener(new MouseAdapter() {
+        pushButton.addActionListener(new ActionListener() {
             @Override
-            public void mouseClicked(MouseEvent e) {
+            public void actionPerformed(ActionEvent e) {
                 if (db != null) {
                     db.push();
+                } else {
+                    System.out.println("not pushing");
+
                 }
             }
         });
@@ -705,8 +712,8 @@ public class ThoughtsMain {
 
     private JCheckBox createCheckBox(String actionName) {
         JCheckBox checkBox = new JCheckBox();
-        checkBox.setIcon(new ImageIcon(TC.ICON_DIRECTORY + "closed_lock.png"));
-        checkBox.setSelectedIcon(new ImageIcon(TC.ICON_DIRECTORY + "open_lock_1.png"));
+        checkBox.setIcon(new ImageIcon(TC.ICON_DIRECTORY + "open_lock_1.png"));
+        checkBox.setSelectedIcon(new ImageIcon(TC.ICON_DIRECTORY + "closed_lock.png"));
         checkBox.setName(actionName);
         checkBox.setOpaque(false);
         checkBox.setRolloverEnabled(false);

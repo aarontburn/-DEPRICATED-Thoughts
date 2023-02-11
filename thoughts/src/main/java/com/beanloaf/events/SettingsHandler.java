@@ -86,6 +86,27 @@ public class SettingsHandler {
         }
     }
 
+    private void readFileContents() {
+        try (FileReader reader = new FileReader(TC.SETTINGS_DIRECTORY)) {
+            JSONObject json = (JSONObject) new JSONParser().parse(reader);
+
+            this.isDarkMode = (boolean) json.get("isDarkMode");
+            this.isMaximized = (boolean) json.get("isMaximized");
+            this.windowHeight = (double) json.get("windowWidth");
+            this.windowWidth = (double) json.get("windowHeight");
+            this.windowX = (double) json.get("windowX");
+            this.windowY = (double) json.get("windowY");
+            this.lockTitle = (boolean) json.get("lockTitle");
+            this.lockTag = (boolean) json.get("lockTag");
+            this.lockBody = (boolean) json.get("lockBody");
+            this.pushOnClose = (boolean) json.get("pushOnClose");
+            this.pullOnStartup = (boolean) json.get("pullOnStartup");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public void changePushOnClose(boolean b) {
         this.pushOnClose = b;
         createSettingsFile();
@@ -175,25 +196,6 @@ public class SettingsHandler {
 
     public boolean getIsMaximized() {
         return this.isMaximized;
-    }
-
-    private void readFileContents() {
-        try (FileReader reader = new FileReader(TC.SETTINGS_DIRECTORY)) {
-            JSONObject json = (JSONObject) new JSONParser().parse(reader);
-
-            this.isDarkMode = (boolean) json.get("isDarkMode");
-            this.isMaximized = (boolean) json.get("isMaximized");
-            this.windowHeight = (double) json.get("windowWidth");
-            this.windowWidth = (double) json.get("windowHeight");
-            this.windowX = (double) json.get("windowX");
-            this.windowY = (double) json.get("windowY");
-            this.lockTitle = (boolean) json.get("lockTitle");
-            this.lockTag = (boolean) json.get("lockTag");
-            this.lockBody = (boolean) json.get("lockBody");
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
 }

@@ -23,6 +23,8 @@ public class SettingsHandler {
     private final boolean defaultLockTitle = false;
     private final boolean defaultLockTag = false;
     private final boolean defaultLockBody = false;
+    private final boolean defaultPushOnClose = false;
+    private final boolean defaultPullOnStartup = false;
 
     // Setting fields
     private boolean isDarkMode;
@@ -34,6 +36,8 @@ public class SettingsHandler {
     private boolean lockTitle;
     private boolean lockTag;
     private boolean lockBody;
+    private boolean pushOnClose;
+    private boolean pullOnStartup;
 
     public SettingsHandler() {
         try {
@@ -61,6 +65,8 @@ public class SettingsHandler {
             this.lockTitle = this.defaultLockTitle;
             this.lockTag = this.defaultLockTag;
             this.lockBody = this.defaultLockBody;
+            this.pushOnClose = this.defaultPushOnClose;
+            this.pullOnStartup = this.defaultPullOnStartup;
             createSettingsFile();
         }
     }
@@ -80,6 +86,8 @@ public class SettingsHandler {
             textContent.put("lockTitle", this.lockTitle);
             textContent.put("lockTag", this.lockTag);
             textContent.put("lockBody", this.lockBody);
+            textContent.put("pushOnClose", this.pushOnClose);
+            textContent.put("pullOnStartup", this.pullOnStartup);
 
             JSONObject objJson = new JSONObject(textContent);
             fWriter.write(objJson.toJSONString());
@@ -88,6 +96,14 @@ public class SettingsHandler {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void changePushOnClose(boolean b) {
+        this.pushOnClose = b;
+    }
+
+    public void changePullOnStartup(boolean b) {
+        this.pullOnStartup = b;
     }
 
     public void changeWindowPosition(Point point) {
@@ -125,6 +141,14 @@ public class SettingsHandler {
     public void changeLockBody(boolean b) {
         this.lockBody = b;
         createSettingsFile();
+    }
+
+    public boolean isPushOnClose() {
+        return this.pushOnClose;
+    }
+
+    public boolean isPullOnStartup() {
+        return this.pullOnStartup;
     }
 
     public boolean isTitleLocked() {

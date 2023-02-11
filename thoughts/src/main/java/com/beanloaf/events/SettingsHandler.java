@@ -13,19 +13,6 @@ import org.json.simple.parser.JSONParser;
 import com.beanloaf.res.TC;
 
 public class SettingsHandler {
-    // Default values
-    private final boolean defaultIsDarkMode = true;
-    private final boolean defaultIsMaximized = true;
-    private final double defaultWindowWidth = 1650;
-    private final double defaultWindowHeight = 1080;
-    private final double defaultWindowX = 0;
-    private final double defaultWindowY = 0;
-    private final boolean defaultLockTitle = false;
-    private final boolean defaultLockTag = false;
-    private final boolean defaultLockBody = false;
-    private final boolean defaultPushOnClose = false;
-    private final boolean defaultPullOnStartup = false;
-
     // Setting fields
     private boolean isDarkMode;
     private boolean isMaximized;
@@ -56,17 +43,18 @@ public class SettingsHandler {
             return;
         } else {
             System.err.println("Creating new settings.json");
-            this.isDarkMode = this.defaultIsDarkMode;
-            this.isMaximized = this.defaultIsMaximized;
-            this.windowWidth = this.defaultWindowWidth;
-            this.windowHeight = this.defaultWindowHeight;
-            this.windowX = this.defaultWindowX;
-            this.windowY = this.defaultWindowY;
-            this.lockTitle = this.defaultLockTitle;
-            this.lockTag = this.defaultLockTag;
-            this.lockBody = this.defaultLockBody;
-            this.pushOnClose = this.defaultPushOnClose;
-            this.pullOnStartup = this.defaultPullOnStartup;
+            // Default values
+            this.isDarkMode = true;
+            this.isMaximized = true;
+            this.windowWidth = 1650;
+            this.windowHeight = 1080;
+            this.windowX = 0;
+            this.windowY = 0;
+            this.lockTitle = false;
+            this.lockTag = false;
+            this.lockBody = false;
+            this.pushOnClose = false;
+            this.pullOnStartup = false;
             createSettingsFile();
         }
     }
@@ -100,10 +88,12 @@ public class SettingsHandler {
 
     public void changePushOnClose(boolean b) {
         this.pushOnClose = b;
+        createSettingsFile();
     }
 
     public void changePullOnStartup(boolean b) {
         this.pullOnStartup = b;
+        createSettingsFile();
     }
 
     public void changeWindowPosition(Point point) {

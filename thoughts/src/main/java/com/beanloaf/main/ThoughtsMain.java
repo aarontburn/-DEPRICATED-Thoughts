@@ -715,7 +715,7 @@ public class ThoughtsMain {
 
     private JCheckBox createCheckBox(String actionName) {
         JCheckBox checkBox = new JCheckBox();
-        checkBox.setIcon(new ImageIcon(TC.ICON_DIRECTORY + "open_lock_1.png"));
+        checkBox.setIcon(new ImageIcon(TC.ICON_DIRECTORY + "open_lock.png"));
         checkBox.setSelectedIcon(new ImageIcon(TC.ICON_DIRECTORY + "closed_lock.png"));
         checkBox.setName(actionName);
         checkBox.setOpaque(false);

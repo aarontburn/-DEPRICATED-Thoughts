@@ -232,7 +232,7 @@ public class ThoughtsMain {
             }
         }, AWTEvent.MOUSE_EVENT_MASK);
 
-        // createTopPanel();
+        createTopPanel();
         createCenterPanel();
         createLeftPanel();
         createRightPanel();
@@ -251,6 +251,18 @@ public class ThoughtsMain {
 
         JPanel topPanel = new JPanel(new GridBagLayout());
         topPanel.setBorder(BorderFactory.createLineBorder(Color.black));
+
+        JButton testButton = new JButton("test");
+        testButton.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // TODO Auto-generated method stub
+
+            }
+
+        });
+        topPanel.add(testButton);
 
         this.container.add(topPanel, c);
     }

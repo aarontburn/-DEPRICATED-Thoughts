@@ -140,11 +140,16 @@ public class FirebaseHandler implements ValueEventListener {
             return false;
         }
         try {
-            for (ThoughtObject tObj : this.objectList) {
-                new SaveNewFile(tObj).fbSave();
+            if (this.objectList != null) {
+                for (ThoughtObject tObj : this.objectList) {
+                    new SaveNewFile(tObj).fbSave();
+                }
+                this.main.refreshThoughtList();
+                return true;
+            } else {
+                return false;
             }
-            this.main.refreshThoughtList();
-            return true;
+
         } catch (Exception e) {
             e.printStackTrace();
             return false;

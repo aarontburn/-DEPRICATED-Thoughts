@@ -232,7 +232,7 @@ public class ThoughtsMain {
             }
         }, AWTEvent.MOUSE_EVENT_MASK);
 
-        createTopPanel();
+        // createTopPanel();
         createCenterPanel();
         createLeftPanel();
         createRightPanel();
@@ -660,6 +660,7 @@ public class ThoughtsMain {
         rightPanel.add(createCheckBox("lockBody"), botc);
 
         bodyLabel = new JTextArea(TC.DEFAULT_BODY);
+        bodyLabel.setTabSize(2);
         bodyLabel.setBackground(new Color(32, 32, 32));
         bodyLabel.setFont(TC.p);
         bodyLabel.setLineWrap(true);

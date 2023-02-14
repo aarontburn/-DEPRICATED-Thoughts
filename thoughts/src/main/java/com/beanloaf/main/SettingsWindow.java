@@ -42,6 +42,7 @@ public class SettingsWindow {
         this.window.setLocationRelativeTo(null);
 
         this.container = new JPanel(new GridBagLayout());
+        this.container.setBackground(new Color(32, 32, 32));
         this.window.add(this.container);
 
         GridBagConstraints c = new GridBagConstraints();
@@ -66,6 +67,7 @@ public class SettingsWindow {
         panelConstraints.fill = GridBagConstraints.HORIZONTAL;
 
         JLabel generalSettingsLabel = new JLabel("General Settings");
+        generalSettingsLabel.setBackground(new Color(32, 32, 32));
         generalSettingsLabel.setHorizontalAlignment(JLabel.CENTER);
         generalSettingsLabel.setFont(TC.h3);
         panelConstraints.gridy = 0;

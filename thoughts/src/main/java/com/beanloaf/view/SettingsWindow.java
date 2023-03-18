@@ -19,13 +19,13 @@ import com.beanloaf.res.theme.ThoughtsTheme;
 
 public class SettingsWindow {
 
-    private final ThoughtsMain main;
+    private final Thoughts main;
 
     private JFrame window;
     private JPanel container;
     private JTabbedPane tabs;
 
-    public SettingsWindow(ThoughtsMain main) {
+    public SettingsWindow(Thoughts main) {
         this.main = main;
         createGUI();
         this.window.setVisible(true);

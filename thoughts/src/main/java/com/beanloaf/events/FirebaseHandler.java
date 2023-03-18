@@ -9,7 +9,7 @@ import java.util.Map;
 
 import com.beanloaf.objects.ThoughtObject;
 import com.beanloaf.res.TC;
-import com.beanloaf.view.ThoughtsMain;
+import com.beanloaf.view.Thoughts;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
@@ -22,7 +22,7 @@ import com.google.firebase.database.ValueEventListener;
 
 public class FirebaseHandler implements ValueEventListener {
 
-    private final ThoughtsMain main;
+    private final Thoughts main;
 
     private FirebaseDatabase firebaseDatabase;
     private static final String DATABASE_URL = "https://thoughts-4144a-default-rtdb.firebaseio.com";
@@ -34,7 +34,7 @@ public class FirebaseHandler implements ValueEventListener {
     private ArrayList<ThoughtObject> objectList = null;
     private boolean isStartup = false;
 
-    public FirebaseHandler(ThoughtsMain main) {
+    public FirebaseHandler(Thoughts main) {
         this.main = main;
         try {
             // Checks to see if the pc is connected to the internet

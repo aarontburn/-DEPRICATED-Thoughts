@@ -7,13 +7,13 @@ import java.awt.KeyboardFocusManager;
 import javax.swing.JComponent;
 import javax.swing.JTextArea;
 
-import com.beanloaf.view.ThoughtsMain;
+import com.beanloaf.view.Thoughts;
 
 public class TabKeyPressed extends KeyAdapter {
     JTextArea textArea;
-    ThoughtsMain main;
+    Thoughts main;
 
-    public TabKeyPressed(ThoughtsMain main, JTextArea textArea) {
+    public TabKeyPressed(Thoughts main, JTextArea textArea) {
         this.textArea = textArea;
         this.main = main;
     }

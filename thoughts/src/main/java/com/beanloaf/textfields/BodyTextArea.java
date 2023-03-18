@@ -1,7 +1,7 @@
 package com.beanloaf.textfields;
 
 import com.beanloaf.res.TC;
-import com.beanloaf.view.ThoughtsMain;
+import com.beanloaf.view.Thoughts;
 
 import javax.swing.undo.UndoManager;
 import java.awt.*;
@@ -10,7 +10,7 @@ public class BodyTextArea extends TextArea {
 
     private final GhostText ghostText;
 
-    public BodyTextArea(final ThoughtsMain main, final UndoManager undoManager) {
+    public BodyTextArea(final Thoughts main, final UndoManager undoManager) {
         super(TC.DEFAULT_BODY, main, undoManager);
         this.setTabSize(2);
         this.setBackground(new Color(32, 32, 32));
@@ -36,7 +36,7 @@ public class BodyTextArea extends TextArea {
         if (this.main.ready) {
             ghostText.setDisplay(this.getText().isBlank());
             if (this.main.selectedFile != null) {
-                this.main.selectedFile.editTitle(this.getText());
+                this.main.selectedFile.editBody(this.getText());
             }
         }
     }

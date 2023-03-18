@@ -9,18 +9,18 @@ import javax.swing.JButton;
 
 import com.beanloaf.events.SaveNewFile;
 import com.beanloaf.objects.ThoughtObject;
-import com.beanloaf.view.ThoughtsMain;
+import com.beanloaf.view.Thoughts;
 
 public class FileActionButtonPressed implements ActionListener {
-    private final ThoughtsMain main;
+    private final Thoughts main;
 
-    public FileActionButtonPressed(ThoughtsMain main) {
+    public FileActionButtonPressed(Thoughts main) {
         this.main = main;
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {
-        JButton component = (JButton) e.getSource();
+    public void actionPerformed(final ActionEvent event) {
+        JButton component = (JButton) event.getSource();
         String action = component.getName();
         ListItemPressed l = new ListItemPressed(this.main);
 
@@ -83,7 +83,7 @@ public class FileActionButtonPressed implements ActionListener {
                 }
                 ThoughtObject tObj = new SaveNewFile(title, tag, body).save();
                 l.setContentFields(tObj);
-                this.main.leftTabs.setSelectedIndex(0);
+                this.main.leftPanel.leftTabs.setSelectedIndex(0);
                 this.main.selectTextField(this.main.rightPanel.titleLabel);
             }
             default ->

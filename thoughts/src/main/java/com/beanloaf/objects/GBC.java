@@ -77,6 +77,22 @@ public class GBC extends GridBagConstraints {
         return this;
     }
 
+    public GBC setGridWidth(final int width) {
+        this.gridwidth = width;
+        return this;
+    }
+
+    public GBC setGridHeight(final int height) {
+        this.gridheight = height;
+        return this;
+    }
+
+    public GBC setGridSize(final int width, final int height) {
+        this.gridwidth = width;
+        this.gridheight = height;
+        return this;
+    }
+
 
 
 }

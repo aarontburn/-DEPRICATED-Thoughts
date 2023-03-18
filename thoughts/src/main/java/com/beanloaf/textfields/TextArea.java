@@ -2,7 +2,7 @@ package com.beanloaf.textfields;
 
 import com.beanloaf.events.TextAreaFocusListener;
 import com.beanloaf.objects.GBC;
-import com.beanloaf.view.ThoughtsMain;
+import com.beanloaf.view.Thoughts;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -15,10 +15,10 @@ public abstract class TextArea extends JTextArea implements DocumentListener {
     public static GBC GHOST_TEXT_CONSTRAINTS = new GBC(0, 0, 0.1, 0.1)
             .setAnchor(GridBagConstraints.NORTHWEST);
 
-    public final ThoughtsMain main;
+    public final Thoughts main;
     public final UndoManager undoManager;
 
-    public TextArea(final String text, final ThoughtsMain main, final UndoManager undoManager) {
+    public TextArea(final String text, final Thoughts main, final UndoManager undoManager) {
         super(text);
         this.main = main;
         this.undoManager = undoManager;

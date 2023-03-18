@@ -2,7 +2,7 @@ package com.beanloaf.textfields;
 
 import com.beanloaf.input.TabKeyPressed;
 import com.beanloaf.res.TC;
-import com.beanloaf.view.ThoughtsMain;
+import com.beanloaf.view.Thoughts;
 
 import javax.swing.event.DocumentEvent;
 import javax.swing.undo.UndoManager;
@@ -12,7 +12,7 @@ public class TitleTextArea extends TextArea {
 
     private final GhostText ghostText;
 
-    public TitleTextArea(final ThoughtsMain main, final UndoManager undoManager) {
+    public TitleTextArea(final Thoughts main, final UndoManager undoManager) {
         super(TC.DEFAULT_TITLE, main, undoManager);
         this.setColumns(6);
         this.setOpaque(false);
@@ -39,20 +39,5 @@ public class TitleTextArea extends TextArea {
                 this.main.selectedFile.editTitle(this.getText());
             }
         }
-    }
-
-    @Override
-    public void insertUpdate(DocumentEvent e) {
-        textChanged();
-    }
-
-    @Override
-    public void removeUpdate(DocumentEvent e) {
-        textChanged();
-    }
-
-    @Override
-    public void changedUpdate(DocumentEvent e) {
-        textChanged();
     }
 }

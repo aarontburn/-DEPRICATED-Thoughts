@@ -3,7 +3,7 @@ package com.beanloaf.textfields;
 import com.beanloaf.input.TabKeyPressed;
 import com.beanloaf.objects.GBC;
 import com.beanloaf.res.TC;
-import com.beanloaf.view.ThoughtsMain;
+import com.beanloaf.view.Thoughts;
 
 import javax.swing.event.DocumentEvent;
 import javax.swing.undo.UndoManager;
@@ -12,7 +12,7 @@ import java.awt.*;
 public class TagTextArea extends TextArea {
     private final GhostText ghostText;
 
-    public TagTextArea(final ThoughtsMain main, final UndoManager undoManager) {
+    public TagTextArea(final Thoughts main, final UndoManager undoManager) {
         super(TC.DEFAULT_TAG, main, undoManager);
         this.setLayout(new GridBagLayout());
         this.setColumns(9);
@@ -38,25 +38,9 @@ public class TagTextArea extends TextArea {
         if (this.main.ready) {
             ghostText.setDisplay(this.getText().isBlank());
             if (this.main.selectedFile != null) {
-                this.main.selectedFile.editTitle(this.getText());
+                this.main.selectedFile.editTag(this.getText());
             }
         }
     }
 
-
-
-    @Override
-    public void insertUpdate(DocumentEvent e) {
-        textChanged();
-    }
-
-    @Override
-    public void removeUpdate(DocumentEvent e) {
-        textChanged();
-    }
-
-    @Override
-    public void changedUpdate(DocumentEvent e) {
-        textChanged();
-    }
 }

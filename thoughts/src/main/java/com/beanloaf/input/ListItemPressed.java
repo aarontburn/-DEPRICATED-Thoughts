@@ -10,22 +10,22 @@ import com.beanloaf.objects.ListTab;
 import com.beanloaf.objects.TextPropertyObject;
 import com.beanloaf.objects.ThoughtObject;
 import com.beanloaf.res.TC;
-import com.beanloaf.view.ThoughtsMain;
+import com.beanloaf.view.Thoughts;
 
 public class ListItemPressed extends MouseAdapter {
-    private final ThoughtsMain main;
+    private final Thoughts main;
     private final ArrayList<ThoughtObject> arrayList;
     private final JList<?> list;
 
-    public ListItemPressed(ThoughtsMain main) {
+    public ListItemPressed(Thoughts main) {
         this.main = main;
         this.arrayList = null;
         this.list = null;
     }
 
-    public ListItemPressed(ThoughtsMain main,
-            ListTab list,
-            ArrayList<ThoughtObject> arrayList) {
+    public ListItemPressed(Thoughts main,
+                           ListTab list,
+                           ArrayList<ThoughtObject> arrayList) {
 
         this.main = main;
         this.arrayList = arrayList;
@@ -36,6 +36,8 @@ public class ListItemPressed extends MouseAdapter {
         int selectedIndex = this.list.getSelectedIndex();
         setContentFields(selectedIndex);
         this.main.rightPanel.undoManager.discardAllEdits();
+        this.main.thoughtsPCS.firePropertyChange(TC.Properties.LIST_ITEM_PRESSED);
+
     }
 
 
@@ -51,7 +53,7 @@ public class ListItemPressed extends MouseAdapter {
 
         if (index < 0) {
             this.main.selectedFile = null;
-            this.main.leftTabs.setSelectedIndex(0);
+            this.main.leftPanel.leftTabs.setSelectedIndex(0);
         }
 
         if (this.arrayList != null && this.arrayList.size() > index) {

@@ -38,6 +38,11 @@ public class TC {
 
         public static final String TEXT = "text";
 
+        public static final String LIST_ITEM_PRESSED = "list item pressed";
+        public static final String LIST_TAB_PRESSED = "list tab pressed";
+
+        public static final String SET_TAB_INDEX = "set tab index";
+
     }
 
     public class Paths {

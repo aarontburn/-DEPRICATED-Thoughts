@@ -17,7 +17,7 @@ import java.beans.PropertyChangeListener;
 
 public class RightPanel extends JPanel implements PropertyChangeListener {
 
-    private final ThoughtsMain main;
+    private final Thoughts main;
 
     public JLabel dateLabel, pushLabel, pullLabel;
     public TextArea titleLabel, tagLabel, bodyLabel;
@@ -25,7 +25,7 @@ public class RightPanel extends JPanel implements PropertyChangeListener {
     public JButton sortButton, deleteButton, newFileButton, pullButton, pushButton;
 
 
-    public RightPanel(final ThoughtsMain main) {
+    public RightPanel(final Thoughts main) {
         super();
         this.main = main;
         this.setLayout(new GridBagLayout());
@@ -44,7 +44,7 @@ public class RightPanel extends JPanel implements PropertyChangeListener {
         this.add(topPanel, new GBC(0, 1).setAnchor(GridBagConstraints.WEST)
                 .setInsets(-20, 10, -40, 0));
 
-        final GBC cc = new GBC().setAnchor(GridBagConstraints.LINE_START);
+        final GBC topPanelConstraints = new GBC().setAnchor(GridBagConstraints.LINE_START);
 
         final GBC titlePanelConstraints = new GBC().setAnchor(GridBagConstraints.LINE_START);
         final JPanel titlePanel = new JPanel(new GridBagLayout());
@@ -52,17 +52,19 @@ public class RightPanel extends JPanel implements PropertyChangeListener {
         titlePanel.add(createCheckBox("lockTitle"), titlePanelConstraints.setGridX(0).setWeightY(0.1));
         titleLabel = new TitleTextArea(main, undoManager);
         titlePanel.add(titleLabel, titlePanelConstraints.setGridX(1).setWeightY(0.9));
-        topPanel.add(titlePanel, cc.setGridY(0));
+        topPanel.add(titlePanel, topPanelConstraints.setGridY(0));
 
         final GBC tagPanelConstraints = new GBC().setAnchor(GridBagConstraints.LINE_START);
         final JPanel tagPanel = new JPanel(new GridBagLayout());
         tagPanel.add(createCheckBox("lockTag"), tagPanelConstraints);
         tagLabel = new TagTextArea(main, undoManager);
         tagPanel.add(tagLabel, tagPanelConstraints.setGridX(1).setWeightY(0.9));
+        topPanel.add(tagPanel, topPanelConstraints.setGridY(1));
+
 
         dateLabel = new JLabel("Created on: " + TC.DEFAULT_DATE);
         dateLabel.setFont(TC.Fonts.h4);
-        topPanel.add(dateLabel, cc.setGridY(2));
+        topPanel.add(dateLabel, topPanelConstraints.setGridY(2));
 
         /* Bottom */
         this.add(createCheckBox("lockBody"), new GBC(0, 2, 0.1, 0.001)
@@ -73,7 +75,7 @@ public class RightPanel extends JPanel implements PropertyChangeListener {
                 JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         bodyScroll.setBorder(null);
         bodyScroll.setPreferredSize(new Dimension(0, 0));
-        bodyScroll.getVerticalScrollBar().setUI(new ThoughtsMain.ScrollBar());
+        bodyScroll.getVerticalScrollBar().setUI(new Thoughts.ScrollBar());
         this.add(bodyScroll, new GBC(0, 3, 0.1, 0.9)
                 .setAnchor(GridBagConstraints.CENTER)
                 .setInsets(5, 5, 5, 5)
@@ -114,7 +116,7 @@ public class RightPanel extends JPanel implements PropertyChangeListener {
 
     private void createSettingsBar() {
         /* Settings */
-        JPanel settingsBar = new JPanel(new GridBagLayout());
+        final JPanel settingsBar = new JPanel(new GridBagLayout());
         this.add(settingsBar, new GBC().setWeightY(0.005)
                 .setAnchor(GridBagConstraints.WEST)
                 .setFill(GridBagConstraints.BOTH));
@@ -124,7 +126,7 @@ public class RightPanel extends JPanel implements PropertyChangeListener {
                 .setAnchor(GridBagConstraints.LINE_START)
                 .setInsets(10, 15, 0, 0);
 
-        Dimension buttonDim = new Dimension(90, 35);
+        final Dimension buttonDim = new Dimension(90, 35);
         pushButton = new JButton("Push");
         pushButton.setPreferredSize(buttonDim);
         pushButton.setFont(TC.Fonts.h4);
@@ -166,8 +168,8 @@ public class RightPanel extends JPanel implements PropertyChangeListener {
         settingsBar.add(settingsButton, settingConstraints.setGridX(4));
     }
 
-    private JCheckBox createCheckBox(String actionName) {
-        JCheckBox checkBox = new JCheckBox();
+    private JCheckBox createCheckBox(final String actionName) {
+        final JCheckBox checkBox = new JCheckBox();
         checkBox.setIcon(new ImageIcon(TC.Paths.ICON_DIRECTORY + "open_lock.png"));
         checkBox.setSelectedIcon(new ImageIcon(TC.Paths.ICON_DIRECTORY + "closed_lock.png"));
         checkBox.setName(actionName);
@@ -193,12 +195,27 @@ public class RightPanel extends JPanel implements PropertyChangeListener {
         return checkBox;
     }
 
+    public void checkEmpty() {
+        titleLabel.changedUpdate(null);
+        tagLabel.changedUpdate(null);
+        bodyLabel.changedUpdate(null);
+    }
+
     @Override
-    public void propertyChange(PropertyChangeEvent event) {
+    public void propertyChange(final PropertyChangeEvent event) {
+
         switch (event.getPropertyName()) {
             case TC.Properties.PUSH -> this.pushButton.doClick();
-            case TC.Properties.UNDO -> this.undoManager.undo();
-            case TC.Properties.REDO -> this.undoManager.redo();
+            case TC.Properties.UNDO -> {
+                try {
+                    this.undoManager.undo();
+                } catch (Exception e) {}
+            }
+            case TC.Properties.REDO -> {
+                try {
+                    this.undoManager.redo();
+                } catch (Exception e){}
+            }
             case TC.Properties.NEW_FILE -> this.newFileButton.doClick();
             case TC.Properties.DELETE -> this.deleteButton.doClick();
             case TC.Properties.SORT -> this.sortButton.doClick();
@@ -214,9 +231,10 @@ public class RightPanel extends JPanel implements PropertyChangeListener {
                 final TextPropertyObject textObject = (TextPropertyObject) event.getNewValue();
                 titleLabel.setText(textObject.title);
                 tagLabel.setText(textObject.tag);
-                dateLabel.setText("Created on :" + textObject.date);
+                dateLabel.setText("Created on: " + textObject.date);
                 bodyLabel.setText(textObject.body);
             }
+            case TC.Properties.LIST_ITEM_PRESSED, TC.Properties.LIST_TAB_PRESSED -> checkEmpty();
 
             default -> {
             }

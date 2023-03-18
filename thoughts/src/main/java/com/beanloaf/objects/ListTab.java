@@ -7,15 +7,15 @@ import javax.swing.JList;
 
 import com.beanloaf.input.ListItemPressed;
 import com.beanloaf.res.TC;
-import com.beanloaf.view.ThoughtsMain;
+import com.beanloaf.view.Thoughts;
 
 public class ListTab extends JList<String> {
 
     private final ListItemPressed l;
 
-    public ListTab(ThoughtsMain main,
-            ArrayList<ThoughtObject> thoughtList,
-            DefaultListModel<String> model) {
+    public ListTab(Thoughts main,
+                   ArrayList<ThoughtObject> thoughtList,
+                   DefaultListModel<String> model) {
         super(model);
 
         l = new ListItemPressed(main, this, thoughtList);

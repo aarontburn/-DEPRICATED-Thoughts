@@ -6,11 +6,11 @@ import java.awt.event.FocusListener;
 import javax.swing.JTextArea;
 
 import com.beanloaf.res.TC;
-import com.beanloaf.view.ThoughtsMain;
+import com.beanloaf.view.Thoughts;
 
 public class TextAreaFocusListener implements FocusListener {
-    ThoughtsMain main;
-    public TextAreaFocusListener(ThoughtsMain main) {
+    Thoughts main;
+    public TextAreaFocusListener(Thoughts main) {
         this.main = main;
     }
 

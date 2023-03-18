@@ -1,0 +1,58 @@
+package com.beanloaf.textfields;
+
+import com.beanloaf.input.TabKeyPressed;
+import com.beanloaf.res.TC;
+import com.beanloaf.view.ThoughtsMain;
+
+import javax.swing.event.DocumentEvent;
+import javax.swing.undo.UndoManager;
+import java.awt.*;
+
+public class TitleTextArea extends TextArea {
+
+    private final GhostText ghostText;
+
+    public TitleTextArea(final ThoughtsMain main, final UndoManager undoManager) {
+        super(TC.DEFAULT_TITLE, main, undoManager);
+        this.setColumns(6);
+        this.setOpaque(false);
+        this.setFont(TC.Fonts.h1);
+        this.setName("titleLabel");
+        this.setLayout(new GridBagLayout());
+
+        this.ghostText = new GhostText(TC.DEFAULT_TITLE, TC.Fonts.h1);
+        this.add(ghostText, GHOST_TEXT_CONSTRAINTS);
+        attachEventHandlers();
+    }
+
+    @Override
+    public void attachEventHandlers() {
+        this.getDocument().putProperty("filterNewlines", true);
+        this.addKeyListener(new TabKeyPressed(this.main, this));
+    }
+
+    @Override
+    public void textChanged() {
+        if (this.main.ready) {
+            ghostText.setDisplay(this.getText().isBlank());
+            if (this.main.selectedFile != null) {
+                this.main.selectedFile.editTitle(this.getText());
+            }
+        }
+    }
+
+    @Override
+    public void insertUpdate(DocumentEvent e) {
+        textChanged();
+    }
+
+    @Override
+    public void removeUpdate(DocumentEvent e) {
+        textChanged();
+    }
+
+    @Override
+    public void changedUpdate(DocumentEvent e) {
+        textChanged();
+    }
+}

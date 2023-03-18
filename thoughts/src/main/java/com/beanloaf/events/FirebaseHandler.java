@@ -7,9 +7,9 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Map;
 
-import com.beanloaf.main.ThoughtsMain;
 import com.beanloaf.objects.ThoughtObject;
 import com.beanloaf.res.TC;
+import com.beanloaf.view.ThoughtsMain;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
@@ -115,7 +115,7 @@ public class FirebaseHandler implements ValueEventListener {
             return false;
         }
         try {
-            File[] sortedFileDirectory = TC.SORTED_DIRECTORY_PATH.listFiles();
+            File[] sortedFileDirectory = TC.Paths.SORTED_DIRECTORY_PATH.listFiles();
             for (File file : sortedFileDirectory) {
                 ThoughtObject tObj = this.main.readFileContents(file);
                 if (tObj != null) {
@@ -208,10 +208,9 @@ public class FirebaseHandler implements ValueEventListener {
 
     public void refreshPushPullLabels() {
         if (!this.isOnline) {
-            this.main.pullLabel.setText("Not connected.");
-            this.main.pushLabel.setText("Not connected.");
-            this.main.pullButton.setEnabled(isOnline);
-            this.main.pushButton.setEnabled(isOnline);
+            this.main.thoughtsPCS.firePropertyChange(TC.Properties.DISCONNECTED);
+
+
             return;
         }
 
@@ -235,13 +234,14 @@ public class FirebaseHandler implements ValueEventListener {
         if (diffPull < 0) {
             diffPull = 0;
         }
-        this.main.pullLabel.setText(String.valueOf(diffPull) + " files can be pulled.");
+        this.main.thoughtsPCS.firePropertyChange(TC.Properties.UNPULLED_FILES, null, diffPull);
         /* Push */
         int diffPush = this.main.sortedThoughtList.size() - this.objectList.size();
         if (diffPush < 0) {
             diffPush = 0;
         }
-        this.main.pushLabel.setText(String.valueOf(diffPush) + " files not pushed.");
+        this.main.thoughtsPCS.firePropertyChange(TC.Properties.UNPUSHED_FILES, null, diffPush);
+
     }
 
     @Override

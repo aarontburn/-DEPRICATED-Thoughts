@@ -1,4 +1,4 @@
-package com.beanloaf.main;
+package com.beanloaf.view;
 
 import java.awt.Color;
 import java.awt.GridBagConstraints;
@@ -19,7 +19,7 @@ import com.beanloaf.res.theme.ThoughtsTheme;
 
 public class SettingsWindow {
 
-    private ThoughtsMain main;
+    private final ThoughtsMain main;
 
     private JFrame window;
     private JPanel container;
@@ -50,7 +50,7 @@ public class SettingsWindow {
         c.weightx = 0.1;
         c.weighty = 0.1;
         this.tabs = new JTabbedPane(JTabbedPane.LEFT);
-        this.tabs.setFont(TC.h4);
+        this.tabs.setFont(TC.Fonts.h4);
         this.container.add(this.tabs, c);
         generalSettings();
 
@@ -69,7 +69,7 @@ public class SettingsWindow {
         JLabel generalSettingsLabel = new JLabel("General Settings");
         generalSettingsLabel.setBackground(new Color(32, 32, 32));
         generalSettingsLabel.setHorizontalAlignment(JLabel.CENTER);
-        generalSettingsLabel.setFont(TC.h3);
+        generalSettingsLabel.setFont(TC.Fonts.h3);
         panelConstraints.gridy = 0;
         panelConstraints.weighty = 0.1;
         generalSettingsPanel.add(generalSettingsLabel, panelConstraints);
@@ -95,7 +95,7 @@ public class SettingsWindow {
         c.gridy = 0;
 
         JLabel textLabel = new JLabel(label);
-        textLabel.setFont(TC.h4);
+        textLabel.setFont(TC.Fonts.h4);
         c.weightx = 0.1;
         c.anchor = GridBagConstraints.LINE_START;
         c.insets = new Insets(0, 30, 0, 0);

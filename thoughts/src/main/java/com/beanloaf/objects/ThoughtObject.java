@@ -115,16 +115,11 @@ public class ThoughtObject {
             return false;
         }
         ThoughtObject other = (ThoughtObject) otherObject;
-        if (this.getTitle().equals(other.getTitle())
+        return this.getTitle().equals(other.getTitle())
                 && this.getDate().equals(other.getDate())
                 && this.getBody().equals(other.getBody())
                 && this.getTag().equals(other.getTag())
-                && this.getPath().equals(other.getPath())) {
-            return true;
-
-        }
-
-        return false;
+                && this.getPath().equals(other.getPath());
 
     }
 

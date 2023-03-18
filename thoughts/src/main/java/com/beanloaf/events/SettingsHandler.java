@@ -32,7 +32,7 @@ public class SettingsHandler {
     }
 
     public void check() {
-        if (TC.SETTINGS_DIRECTORY.isFile()) {
+        if (TC.Paths.SETTINGS_DIRECTORY.isFile()) {
             return;
         } else {
             System.err.println("Creating new settings.json...");
@@ -54,8 +54,8 @@ public class SettingsHandler {
 
     public void createSettingsFile() {
         try {
-            TC.SETTINGS_DIRECTORY.createNewFile();
-            FileWriter fWriter = new FileWriter(TC.SETTINGS_DIRECTORY);
+            TC.Paths.SETTINGS_DIRECTORY.createNewFile();
+            FileWriter fWriter = new FileWriter(TC.Paths.SETTINGS_DIRECTORY);
             HashMap<String, Object> textContent = new HashMap<String, Object>();
 
             textContent.put("isDarkMode", this.isDarkMode);
@@ -80,7 +80,7 @@ public class SettingsHandler {
     }
 
     private void readFileContents() {
-        try (FileReader reader = new FileReader(TC.SETTINGS_DIRECTORY)) {
+        try (FileReader reader = new FileReader(TC.Paths.SETTINGS_DIRECTORY)) {
             JSONObject json = (JSONObject) new JSONParser().parse(reader);
 
             this.isDarkMode = (boolean) json.get("isDarkMode");
@@ -97,7 +97,7 @@ public class SettingsHandler {
 
         } catch (Exception e) {
             System.err.println("Error in settings.json. Regenerating file...");
-            if (TC.SETTINGS_DIRECTORY.delete()) {
+            if (TC.Paths.SETTINGS_DIRECTORY.delete()) {
                 System.err.println("Successfully deleted settings.json.");
             }
         }

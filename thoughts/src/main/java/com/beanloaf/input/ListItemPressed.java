@@ -6,14 +6,16 @@ import java.util.ArrayList;
 
 import javax.swing.JList;
 
-import com.beanloaf.main.ThoughtsMain;
 import com.beanloaf.objects.ListTab;
+import com.beanloaf.objects.TextPropertyObject;
 import com.beanloaf.objects.ThoughtObject;
+import com.beanloaf.res.TC;
+import com.beanloaf.view.ThoughtsMain;
 
 public class ListItemPressed extends MouseAdapter {
     private final ThoughtsMain main;
-    ArrayList<ThoughtObject> arrayList;
-    JList<?> list;
+    private final ArrayList<ThoughtObject> arrayList;
+    private final JList<?> list;
 
     public ListItemPressed(ThoughtsMain main) {
         this.main = main;
@@ -33,7 +35,7 @@ public class ListItemPressed extends MouseAdapter {
     public void mousePressed(MouseEvent e) {
         int selectedIndex = this.list.getSelectedIndex();
         setContentFields(selectedIndex);
-        this.main.undo.discardAllEdits();
+        this.main.rightPanel.undoManager.discardAllEdits();
     }
 
 
@@ -58,10 +60,12 @@ public class ListItemPressed extends MouseAdapter {
 
         }
 
-        this.main.titleLabel.setText(obj.getTitle());
-        this.main.tagLabel.setText(obj.getTag());
-        this.main.dateLabel.setText("Created on: " + obj.getDate());
-        this.main.bodyLabel.setText(obj.getBody());
+        this.main.thoughtsPCS.firePropertyChange(TC.Properties.TEXT, null, new TextPropertyObject(
+                obj.getTitle(),
+                obj.getTag(),
+                obj.getDate(),
+                obj.getBody()));
+
         this.main.ready = true;
 
     }
@@ -71,10 +75,12 @@ public class ListItemPressed extends MouseAdapter {
             return;
         }
         this.main.selectedFile = obj;
-        this.main.titleLabel.setText(obj.getTitle());
-        this.main.tagLabel.setText(obj.getTag());
-        this.main.dateLabel.setText("Created on: " + obj.getDate());
-        this.main.bodyLabel.setText(obj.getBody());
+        this.main.thoughtsPCS.firePropertyChange(TC.Properties.TEXT, null, new TextPropertyObject(
+                obj.getTitle(),
+                obj.getTag(),
+                obj.getDate(),
+                obj.getBody()));
+
     }
 
 }

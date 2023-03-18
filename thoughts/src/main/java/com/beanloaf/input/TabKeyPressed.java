@@ -7,7 +7,7 @@ import java.awt.KeyboardFocusManager;
 import javax.swing.JComponent;
 import javax.swing.JTextArea;
 
-import com.beanloaf.main.ThoughtsMain;
+import com.beanloaf.view.ThoughtsMain;
 
 public class TabKeyPressed extends KeyAdapter {
     JTextArea textArea;
@@ -37,7 +37,7 @@ public class TabKeyPressed extends KeyAdapter {
                         // Do nothing
                         break;
                     case "tagLabel":
-                        main.titleLabel.requestFocusInWindow();
+                        main.rightPanel.titleLabel.requestFocusInWindow();
                         break;
                     case "bodyLabel":
                         // Do nothing
@@ -49,10 +49,10 @@ public class TabKeyPressed extends KeyAdapter {
             } else { // Going to next textbox
                 switch (currentFocused) {
                     case "titleLabel":
-                        main.tagLabel.requestFocusInWindow();
+                        main.rightPanel.tagLabel.requestFocusInWindow();
                         break;
                     case "tagLabel":
-                        main.bodyLabel.requestFocusInWindow();
+                        main.rightPanel.bodyLabel.requestFocusInWindow();
                         break;
                     case "bodyLabel":
                         // Do nothing

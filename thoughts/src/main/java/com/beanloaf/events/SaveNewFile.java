@@ -9,26 +9,20 @@ import com.beanloaf.res.TC;
 
 public class SaveNewFile {
 
-    private String title;
+    private final String title;
     private String date;
-    private String tag;
-    private String body;
-    private String fileName;
+    private final String tag;
+    private final String body;
+    private final String fileName;
 
     public SaveNewFile(String title, String tag, String body) {
-        this.title = title;
-        this.tag = tag;
-        this.body = body;
-        this.date = "";
-        this.fileName = "";
+        this(title, tag, body, "", "");
     }
 
     public SaveNewFile(String title, String tag, String body, String date) {
-        this.title = title;
-        this.tag = tag;
-        this.body = body;
-        this.date = date;
-        this.fileName = "";
+        this(title, tag, body, date, "");
+
+
     }
 
     public SaveNewFile(String title, String tag, String body, String date, String file) {
@@ -47,10 +41,6 @@ public class SaveNewFile {
         this.fileName = tObj.getPath().getName();
     }
 
-    public SaveNewFile() {
-        this("", "", "");
-    }
-
     public ThoughtObject save() {
         if (title.equalsIgnoreCase(TC.DEFAULT_TITLE) && body.equalsIgnoreCase(TC.DEFAULT_BODY)) {
             return null;
@@ -63,8 +53,8 @@ public class SaveNewFile {
             this.date = dateTime[1];
         }
 
-        final String unsortedFileName = TC.UNSORTED_DIRECTORY_PATH + "/" + fileDT + ".json";
-        final String sortedFileName = TC.SORTED_DIRECTORY_PATH + "/" + fileDT + ".json";
+        final String unsortedFileName = TC.Paths.UNSORTED_DIRECTORY_PATH + "/" + fileDT + ".json";
+        final String sortedFileName = TC.Paths.SORTED_DIRECTORY_PATH + "/" + fileDT + ".json";
         final File newFile = new File(unsortedFileName);
 
         try {
@@ -85,8 +75,8 @@ public class SaveNewFile {
         if (this.fileName.isEmpty()) {
             return null;
         }
-        final String unsortedFileName = TC.UNSORTED_DIRECTORY_PATH + "/" + fileName;
-        final String sortedFileName = TC.SORTED_DIRECTORY_PATH + "/" + fileName;
+        final String unsortedFileName = TC.Paths.UNSORTED_DIRECTORY_PATH + "/" + fileName;
+        final String sortedFileName = TC.Paths.SORTED_DIRECTORY_PATH + "/" + fileName;
         final File newFile = new File(sortedFileName);
 
         try {

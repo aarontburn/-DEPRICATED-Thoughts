@@ -7,12 +7,12 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 
-import com.beanloaf.main.ThoughtsMain;
 import com.beanloaf.objects.ListTab;
+import com.beanloaf.view.ThoughtsMain;
 
 public class ListTabPressed extends MouseAdapter {
 
-    private ThoughtsMain main;
+    private final ThoughtsMain main;
 
     public ListTabPressed(ThoughtsMain main) {  
         this.main = main;
@@ -29,7 +29,7 @@ public class ListTabPressed extends MouseAdapter {
         ListTab list = (ListTab) listContainer.getComponent(0);
 
         list.getMouseEvent().setContentFields(0);
-        new KeyChange(main).checkEmpty();
+//        new KeyChange(main).checkEmpty();
         tabs.setSelectedIndex(tabs.getTabCount() - 1); // This is a workaround for a weird bug.
 
 

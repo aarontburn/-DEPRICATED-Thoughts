@@ -8,11 +8,11 @@ import java.util.regex.Pattern;
 import javax.swing.JButton;
 
 import com.beanloaf.events.SaveNewFile;
-import com.beanloaf.main.ThoughtsMain;
 import com.beanloaf.objects.ThoughtObject;
+import com.beanloaf.view.ThoughtsMain;
 
 public class FileActionButtonPressed implements ActionListener {
-    ThoughtsMain main;
+    private final ThoughtsMain main;
 
     public FileActionButtonPressed(ThoughtsMain main) {
         this.main = main;
@@ -25,7 +25,7 @@ public class FileActionButtonPressed implements ActionListener {
         ListItemPressed l = new ListItemPressed(this.main);
 
         switch (action) {
-            case "sort":
+            case "sort" -> {
                 try {
                     if (this.main.selectedFile == null) {
                         return;
@@ -56,48 +56,38 @@ public class FileActionButtonPressed implements ActionListener {
                 } catch (Exception er) {
                     er.printStackTrace();
                 }
-                break;
-
-            case "delete":
+            }
+            case "delete" -> {
                 if (this.main.selectedFile == null) {
                     return;
                 }
                 String path = this.main.selectedFile.getPath()
                         .toString().split(Pattern.quote(File.separator))[2];
-
                 if (path.equals("sorted")) {
                     this.main.db.delete(this.main.selectedFile);
                 }
-
                 this.main.selectedFile.getPath().delete();
-
                 l.setContentFields(0);
-                break;
-
-            case "newFile":
+            }
+            case "newFile" -> {
                 String title, tag, body;
                 title = tag = body = "";
-
                 if (main.settings.isTitleLocked()) {
-                    title = main.titleLabel.getText();
+                    title = main.rightPanel.titleLabel.getText();
                 }
-
                 if (main.settings.isTagLocked()) {
-                    tag = main.tagLabel.getText();
+                    tag = main.rightPanel.tagLabel.getText();
                 }
-
                 if (main.settings.isBodyLocked()) {
-                    body = main.bodyLabel.getText();
+                    body = main.rightPanel.bodyLabel.getText();
                 }
-
                 ThoughtObject tObj = new SaveNewFile(title, tag, body).save();
                 l.setContentFields(tObj);
                 this.main.leftTabs.setSelectedIndex(0);
-                this.main.selectTextField(this.main.titleLabel);
-                break;
-
-            default:
-                throw new IllegalArgumentException(action + " is not a valid arguemnt in FileActionButtonPressed.");
+                this.main.selectTextField(this.main.rightPanel.titleLabel);
+            }
+            default ->
+                    throw new IllegalArgumentException(action + " is not a valid arguemnt in FileActionButtonPressed.");
         }
 
         this.main.refreshThoughtList();

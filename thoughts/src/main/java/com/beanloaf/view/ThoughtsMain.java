@@ -1,4 +1,4 @@
-package com.beanloaf.main;
+package com.beanloaf.view;
 
 import java.awt.AWTEvent;
 import java.awt.BorderLayout;
@@ -8,16 +8,10 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.awt.KeyEventDispatcher;
 import java.awt.KeyboardFocusManager;
 import java.awt.Point;
 import java.awt.Toolkit;
-import java.awt.event.AWTEventListener;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -31,9 +25,7 @@ import java.util.Map;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -49,19 +41,15 @@ import javax.swing.border.Border;
 import javax.swing.plaf.basic.BasicScrollBarUI;
 import javax.swing.plaf.basic.BasicSplitPaneDivider;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
-import javax.swing.undo.UndoManager;
 
+import com.beanloaf.events.ThoughtsPCS;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 import com.beanloaf.events.FirebaseHandler;
 import com.beanloaf.events.SettingsHandler;
-import com.beanloaf.events.TextAreaFocusListener;
-import com.beanloaf.input.FileActionButtonPressed;
-import com.beanloaf.input.KeyChange;
 import com.beanloaf.input.ListItemPressed;
 import com.beanloaf.input.ListTabPressed;
-import com.beanloaf.input.TabKeyPressed;
 import com.beanloaf.objects.ListTab;
 import com.beanloaf.objects.ThoughtObject;
 import com.beanloaf.res.TC;
@@ -73,8 +61,7 @@ import com.beanloaf.res.theme.ThoughtsTheme;
  */
 public class ThoughtsMain {
 
-    private ThoughtsMain main = this;
-
+    public final ThoughtsPCS thoughtsPCS;
     public ThoughtObject selectedFile;
     public JFrame window;
     public JPanel container;
@@ -84,15 +71,7 @@ public class ThoughtsMain {
     public ArrayList<ThoughtObject> unsortedThoughtList = new ArrayList<>();
     public ArrayList<ThoughtObject> sortedThoughtList = new ArrayList<>();
 
-    /* Input Fields */
-    public JLabel dateLabel;
-
-    /* Right Panel Input Fields */
-    public JTextArea titleLabel, tagLabel, bodyLabel;
-    public UndoManager undo = new UndoManager();
-    public JButton sortButton, deleteButton, newFileButton;
-    /* Right Panel Ghost Text */
-    public JLabel emptyTitle, emptyTag, emptyBody;
+    public RightPanel rightPanel;
 
     /* Left Panel */
     public JSplitPane splitPane;
@@ -107,8 +86,7 @@ public class ThoughtsMain {
     public boolean ready = false;
 
     public SettingsHandler settings = new SettingsHandler();
-    public JLabel pushLabel, pullLabel;
-    public JButton pullButton, pushButton;
+
 
     public FirebaseHandler db;
 
@@ -129,16 +107,13 @@ public class ThoughtsMain {
             UIManager.setLookAndFeel(
                     UIManager.getCrossPlatformLookAndFeelClassName());
         } catch (Exception e) {
+            e.printStackTrace();
         }
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                new ThoughtsMain();
-            }
-        });
+        SwingUtilities.invokeLater(ThoughtsMain::new);
     }
 
     public ThoughtsMain() {
+        this.thoughtsPCS = new ThoughtsPCS(this);
         createGUI();
         this.window.setVisible(true);
         onStartUp();
@@ -146,11 +121,11 @@ public class ThoughtsMain {
     }
 
     private void onStartUp() {
-        if (!TC.UNSORTED_DIRECTORY_PATH.isDirectory()) {
-            TC.UNSORTED_DIRECTORY_PATH.mkdirs();
+        if (!TC.Paths.UNSORTED_DIRECTORY_PATH.isDirectory()) {
+            TC.Paths.UNSORTED_DIRECTORY_PATH.mkdirs();
         }
-        if (!TC.SORTED_DIRECTORY_PATH.isDirectory()) {
-            TC.SORTED_DIRECTORY_PATH.mkdir();
+        if (!TC.Paths.SORTED_DIRECTORY_PATH.isDirectory()) {
+            TC.Paths.SORTED_DIRECTORY_PATH.mkdir();
         }
 
         db = new FirebaseHandler(this);
@@ -181,7 +156,7 @@ public class ThoughtsMain {
                 settings.check();
 
                 if (settings.isPushOnClose()) {
-                    pushButton.doClick();
+                    thoughtsPCS.firePropertyChange(TC.Properties.PUSH, null, null);
                 }
                 settings.changeWindowDimension(window.getSize());
                 settings.changeIsMaximized(
@@ -192,7 +167,7 @@ public class ThoughtsMain {
         });
 
         int extendedState = JFrame.NORMAL;
-        if (settings.getIsMaximized() == true) {
+        if (settings.getIsMaximized()) {
             extendedState = JFrame.MAXIMIZED_BOTH;
         }
         this.window.setExtendedState(extendedState);
@@ -203,40 +178,35 @@ public class ThoughtsMain {
         this.container = new JPanel(new GridBagLayout());
         this.window.add(this.container);
 
-        Toolkit.getDefaultToolkit().addAWTEventListener(new AWTEventListener() {
-            @Override
-            public void eventDispatched(AWTEvent event) {
-                if (!ready) {
-                    return;
-                }
-
-                /*
-                 * 501 is mouse pressed
-                 * 502 is mouse released
-                 * 500 is mouse clicked
-                 * 
-                 * 504 is mouse entered
-                 * 505 is mouse exit
-                 */
-
-                String eventName = event.getSource().getClass().getSimpleName();
-                // System.out.println(eventName);
-                if (event.getID() == 501
-                        && !eventName.equals("JTextArea")
-                        && !eventName.equals("JTabbedPane")
-                        && !eventName.equals("JButton")) {
-                    KeyboardFocusManager.getCurrentKeyboardFocusManager().clearFocusOwner();
-                    refreshThoughtList();
-                }
-
+        Toolkit.getDefaultToolkit().addAWTEventListener(event -> {
+            if (!ready) {
+                return;
             }
+
+            /*
+             * 501 is mouse pressed
+             * 502 is mouse released
+             * 500 is mouse clicked
+             *
+             * 504 is mouse entered
+             * 505 is mouse exit
+             */
+
+            String eventName = event.getSource().getClass().getSimpleName();
+            // System.out.println(eventName);
+            if (event.getID() == 501
+                    && !eventName.equals("JTextArea")
+                    && !eventName.equals("JTabbedPane")
+                    && !eventName.equals("JButton")) {
+                KeyboardFocusManager.getCurrentKeyboardFocusManager().clearFocusOwner();
+                refreshThoughtList();
+            }
+
         }, AWTEvent.MOUSE_EVENT_MASK);
 
-        // createTopPanel();
         createCenterPanel();
         createLeftPanel();
         createRightPanel();
-        // createBottomPanel();
 
     }
 
@@ -253,13 +223,8 @@ public class ThoughtsMain {
         topPanel.setBorder(BorderFactory.createLineBorder(Color.black));
 
         JButton testButton = new JButton("test");
-        testButton.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // TODO Auto-generated method stub
-
-            }
+        testButton.addActionListener(e -> {
+            // TODO Auto-generated method stub
 
         });
         topPanel.add(testButton);
@@ -267,19 +232,7 @@ public class ThoughtsMain {
         this.container.add(topPanel, c);
     }
 
-    private void createBottomPanel() {
-        GridBagConstraints c = new GridBagConstraints();
-        c.gridx = 0;
-        c.gridy = 3;
-        c.gridwidth = 2;
-        c.weightx = 0.1;
-        c.weighty = 0.12;
-        c.fill = GridBagConstraints.BOTH;
 
-        JPanel bottomPanel = new JPanel();
-        bottomPanel.setBorder(BorderFactory.createLineBorder(Color.black));
-        this.container.add(bottomPanel, c);
-    }
 
     private void createCenterPanel() {
         GridBagConstraints c = new GridBagConstraints();
@@ -328,7 +281,7 @@ public class ThoughtsMain {
         this.splitPane.setLeftComponent(leftPanel);
 
         this.leftTabs = new JTabbedPane(JTabbedPane.LEFT);
-        this.leftTabs.setFont(TC.h4);
+        this.leftTabs.setFont(TC.Fonts.h4);
         this.leftTabs.addMouseListener(new ListTabPressed(this));
         this.leftTabs.setPreferredSize(new Dimension(200, 200));
         this.leftTabs.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
@@ -348,7 +301,7 @@ public class ThoughtsMain {
                 "Unsorted");
 
         JLabel tabLabel = new JLabel("Unsorted", SwingConstants.CENTER);
-        tabLabel.setFont(TC.h4);
+        tabLabel.setFont(TC.Fonts.h4);
         tabLabel.setPreferredSize(tagDim);
         leftTabs.setTabComponentAt(0, tabLabel);
 
@@ -358,7 +311,7 @@ public class ThoughtsMain {
 
         JLabel unsortedLabel = new JLabel("Unsorted");
         unsortedLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        unsortedLabel.setFont(TC.h3);
+        unsortedLabel.setFont(TC.Fonts.h3);
         cc.gridy = 0;
         cc.weighty = 0.01;
         cc.anchor = GridBagConstraints.NORTH;
@@ -381,7 +334,7 @@ public class ThoughtsMain {
         leftTabs.add(createScrollView(sortedPanel), "Sorted");
 
         JLabel tabLabel = new JLabel("Sorted", SwingConstants.CENTER);
-        tabLabel.setFont(TC.h4);
+        tabLabel.setFont(TC.Fonts.h4);
         tabLabel.setPreferredSize(tagDim);
         leftTabs.setTabComponentAt(1, tabLabel);
 
@@ -391,7 +344,7 @@ public class ThoughtsMain {
 
         JLabel sortedLabel = new JLabel("Sorted");
         sortedLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        sortedLabel.setFont(TC.h3);
+        sortedLabel.setFont(TC.Fonts.h3);
         cc.gridy = 0;
         cc.weighty = 0.01;
         cc.anchor = GridBagConstraints.NORTH;
@@ -417,7 +370,7 @@ public class ThoughtsMain {
         leftTabs.add(createScrollView(tagPanel), tagName);
 
         JLabel tabLabel = new JLabel(tagName, SwingConstants.CENTER);
-        tabLabel.setFont(TC.h4);
+        tabLabel.setFont(TC.Fonts.h4);
         tabLabel.setPreferredSize(tagDim);
         leftTabs.setTabComponentAt(numTags, tabLabel);
         numTags++;
@@ -428,7 +381,7 @@ public class ThoughtsMain {
 
         JLabel tagNameLabel = new JLabel(tagName);
         tagNameLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        tagNameLabel.setFont(TC.h3);
+        tagNameLabel.setFont(TC.Fonts.h3);
 
         cc.gridy = 0;
         cc.weighty = 0.01;
@@ -457,320 +410,15 @@ public class ThoughtsMain {
     }
 
     private void createRightPanel() {
-        // TODO refractor this ENTIRE method
-
         /* Houses the entire right panel */
-        JPanel rightPanel = new JPanel(new GridBagLayout());
-        rightPanel.setPreferredSize(new Dimension(750, 0));
-        rightPanel.setMinimumSize(new Dimension(0, 0));
+        rightPanel = new RightPanel(this);
         splitPane.setRightComponent(rightPanel);
 
-        /* Top */
-        GridBagConstraints topc = new GridBagConstraints();
-        topc.gridx = 0;
-        topc.gridy = 0;
-        topc.weightx = 0.1;
-        topc.weighty = 0.005;
-        topc.anchor = GridBagConstraints.WEST;
-
-        /* Settings */
-        JPanel settingsBar = new JPanel(new GridBagLayout());
-        topc.fill = GridBagConstraints.BOTH;
-        // settingsBar.setBorder(BorderFactory.createLineBorder(Color.white));
-        rightPanel.add(settingsBar, topc);
-
-        GridBagConstraints settingsConstraints = new GridBagConstraints();
-        settingsConstraints.weightx = 0.01;
-        settingsConstraints.weighty = 0.1;
-        settingsConstraints.fill = GridBagConstraints.VERTICAL;
-        settingsConstraints.insets = new Insets(10, 15, 0, 0);
-        settingsConstraints.anchor = GridBagConstraints.LINE_START;
-
-        Dimension buttonDim = new Dimension(90, 35);
-        pushButton = new JButton("Push");
-        pushButton.setPreferredSize(buttonDim);
-        pushButton.setFont(TC.h4);
-        settingsConstraints.gridx = 0;
-        settingsBar.add(pushButton, settingsConstraints);
-        pushButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (db != null) {
-                    db.push();
-                } else {
-                    System.out.println("not pushing");
-
-                }
-            }
-        });
-
-        pushLabel = new JLabel("");
-        pushLabel.setOpaque(false);
-        pushLabel.setFont(TC.h5);
-        settingsConstraints.gridx = 1;
-        settingsConstraints.weightx = 0.1;
-        settingsBar.add(pushLabel, settingsConstraints);
-
-        pullButton = new JButton("Pull");
-        pullButton.setPreferredSize(buttonDim);
-        pullButton.setFont(TC.h4);
-        settingsConstraints.gridx = 2;
-        settingsConstraints.weightx = 0.001;
-        settingsBar.add(pullButton, settingsConstraints);
-        pullButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (db != null) {
-                    db.pull();
-                }
-            }
-        });
-
-        pullLabel = new JLabel("");
-        pullLabel.setOpaque(false);
-        pullLabel.setFont(TC.h5);
-        settingsConstraints.gridx = 3;
-        settingsConstraints.weightx = 0.3;
-        settingsBar.add(pullLabel, settingsConstraints);
-
-        JButton settingsButton = new JButton();
-        settingsButton.setBorderPainted(false);
-        settingsButton.setContentAreaFilled(false);
-        settingsButton.setOpaque(false);
-        settingsButton.setIcon(new ImageIcon(TC.ICON_DIRECTORY + "/gear.png"));
-        settingsButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new SettingsWindow(main);
-            }
-        });
-        settingsConstraints.gridx = 4;
-        settingsConstraints.weightx = 0.9;
-        settingsConstraints.anchor = GridBagConstraints.LINE_END;
-        settingsBar.add(settingsButton, settingsConstraints);
-
-        /* End of Settings */
-        topc.weightx = 0.1;
-        topc.weighty = 0.1;
-
-        topc.fill = GridBagConstraints.NONE;
-        topc.gridy = 1;
-        topc.insets = new Insets(-20, 10, -40, 0);
-
-        JPanel topLabel = new JPanel(new GridBagLayout());
-        // topLabel.setBorder(BorderFactory.createLineBorder(Color.blue));
-        topLabel.setOpaque(false);
-        rightPanel.add(topLabel, topc);
-        topc.insets = new Insets(0, 0, 0, 0);
-
-        GridBagConstraints cc = new GridBagConstraints();
-        cc.anchor = GridBagConstraints.LINE_START;
-
-        GridBagConstraints titlePanelConstraints = new GridBagConstraints();
-        titlePanelConstraints.gridy = 0;
-        titlePanelConstraints.weighty = 0.1;
-        titlePanelConstraints.anchor = GridBagConstraints.LINE_START;
-
-        JPanel titlePanel = new JPanel(new GridBagLayout());
-        titlePanel.setOpaque(false);
-        titlePanelConstraints.gridx = 0;
-        titlePanelConstraints.weightx = 0.1;
-        titlePanel.add(createCheckBox("lockTitle"), titlePanelConstraints);
-
-        titleLabel = new JTextArea(TC.DEFAULT_TITLE);
-        titleLabel.setColumns(6);
-        titleLabel.setOpaque(false);
-        titleLabel.setFont(TC.h1);
-        titleLabel.setName("titleLabel");
-        titleLabel.getDocument().putProperty("filterNewlines", true);
-        titleLabel.getDocument().addUndoableEditListener(undo);
-        titleLabel.getDocument().addDocumentListener(new KeyChange(this));
-        titleLabel.getDocument().putProperty("labelType", titleLabel);
-        titleLabel.addKeyListener(new TabKeyPressed(this, titleLabel));
-        titleLabel.addFocusListener(new TextAreaFocusListener(this));
-        titleLabel.setLayout(new GridBagLayout());
-
-        GridBagConstraints et = new GridBagConstraints();
-        et.weightx = 0.1;
-        et.weighty = 0.1;
-        et.anchor = GridBagConstraints.NORTHWEST;
-        emptyTitle = new JLabel("");
-        emptyTitle.setFont(TC.h1);
-        emptyTitle.setOpaque(false);
-        emptyTitle.setEnabled(false);
-        emptyTitle.setVerticalAlignment(JLabel.CENTER);
-
-        titlePanel.add(emptyTitle, et);
-        titlePanelConstraints.gridx = 1;
-        titlePanelConstraints.weightx = 0.9;
-        titlePanel.add(titleLabel, titlePanelConstraints);
-
-        cc.gridx = 0;
-        topLabel.add(titlePanel, cc);
-
-        GridBagConstraints tagPanelConstraints = new GridBagConstraints();
-        tagPanelConstraints.gridy = 0;
-        tagPanelConstraints.weighty = 0.1;
-        tagPanelConstraints.anchor = GridBagConstraints.LINE_START;
-
-        JPanel tagPanel = new JPanel(new GridBagLayout());
-        tagPanelConstraints.gridx = 0;
-        tagPanelConstraints.weightx = 0.1;
-        tagPanel.add(createCheckBox("lockTag"), tagPanelConstraints);
-
-        tagLabel = new JTextArea(TC.DEFAULT_TAG);
-        tagLabel.setColumns(9);
-        tagLabel.setOpaque(false);
-        tagLabel.setFont(TC.h3);
-        tagLabel.getDocument().addDocumentListener(new KeyChange(this));
-        tagLabel.getDocument().putProperty("labelType", tagLabel);
-        tagLabel.setName("tagLabel");
-        tagLabel.addFocusListener(new TextAreaFocusListener(this));
-        tagLabel.getDocument().putProperty("filterNewlines", true);
-        tagLabel.getDocument().addUndoableEditListener(undo);
-        tagLabel.addKeyListener(new TabKeyPressed(this, tagLabel));
-        tagLabel.setLayout(new GridBagLayout());
-        cc.gridy = 1;
-
-        // Ghost text for the tag
-        emptyTag = new JLabel("");
-        emptyTag.setFont(TC.h3);
-        emptyTag.setOpaque(false);
-        emptyTag.setEnabled(false);
-        tagLabel.add(emptyTag, et);
-
-        tagPanelConstraints.gridx = 1;
-        tagPanelConstraints.weightx = 0.9;
-        tagPanel.add(tagLabel, titlePanelConstraints);
-        topLabel.add(tagPanel, cc);
-
-        dateLabel = new JLabel("Created on: " + TC.DEFAULT_DATE);
-        dateLabel.setFont(TC.h4);
-        cc.gridx = 0;
-        cc.gridy = 2;
-        topLabel.add(dateLabel, cc);
-
-        /* Bottom */
-        GridBagConstraints botc = new GridBagConstraints();
-        botc.weightx = 0.1;
-        botc.weighty = 0.001;
-        botc.gridx = 0;
-        botc.gridy = 2;
-        botc.anchor = GridBagConstraints.NORTHEAST;
-        rightPanel.add(createCheckBox("lockBody"), botc);
-
-        bodyLabel = new JTextArea(TC.DEFAULT_BODY);
-        bodyLabel.setTabSize(2);
-        bodyLabel.setBackground(new Color(32, 32, 32));
-        bodyLabel.setFont(TC.p);
-        bodyLabel.setLineWrap(true);
-        bodyLabel.setWrapStyleWord(true);
-        bodyLabel.getDocument().addDocumentListener(new KeyChange(this));
-        bodyLabel.getDocument().putProperty("labelType", bodyLabel);
-        bodyLabel.setName("bodyLabel");
-        bodyLabel.addFocusListener(new TextAreaFocusListener(this));
-        bodyLabel.getDocument().addUndoableEditListener(undo);
-        bodyLabel.setLayout(new GridBagLayout());
-        botc.weightx = 0.1;
-        botc.weighty = 0.9;
-        botc.gridx = 0;
-        botc.gridy = 3;
-        botc.insets = new Insets(5, 5, 5, 5);
-        botc.anchor = GridBagConstraints.CENTER;
-        botc.fill = GridBagConstraints.BOTH;
-
-        JScrollPane bodyScroll = new JScrollPane(bodyLabel,
-                JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        bodyScroll.setBorder(null);
-        bodyScroll.setPreferredSize(new Dimension(0, 0));
-        bodyScroll.getVerticalScrollBar().setUI(new ScrollBar());
-        rightPanel.add(bodyScroll, botc);
-
-        // Ghost text for body
-        emptyBody = new JLabel("");
-        emptyBody.setFont(TC.p);
-        emptyBody.setOpaque(false);
-        emptyBody.setEnabled(false);
-        bodyLabel.add(emptyBody, et);
-
-        // Buttons
-        JPanel buttonPanel = new JPanel(new GridBagLayout());
-        botc.weightx = 0.3;
-        botc.weighty = 0.05;
-        botc.gridx = 0;
-        botc.gridy = 4;
-        rightPanel.add(buttonPanel, botc);
-
-        GridBagConstraints bc = new GridBagConstraints();
-        bc.weightx = 0.3;
-        bc.weighty = 0.1;
-        bc.fill = GridBagConstraints.BOTH;
-
-        sortButton = new JButton("Sort/Unsort");
-        sortButton.setName("sort");
-        sortButton.setFont(TC.h4);
-        sortButton.addActionListener(new FileActionButtonPressed(this));
-        buttonPanel.add(sortButton, bc);
-
-        deleteButton = new JButton("Delete");
-        deleteButton.setName("delete");
-        deleteButton.setFont(TC.h4);
-        deleteButton.addActionListener(new FileActionButtonPressed(this));
-        buttonPanel.add(deleteButton, bc);
-
-        newFileButton = new JButton("New File");
-        newFileButton.setName("newFile");
-        newFileButton.setFont(TC.h4);
-        newFileButton.addActionListener(new FileActionButtonPressed(this));
-        buttonPanel.add(newFileButton, bc);
-
     }
 
-    private JCheckBox createCheckBox(String actionName) {
-        JCheckBox checkBox = new JCheckBox();
-        checkBox.setIcon(new ImageIcon(TC.ICON_DIRECTORY + "open_lock.png"));
-        checkBox.setSelectedIcon(new ImageIcon(TC.ICON_DIRECTORY + "closed_lock.png"));
-        checkBox.setName(actionName);
-        checkBox.setOpaque(false);
-        checkBox.setRolloverEnabled(false);
 
-        switch (actionName) {
-            case "lockTitle":
-                checkBox.setSelected(settings.isTitleLocked());
-                break;
-            case "lockTag":
-                checkBox.setSelected(settings.isTagLocked());
-                break;
-            case "lockBody":
-                checkBox.setSelected(settings.isBodyLocked());
-                break;
-            default:
-                throw new IllegalArgumentException();
-        }
 
-        checkBox.addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                JCheckBox box = (JCheckBox) e.getSource();
-                switch (box.getName()) {
-                    case "lockTitle":
-                        settings.changeLockTitle(box.isSelected());
-                        break;
-                    case "lockTag":
-                        settings.changeLockTag(box.isSelected());
-                        break;
-                    case "lockBody":
-                        settings.changeLockBody(box.isSelected());
-                        break;
-                    default:
-                        throw new IllegalArgumentException();
-                }
-            }
-        });
-        return checkBox;
-    }
-
-    private Map<String, ThoughtObject> thoughtMap = new HashMap<>();
+    private final Map<String, ThoughtObject> thoughtMap = new HashMap<>();
 
     public ThoughtObject readFileContents(File filePath) {
 
@@ -791,9 +439,7 @@ public class ThoughtsMain {
             thoughtMap.put(filePath.getName(), thought);
             return thought;
         } catch (Exception e) {
-            System.err.println(
-                    String.format(
-                            "Found invalid file '%s'.", filePath.toPath()));
+            System.err.printf("Found invalid file '%s'.%n", filePath.toPath());
         }
         return null;
     }
@@ -815,8 +461,8 @@ public class ThoughtsMain {
      */
     public void refreshThoughtList() {
         long startTime = System.currentTimeMillis();
-        File[] unsortedFileDirectory = TC.UNSORTED_DIRECTORY_PATH.listFiles();
-        File[] sortedFileDirectory = TC.SORTED_DIRECTORY_PATH.listFiles();
+        File[] unsortedFileDirectory = TC.Paths.UNSORTED_DIRECTORY_PATH.listFiles();
+        File[] sortedFileDirectory = TC.Paths.SORTED_DIRECTORY_PATH.listFiles();
         // Resets number of tags to 2
         this.numTags = 2;
 
@@ -873,8 +519,8 @@ public class ThoughtsMain {
 
     public void setTagModel() {
         ArrayList<String> tagNames = new ArrayList<>();
-        for (int i = 0; i < sortedFiles.size(); i++) {
-            ThoughtObject content = readFileContents(sortedFiles.get(i));
+        for (File sortedFile : sortedFiles) {
+            ThoughtObject content = readFileContents(sortedFile);
 
             if (content != null) {
                 if (!tagNames.contains(content.getTag())) {
@@ -884,17 +530,17 @@ public class ThoughtsMain {
 
         }
         tagNames.sort(String::compareToIgnoreCase);
-        for (int i = 0; i < tagNames.size(); i++) {
+        for (String tagName : tagNames) {
             DefaultListModel<String> tempTagModel = new DefaultListModel<>();
             ArrayList<ThoughtObject> thoughtObjectList = new ArrayList<>();
-            for (int j = 0; j < sortedFiles.size(); j++) {
-                ThoughtObject content = readFileContents(sortedFiles.get(j));
-                if (content != null && content.getTag().equals(tagNames.get(i))) {
+            for (File sortedFile : sortedFiles) {
+                ThoughtObject content = readFileContents(sortedFile);
+                if (content != null && content.getTag().equals(tagName)) {
                     tempTagModel.addElement(content.getTitle());
                     thoughtObjectList.add(content);
                 }
             }
-            createTagTabs(tempTagModel, thoughtObjectList, tagNames.get(i));
+            createTagTabs(tempTagModel, thoughtObjectList, tagName);
         }
     }
 
@@ -903,7 +549,9 @@ public class ThoughtsMain {
         textArea.selectAll();
     }
 
-    public class ScrollBar extends BasicScrollBarUI {
+
+
+    public static class ScrollBar extends BasicScrollBarUI {
         @Override
         protected void configureScrollBarColors() {
             this.thumbColor = Color.gray;
@@ -940,50 +588,50 @@ public class ThoughtsMain {
             boolean c = e.isControlDown();
 
             switch (key) {
-                case KeyEvent.VK_Z: // Undo
+                case KeyEvent.VK_Z -> { // Undo
                     if (c) {
                         try {
-                            undo.undo();
+                            thoughtsPCS.firePropertyChange(TC.Properties.UNDO);
                         } catch (Exception err) {
+                            err.printStackTrace();
                         }
                     }
-                    break;
-
-                case KeyEvent.VK_Y: // Redo
+                }
+                case KeyEvent.VK_Y -> { // Redo
                     if (c) {
                         try {
-                            undo.redo();
+                            thoughtsPCS.firePropertyChange(TC.Properties.REDO);
                         } catch (Exception err) {
+                            err.printStackTrace();
                         }
                     }
-                    break;
-
-                case KeyEvent.VK_N: // New File
+                }
+                case KeyEvent.VK_N -> { // New File
                     if (c) {
-                        newFileButton.doClick();
+                        thoughtsPCS.firePropertyChange(TC.Properties.NEW_FILE);
                     }
-                    break;
-
-                case KeyEvent.VK_D: // Delete File
+                }
+                case KeyEvent.VK_D -> { // Delete File
                     if (c) {
-                        deleteButton.doClick();
+                        thoughtsPCS.firePropertyChange(TC.Properties.DELETE);
                     }
-                    break;
-
-                case KeyEvent.VK_Q: // Sort File
+                }
+                case KeyEvent.VK_Q -> { // Sort File
                     if (c) {
-                        sortButton.doClick();
+                        thoughtsPCS.firePropertyChange(TC.Properties.SORT);
+
                     }
-                    break;
-                case KeyEvent.VK_P: // Push/Pull
+                }
+                case KeyEvent.VK_P -> { // Push/Pull
                     if (c) {
                         if (e.isShiftDown()) { // Pull
-                            pullButton.doClick();
+                            thoughtsPCS.firePropertyChange(TC.Properties.PULL);
+
                         } else { // Push
-                            pushButton.doClick();
+                            thoughtsPCS.firePropertyChange(TC.Properties.PUSH);
                         }
                     }
-
+                }
             }
 
             return false;

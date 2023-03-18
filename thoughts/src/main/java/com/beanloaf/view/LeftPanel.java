@@ -144,7 +144,7 @@ public class LeftPanel extends JPanel implements PropertyChangeListener {
                 JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scroll.setBorder(null);
-        scroll.getVerticalScrollBar().setUI(new Thoughts.ScrollBar());
+        scroll.getVerticalScrollBar().setUI(new TC.ScrollBar());
         scroll.getVerticalScrollBar().setUnitIncrement(12);
         return scroll;
     }

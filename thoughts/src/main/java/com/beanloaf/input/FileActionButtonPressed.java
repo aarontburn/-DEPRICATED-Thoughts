@@ -9,10 +9,12 @@ import javax.swing.JButton;
 
 import com.beanloaf.events.SaveNewFile;
 import com.beanloaf.objects.ThoughtObject;
+import com.beanloaf.res.TC;
 import com.beanloaf.view.Thoughts;
 
 public class FileActionButtonPressed implements ActionListener {
     private final Thoughts main;
+
 
     public FileActionButtonPressed(final Thoughts main) {
         this.main = main;
@@ -84,10 +86,10 @@ public class FileActionButtonPressed implements ActionListener {
                 final ThoughtObject tObj = new SaveNewFile(title, tag, body).save();
                 l.setContentFields(tObj);
                 this.main.leftPanel.leftTabs.setSelectedIndex(0);
-                this.main.selectTextField(this.main.rightPanel.titleLabel);
+                this.main.thoughtsPCS.firePropertyChange(TC.Properties.FOCUS_TITLE_FIELD);
             }
             default ->
-                    throw new IllegalArgumentException(action + " is not a valid arguemnt in FileActionButtonPressed.");
+                    throw new IllegalArgumentException(action + " is not a valid argument in FileActionButtonPressed.");
         }
 
         this.main.refreshThoughtList();

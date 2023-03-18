@@ -10,12 +10,10 @@ import javax.swing.JTextArea;
 import com.beanloaf.view.Thoughts;
 
 public class TabKeyPressed extends KeyAdapter {
-    private final JTextArea textArea;
     private final Thoughts main;
 
-    public TabKeyPressed(final Thoughts main, final JTextArea textArea) {
+    public TabKeyPressed(final Thoughts main) {
         super();
-        this.textArea = textArea;
         this.main = main;
     }
 

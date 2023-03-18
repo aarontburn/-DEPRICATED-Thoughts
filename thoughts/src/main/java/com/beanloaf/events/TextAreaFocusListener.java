@@ -10,13 +10,13 @@ import com.beanloaf.view.Thoughts;
 
 public class TextAreaFocusListener implements FocusListener {
     private final Thoughts main;
-    public TextAreaFocusListener(Thoughts main) {
+    public TextAreaFocusListener(final Thoughts main) {
         this.main = main;
     }
 
     @Override
-    public void focusGained(FocusEvent e) {
-        final JTextArea j = (JTextArea) e.getComponent();
+    public void focusGained(final FocusEvent event) {
+        final JTextArea j = (JTextArea) event.getComponent();
         if (j.getText().equals(TC.DEFAULT_TITLE)
                 || j.getText().equals(TC.DEFAULT_DATE)
                 || j.getText().equals(TC.DEFAULT_TAG)

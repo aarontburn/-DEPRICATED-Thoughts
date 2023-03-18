@@ -21,7 +21,7 @@ public class RightPanel extends JPanel implements PropertyChangeListener {
 
     public JLabel dateLabel, pushLabel, pullLabel;
     public AbstractTextArea titleLabel, tagLabel, bodyLabel;
-    public UndoManager undoManager = new UndoManager();
+    public final UndoManager undoManager = new UndoManager();
     public JButton sortButton, deleteButton, newFileButton, pullButton, pushButton;
 
 
@@ -75,7 +75,7 @@ public class RightPanel extends JPanel implements PropertyChangeListener {
                 JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         bodyScroll.setBorder(null);
         bodyScroll.setPreferredSize(new Dimension(0, 0));
-        bodyScroll.getVerticalScrollBar().setUI(new Thoughts.ScrollBar());
+        bodyScroll.getVerticalScrollBar().setUI(new TC.ScrollBar());
         this.add(bodyScroll, new GBC(0, 3, 0.1, 0.9)
                 .setAnchor(GridBagConstraints.CENTER)
                 .setInsets(5, 5, 5, 5)
@@ -87,7 +87,7 @@ public class RightPanel extends JPanel implements PropertyChangeListener {
 
     private void createFileButtons() {
         // Buttons
-        JPanel buttonPanel = new JPanel(new GridBagLayout());
+        final JPanel buttonPanel = new JPanel(new GridBagLayout());
         this.add(buttonPanel, new GBC(0, 4, 0.3, 0.05)
                 .setAnchor(GridBagConstraints.CENTER)
                 .setInsets(5, 5, 5, 5)
@@ -159,7 +159,7 @@ public class RightPanel extends JPanel implements PropertyChangeListener {
         pullLabel.setFont(TC.Fonts.h5);
         settingsBar.add(pullLabel, settingConstraints.setGridX(3));
 
-        JButton settingsButton = new JButton();
+        final JButton settingsButton = new JButton();
         settingsButton.setBorderPainted(false);
         settingsButton.setContentAreaFilled(false);
         settingsButton.setOpaque(false);
@@ -201,6 +201,11 @@ public class RightPanel extends JPanel implements PropertyChangeListener {
         bodyLabel.changedUpdate(null);
     }
 
+    public void selectTextField(JTextArea textArea) {
+        textArea.requestFocusInWindow();
+        textArea.selectAll();
+    }
+
     @Override
     public void propertyChange(final PropertyChangeEvent event) {
 
@@ -239,6 +244,7 @@ public class RightPanel extends JPanel implements PropertyChangeListener {
                 bodyLabel.setText(textObject.body);
             }
             case TC.Properties.LIST_ITEM_PRESSED, TC.Properties.LIST_TAB_PRESSED -> checkEmpty();
+            case TC.Properties.FOCUS_TITLE_FIELD -> selectTextField(titleLabel);
 
             default -> {
             }

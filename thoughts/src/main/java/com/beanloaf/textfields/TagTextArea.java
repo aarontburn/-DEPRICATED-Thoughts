@@ -29,7 +29,7 @@ public class TagTextArea extends AbstractTextArea {
     @Override
     void attachEventHandlers() {
         this.getDocument().putProperty("filterNewlines", true);
-        this.addKeyListener(new TabKeyPressed(this.main, this));
+        this.addKeyListener(new TabKeyPressed(main));
     }
 
     @Override

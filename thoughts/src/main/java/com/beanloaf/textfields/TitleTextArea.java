@@ -27,7 +27,7 @@ public class TitleTextArea extends AbstractTextArea {
     @Override
     public void attachEventHandlers() {
         this.getDocument().putProperty("filterNewlines", true);
-        this.addKeyListener(new TabKeyPressed(this.main, this));
+        this.addKeyListener(new TabKeyPressed(main));
     }
 
     @Override

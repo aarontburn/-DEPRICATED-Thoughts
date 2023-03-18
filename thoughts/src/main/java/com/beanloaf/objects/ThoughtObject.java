@@ -1,8 +1,8 @@
 package com.beanloaf.objects;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Objects;
 
@@ -18,7 +18,11 @@ public class ThoughtObject {
     private String body;
     private File file;
 
-    public ThoughtObject(String title, String date, String tag, String body, File file) {
+    public ThoughtObject(final String title,
+                         final String date,
+                         final String tag,
+                         final String body,
+                         final File file) {
         this.title = title;
         this.tag = tag;
         this.date = date;
@@ -28,7 +32,7 @@ public class ThoughtObject {
 
     public void saveFile() {
         if (this.file != null) {
-            try (FileWriter fWriter = new FileWriter(this.file)) {
+            try (BufferedWriter fWriter = Files.newBufferedWriter(Paths.get(this.file.toURI()))) {
                 HashMap<String, String> textContent = new HashMap<>();
                 textContent.put("title", this.title);
                 textContent.put("date", this.date);
@@ -44,12 +48,12 @@ public class ThoughtObject {
 
     }
 
-    public void editTitle(String newTitle) {
+    public void editTitle(final String newTitle) {
         this.title = newTitle;
         saveFile();
     }
 
-    public void editTag(String newTag) {
+    public void editTag(final String newTag) {
         this.tag = newTag;
         saveFile();
     }

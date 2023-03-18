@@ -210,7 +210,6 @@ public class FirebaseHandler implements ValueEventListener {
         if (!this.isOnline) {
             this.main.thoughtsPCS.firePropertyChange(TC.Properties.DISCONNECTED);
 
-
             return;
         }
 

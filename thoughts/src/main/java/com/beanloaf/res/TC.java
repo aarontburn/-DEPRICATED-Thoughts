@@ -1,6 +1,8 @@
 package com.beanloaf.res;
 
-import java.awt.Font;
+import javax.swing.*;
+import javax.swing.plaf.basic.BasicScrollBarUI;
+import java.awt.*;
 import java.io.File;
 
 /**
@@ -18,7 +20,7 @@ public final class TC {
 
 
 
-    public class Properties {
+    public static class Properties {
         public static final String SORT = "sort";
 
         public static final String PUSH = "push";
@@ -43,9 +45,11 @@ public final class TC {
 
         public static final String SET_TAB_INDEX = "set tab index";
 
+        public static final String FOCUS_TITLE_FIELD = "focus text field";
+
     }
 
-    public class Paths {
+    public static class Paths {
         public static final File UNSORTED_DIRECTORY_PATH = new File("thoughts/storage/unsorted/");
 
         public static final File SORTED_DIRECTORY_PATH = new File("thoughts/storage/sorted/");
@@ -55,13 +59,54 @@ public final class TC {
         public static final String ICON_DIRECTORY = "thoughts/src/main/java/com/beanloaf/res/icons/";
     }
 
-    public class Fonts {
+    public static class Fonts {
         public static final Font p = new Font("Lato", Font.PLAIN, 25);
         public static final Font h1 = new Font("Lato", Font.PLAIN, 50);
         public static final Font h2 = new Font("Lato", Font.PLAIN, 40);
         public static final Font h3 = new Font("Lato", Font.PLAIN, 30);
         public static final Font h4 = new Font("Lato", Font.PLAIN, 20);
         public static final Font h5 = new Font("Lato", Font.PLAIN, 15);
+    }
+
+    public static class CellRenderer extends DefaultListCellRenderer {
+        public Component getListCellRendererComponent(final JList<?> list,
+                                                      final Object value,
+                                                      final int index,
+                                                      final boolean isSelected,
+                                                      final boolean cellHasFocus) {
+
+            JLabel c = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+            c.setHorizontalAlignment(JLabel.CENTER);
+            c.setPreferredSize(new Dimension(25, 25));
+            c.setOpaque(true);
+            return c;
+        }
+    }
+
+    public static class ScrollBar extends BasicScrollBarUI {
+        @Override
+        protected void configureScrollBarColors() {
+            this.thumbColor = Color.gray;
+        }
+
+        @Override
+        protected JButton createDecreaseButton(int orientation) {
+            return createZeroButton();
+        }
+
+        @Override
+        protected JButton createIncreaseButton(int orientation) {
+            return createZeroButton();
+        }
+
+        protected JButton createZeroButton() {
+            JButton button = new JButton();
+            Dimension zeroDim = new Dimension(0, 0);
+            button.setPreferredSize(zeroDim);
+            button.setMinimumSize(zeroDim);
+            button.setMaximumSize(zeroDim);
+            return button;
+        }
     }
 
 }

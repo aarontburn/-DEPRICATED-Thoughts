@@ -15,17 +15,24 @@ public class SaveNewFile {
     private final String body;
     private final String fileName;
 
-    public SaveNewFile(String title, String tag, String body) {
+    public SaveNewFile(final String title,
+                       final String tag,
+                       final String body) {
         this(title, tag, body, "", "");
     }
 
-    public SaveNewFile(String title, String tag, String body, String date) {
+    public SaveNewFile(final String title,
+                       final String tag,
+                       final String body,
+                       final String date) {
         this(title, tag, body, date, "");
-
-
     }
 
-    public SaveNewFile(String title, String tag, String body, String date, String file) {
+    public SaveNewFile(final String title,
+                       final String tag,
+                       final String body,
+                       final String date,
+                       final String file) {
         this.title = title;
         this.tag = tag;
         this.body = body;
@@ -33,7 +40,7 @@ public class SaveNewFile {
         this.fileName = file;
     }
 
-    public SaveNewFile(ThoughtObject tObj) {
+    public SaveNewFile(final ThoughtObject tObj) {
         this.title = tObj.getTitle();
         this.tag = tObj.getTag();
         this.body = tObj.getBody();
@@ -86,11 +93,6 @@ public class SaveNewFile {
                 tObj.saveFile();
                 return tObj;
             } else {
-
-
-
-
-                
                 System.err.println("File already exists. Skipping...");
             }
 

@@ -2,9 +2,11 @@ package com.beanloaf.events;
 
 import java.awt.Dimension;
 import java.awt.Point;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
 
 import org.json.simple.JSONObject;
@@ -53,9 +55,9 @@ public class SettingsHandler {
     }
 
     public void createSettingsFile() {
-        try {
+        try (BufferedWriter fWriter = Files.newBufferedWriter(Paths.get(TC.Paths.SETTINGS_DIRECTORY.toURI()))){
             TC.Paths.SETTINGS_DIRECTORY.createNewFile();
-            final FileWriter fWriter = new FileWriter(TC.Paths.SETTINGS_DIRECTORY);
+
             final HashMap<String, Object> textContent = new HashMap<>();
 
             textContent.put("isDarkMode", this.isDarkMode);
@@ -72,7 +74,6 @@ public class SettingsHandler {
 
             final JSONObject objJson = new JSONObject(textContent);
             fWriter.write(objJson.toJSONString());
-            fWriter.close();
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -80,7 +81,7 @@ public class SettingsHandler {
     }
 
     private void readFileContents() {
-        try (FileReader reader = new FileReader(TC.Paths.SETTINGS_DIRECTORY)) {
+        try (BufferedReader reader = Files.newBufferedReader(Paths.get(TC.Paths.SETTINGS_DIRECTORY.toURI()))) {
             final JSONObject json = (JSONObject) new JSONParser().parse(reader);
 
             this.isDarkMode = (boolean) json.get("isDarkMode");

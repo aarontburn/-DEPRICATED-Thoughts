@@ -2,8 +2,6 @@ package com.beanloaf.view;
 
 import java.awt.AWTEvent;
 import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -16,21 +14,17 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
-import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
-import javax.swing.JTextArea;
 import javax.swing.border.Border;
-import javax.swing.plaf.basic.BasicScrollBarUI;
 import javax.swing.plaf.basic.BasicSplitPaneDivider;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 
@@ -52,7 +46,7 @@ import com.beanloaf.res.theme.ThoughtsTheme;
  */
 public class Thoughts {
 
-    public final ThoughtsPCS thoughtsPCS;
+    public final ThoughtsPCS thoughtsPCS = new ThoughtsPCS(this);
     public ThoughtObject selectedFile;
     public JFrame window;
     public JPanel container;
@@ -79,7 +73,6 @@ public class Thoughts {
 
 
     public Thoughts() {
-        this.thoughtsPCS = new ThoughtsPCS(this);
         createGUI();
         this.window.setVisible(true);
         onStartUp();
@@ -114,6 +107,7 @@ public class Thoughts {
         this.window.setFocusable(true);
         this.window.setSize(settings.getWindowWidth(), settings.getWindowHeight());
         this.window.setLocation(new Point(settings.getWindowX(), settings.getWindowY()));
+
         this.window.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(final WindowEvent event) {
@@ -206,19 +200,17 @@ public class Thoughts {
 
         });
 
-        this.container.add(splitPane, new GBC(0, 1, 0.1, 1).setFill(GridBagConstraints.BOTH));
-        // .setGridWidth(GridBagConstraints.REMAINDER)
-
+        this.container.add(splitPane, new GBC(0, 1, 0.1, 1)
+                .setFill(GridBagConstraints.BOTH));
         leftPanel = new LeftPanel(this);
-        this.splitPane.setLeftComponent(leftPanel);
-
         rightPanel = new RightPanel(this);
+        splitPane.setLeftComponent(leftPanel);
         splitPane.setRightComponent(rightPanel);
     }
 
     public ThoughtObject readFileContents(final File filePath) {
 
-        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+        try (BufferedReader reader = Files.newBufferedReader(Paths.get(filePath.toURI()))) {
             final StringBuilder sb = new StringBuilder();
             String line = reader.readLine();
             while (line != null) {
@@ -308,38 +300,7 @@ public class Thoughts {
 
 
 
-    public void selectTextField(JTextArea textArea) {
-        textArea.requestFocusInWindow();
-        textArea.selectAll();
-    }
 
-
-
-    public static class ScrollBar extends BasicScrollBarUI {
-        @Override
-        protected void configureScrollBarColors() {
-            this.thumbColor = Color.gray;
-        }
-
-        @Override
-        protected JButton createDecreaseButton(int orientation) {
-            return createZeroButton();
-        }
-
-        @Override
-        protected JButton createIncreaseButton(int orientation) {
-            return createZeroButton();
-        }
-
-        protected JButton createZeroButton() {
-            JButton button = new JButton();
-            Dimension zeroDim = new Dimension(0, 0);
-            button.setPreferredSize(zeroDim);
-            button.setMinimumSize(zeroDim);
-            button.setMaximumSize(zeroDim);
-            return button;
-        }
-    }
 
     public class KeyBinds implements KeyEventDispatcher {
         @Override
@@ -397,18 +358,6 @@ public class Thoughts {
 
     }
 
-    public class CellRenderer extends DefaultListCellRenderer {
-        public Component getListCellRendererComponent(final JList<?> list,
-                                                      final Object value,
-                                                      final int index,
-                                                      final boolean isSelected,
-                                                      boolean cellHasFocus) {
-            JLabel c = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-            c.setHorizontalAlignment(JLabel.CENTER);
-            c.setPreferredSize(new Dimension(25, 25));
-            c.setOpaque(true);
-            return c;
-        }
-    }
+
 
 }

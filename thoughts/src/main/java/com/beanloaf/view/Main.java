@@ -11,6 +11,7 @@ public class Main {
                     UIManager.getCrossPlatformLookAndFeelClassName());
         } catch (Exception e) {
             e.printStackTrace();
+
         }
         SwingUtilities.invokeLater(Thoughts::new);
     }

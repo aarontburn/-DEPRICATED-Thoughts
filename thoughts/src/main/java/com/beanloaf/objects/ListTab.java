@@ -21,7 +21,7 @@ public class ListTab extends JList<String> {
         l = new ListItemPressed(main, this, thoughtList);
         this.addMouseListener(l);
         this.setFont(TC.Fonts.h4);
-        this.setCellRenderer(main.new CellRenderer());
+        this.setCellRenderer(new TC.CellRenderer());
         this.setVisibleRowCount(0);
     }
 

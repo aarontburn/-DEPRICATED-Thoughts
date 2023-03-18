@@ -14,6 +14,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
+import com.beanloaf.objects.GBC;
 import com.beanloaf.res.TC;
 import com.beanloaf.res.theme.ThoughtsTheme;
 
@@ -21,12 +22,13 @@ public class SettingsWindow {
 
     private final Thoughts main;
 
-    private JFrame window;
+    private final JFrame window;
     private JPanel container;
     private JTabbedPane tabs;
 
-    public SettingsWindow(Thoughts main) {
+    public SettingsWindow(final Thoughts main) {
         this.main = main;
+        this.window = new JFrame("Settings");
         createGUI();
         this.window.setVisible(true);
     }
@@ -35,7 +37,6 @@ public class SettingsWindow {
         ThoughtsTheme.setup();
         JFrame.setDefaultLookAndFeelDecorated(true);
 
-        this.window = new JFrame("Settings");
         this.window.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         this.window.setFocusable(true);
         this.window.setSize(500, 600);
@@ -45,102 +46,69 @@ public class SettingsWindow {
         this.container.setBackground(new Color(32, 32, 32));
         this.window.add(this.container);
 
-        GridBagConstraints c = new GridBagConstraints();
-        c.fill = GridBagConstraints.BOTH;
-        c.weightx = 0.1;
-        c.weighty = 0.1;
         this.tabs = new JTabbedPane(JTabbedPane.LEFT);
         this.tabs.setFont(TC.Fonts.h4);
-        this.container.add(this.tabs, c);
+        this.container.add(this.tabs, new GBC().setFill(GridBagConstraints.BOTH));
         generalSettings();
 
     }
 
     private void generalSettings() {
-        JPanel generalSettingsPanel = new JPanel(new GridBagLayout());
+        final JPanel generalSettingsPanel = new JPanel(new GridBagLayout());
         generalSettingsPanel.setBorder(BorderFactory.createLineBorder(Color.red));
         this.tabs.add(generalSettingsPanel, "General");
 
-        GridBagConstraints panelConstraints = new GridBagConstraints();
-        panelConstraints.anchor = GridBagConstraints.NORTHWEST;
-        panelConstraints.weightx = 0.1;
-        panelConstraints.fill = GridBagConstraints.HORIZONTAL;
+        final GBC panelConstraints = new GBC().setAnchor(GridBagConstraints.NORTHWEST)
+                .setFill(GridBagConstraints.HORIZONTAL);
 
-        JLabel generalSettingsLabel = new JLabel("General Settings");
+        final JLabel generalSettingsLabel = new JLabel("General Settings");
         generalSettingsLabel.setBackground(new Color(32, 32, 32));
         generalSettingsLabel.setHorizontalAlignment(JLabel.CENTER);
         generalSettingsLabel.setFont(TC.Fonts.h3);
-        panelConstraints.gridy = 0;
-        panelConstraints.weighty = 0.1;
         generalSettingsPanel.add(generalSettingsLabel, panelConstraints);
 
-        panelConstraints.gridy = 1;
-        panelConstraints.weighty = 0.01;
-        generalSettingsPanel.add(createCheckboxPanel("Push on close:", "push"), panelConstraints);
+        generalSettingsPanel.add(createCheckboxPanel("Push on close:", "push"),
+                panelConstraints.setGridY(1).setWeightY(0.01));
 
-        panelConstraints.gridy = 2;
-        panelConstraints.weighty = 0.01;
-        generalSettingsPanel.add(createCheckboxPanel("Pull on startup:", "pull"), panelConstraints);
+        generalSettingsPanel.add(createCheckboxPanel("Pull on startup:", "pull"),
+                panelConstraints.setGridY(2).setWeightY(0.01));
 
-        panelConstraints.gridy = 3;
-        panelConstraints.weighty = 0.9;
-        generalSettingsPanel.add(createCheckboxPanel("Light mode:", "lightMode"), panelConstraints);
+
+        generalSettingsPanel.add(createCheckboxPanel("Light mode:", "lightMode"),
+                panelConstraints.setGridY(3).setWeightY(0.9));
 
     }
 
-    private JPanel createCheckboxPanel(String label, String actionName) {
-        JPanel panelContainer = new JPanel(new GridBagLayout());
-        GridBagConstraints c = new GridBagConstraints();
-        c.weighty = 0.1;
-        c.gridy = 0;
+    private JPanel createCheckboxPanel(final String label, final String actionName) {
+        final JPanel panelContainer = new JPanel(new GridBagLayout());
 
-        JLabel textLabel = new JLabel(label);
+        final JLabel textLabel = new JLabel(label);
         textLabel.setFont(TC.Fonts.h4);
-        c.weightx = 0.1;
-        c.anchor = GridBagConstraints.LINE_START;
-        c.insets = new Insets(0, 30, 0, 0);
-        panelContainer.add(textLabel, c);
 
-        JCheckBox checkBox = new JCheckBox();
-        c.weightx = 0.9;
-        c.anchor = GridBagConstraints.LINE_END;
-        c.insets = new Insets(0, 0, 0, 30);
+        panelContainer.add(textLabel, new GBC().setAnchor(GridBagConstraints.LINE_START)
+                .setInsets(0, 30, 0, 0));
 
+        final JCheckBox checkBox = new JCheckBox();
         switch (actionName) {
-            case "push":
-                checkBox.setSelected(this.main.settings.isPushOnClose());
-                break;
-            case "pull":
-                checkBox.setSelected(this.main.settings.isPullOnStartup());
-                break;
-            case "lightMode":
-
-                break;
-            default:
-                throw new IllegalArgumentException();
+            case "push" -> checkBox.setSelected(this.main.settings.isPushOnClose());
+            case "pull" -> checkBox.setSelected(this.main.settings.isPullOnStartup());
+            case "lightMode" -> System.out.println("placeholder");
+            default -> throw new IllegalArgumentException();
         }
 
-        checkBox.addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                switch (actionName) {
-                    case "push":
-                        main.settings.changePushOnClose(checkBox.isSelected());
-                        break;
-                    case "pull":
-                        main.settings.changePullOnStartup(checkBox.isSelected());
-                        break;
-                    case "lightMode":
-
-                        break;
-                    default:
-                        throw new IllegalArgumentException();
-                }
-
+        checkBox.addItemListener(event -> {
+            switch (actionName) {
+                case "push" -> main.settings.changePushOnClose(checkBox.isSelected());
+                case "pull" -> main.settings.changePullOnStartup(checkBox.isSelected());
+                case "lightMode" -> System.out.println("placeholder");
+                default -> throw new IllegalArgumentException();
             }
 
         });
-        panelContainer.add(checkBox, c);
+
+        panelContainer.add(checkBox, new GBC(0.9, 0.1)
+                .setAnchor(GridBagConstraints.LINE_END)
+                .setInsets(0, 0, 0, 30));
 
         return panelContainer;
     }

@@ -39,7 +39,7 @@ public class ListItemPressed extends MouseAdapter {
     }
 
 
-    public void setContentFields(int index) {
+    public void setContentFields(final int index) {
         main.refreshThoughtList();
         this.main.ready = false;
         ThoughtObject obj = new ThoughtObject(

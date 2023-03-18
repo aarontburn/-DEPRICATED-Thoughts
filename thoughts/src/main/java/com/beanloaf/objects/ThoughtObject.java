@@ -58,7 +58,7 @@ public class ThoughtObject {
         saveFile();
     }
 
-    public void editBody(String newBody) {
+    public void editBody(final String newBody) {
         this.body = newBody;
         saveFile();
     }
@@ -67,7 +67,7 @@ public class ThoughtObject {
         return this.file;
     }
 
-    public void setPath(File str) {
+    public void setPath(final File str) {
         this.file = str;
     }
 
@@ -79,7 +79,7 @@ public class ThoughtObject {
         return TC.DEFAULT_BODY;
     }
 
-    public void setBody(String str) {
+    public void setBody(final String str) {
         this.body = str;
     }
 
@@ -97,15 +97,15 @@ public class ThoughtObject {
         return TC.DEFAULT_TAG;
     }
 
-    public void setName(String title) {
+    public void setName(final String title) {
         this.title = title;
     }
 
-    public void setTag(String tag) {
+    public void setTag(final String tag) {
         this.tag = tag;
     }
 
-    public void setDate(String date) {
+    public void setDate(final String date) {
         this.date = date;
     }
 
@@ -114,11 +114,11 @@ public class ThoughtObject {
     }
 
     @Override
-    public boolean equals(Object otherObject) {
+    public boolean equals(final Object otherObject) {
         if (otherObject.getClass() != this.getClass() || otherObject == null) {
             return false;
         }
-        ThoughtObject other = (ThoughtObject) otherObject;
+        final ThoughtObject other = (ThoughtObject) otherObject;
         return this.getTitle().equals(other.getTitle())
                 && this.getDate().equals(other.getDate())
                 && this.getBody().equals(other.getBody())

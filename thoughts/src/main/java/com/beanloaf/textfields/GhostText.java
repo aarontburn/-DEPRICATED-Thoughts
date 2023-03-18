@@ -1,7 +1,5 @@
 package com.beanloaf.textfields;
 
-import com.beanloaf.res.TC;
-
 import javax.swing.*;
 import java.awt.*;
 

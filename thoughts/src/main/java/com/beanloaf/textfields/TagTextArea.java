@@ -5,11 +5,10 @@ import com.beanloaf.objects.GBC;
 import com.beanloaf.res.TC;
 import com.beanloaf.view.Thoughts;
 
-import javax.swing.event.DocumentEvent;
 import javax.swing.undo.UndoManager;
 import java.awt.*;
 
-public class TagTextArea extends TextArea {
+public class TagTextArea extends AbstractTextArea {
     private final GhostText ghostText;
 
     public TagTextArea(final Thoughts main, final UndoManager undoManager) {

@@ -47,7 +47,7 @@ public class SaveNewFile {
         }
 
         final String[] dateTime = getCurrentDateTime().split("!");
-        String fileDT = dateTime[0];
+        final String fileDT = dateTime[0];
 
         if (this.date.isEmpty()) {
             this.date = dateTime[1];
@@ -60,7 +60,7 @@ public class SaveNewFile {
         try {
             if (!newFile.isFile() && !new File(sortedFileName).isFile()) {
                 newFile.createNewFile();
-                ThoughtObject tObj = new ThoughtObject(this.title, this.date, this.tag, this.body, newFile);
+                final ThoughtObject tObj = new ThoughtObject(this.title, this.date, this.tag, this.body, newFile);
                 tObj.saveFile();
                 return tObj;
             }
@@ -82,7 +82,7 @@ public class SaveNewFile {
         try {
             if (!newFile.isFile() && !new File(unsortedFileName).isFile()) {
                 newFile.createNewFile();
-                ThoughtObject tObj = new ThoughtObject(this.title, this.date, this.tag, this.body, newFile);
+                final ThoughtObject tObj = new ThoughtObject(this.title, this.date, this.tag, this.body, newFile);
                 tObj.saveFile();
                 return tObj;
             } else {
@@ -101,10 +101,10 @@ public class SaveNewFile {
     }
 
     private String getCurrentDateTime() {
-        Date d = new Date();
-        SimpleDateFormat fileFormat = new SimpleDateFormat("MM-dd-yyyy HH-mm-ss");
-        SimpleDateFormat contentDate = new SimpleDateFormat("MM/dd/yyyy");
-        SimpleDateFormat contentTime = new SimpleDateFormat("HH:mm:ss");
+        final Date d = new Date();
+        final SimpleDateFormat fileFormat = new SimpleDateFormat("MM-dd-yyyy HH-mm-ss");
+        final SimpleDateFormat contentDate = new SimpleDateFormat("MM/dd/yyyy");
+        final SimpleDateFormat contentTime = new SimpleDateFormat("HH:mm:ss");
 
         return String.format("%s!%s at %s",
                 fileFormat.format(d), contentDate.format(d), contentTime.format(d));

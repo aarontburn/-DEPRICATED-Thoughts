@@ -10,17 +10,13 @@ import javax.swing.JTextArea;
 import com.beanloaf.view.Thoughts;
 
 public class TabKeyPressed extends KeyAdapter {
-    JTextArea textArea;
-    Thoughts main;
+    private final JTextArea textArea;
+    private final Thoughts main;
 
-    public TabKeyPressed(Thoughts main, JTextArea textArea) {
+    public TabKeyPressed(final Thoughts main, final JTextArea textArea) {
+        super();
         this.textArea = textArea;
         this.main = main;
-    }
-
-    public TabKeyPressed(JTextArea textArea) {
-        this.textArea = textArea;
-        this.main = null;
     }
 
     @Override
@@ -29,7 +25,7 @@ public class TabKeyPressed extends KeyAdapter {
         final String currentFocused = component.getName();
 
         if (e.getKeyCode() == KeyEvent.VK_TAB
-                || (e.getKeyCode() == KeyEvent.VK_ENTER)) {
+                || e.getKeyCode() == KeyEvent.VK_ENTER) {
 
             if (e.getModifiersEx() > 0) { // Going to previous textbox
                 switch (currentFocused) {

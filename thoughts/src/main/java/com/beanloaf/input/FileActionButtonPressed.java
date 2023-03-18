@@ -14,15 +14,15 @@ import com.beanloaf.view.Thoughts;
 public class FileActionButtonPressed implements ActionListener {
     private final Thoughts main;
 
-    public FileActionButtonPressed(Thoughts main) {
+    public FileActionButtonPressed(final Thoughts main) {
         this.main = main;
     }
 
     @Override
     public void actionPerformed(final ActionEvent event) {
-        JButton component = (JButton) event.getSource();
-        String action = component.getName();
-        ListItemPressed l = new ListItemPressed(this.main);
+        final JButton component = (JButton) event.getSource();
+        final String action = component.getName();
+        final ListItemPressed l = new ListItemPressed(this.main);
 
         switch (action) {
             case "sort" -> {
@@ -30,7 +30,7 @@ public class FileActionButtonPressed implements ActionListener {
                     if (this.main.selectedFile == null) {
                         return;
                     }
-                    String path = this.main.selectedFile.getPath()
+                    final String path = this.main.selectedFile.getPath()
                             .toString().split(Pattern.quote(File.separator))[2];
 
                     if (path.equals("unsorted")) {
@@ -61,7 +61,7 @@ public class FileActionButtonPressed implements ActionListener {
                 if (this.main.selectedFile == null) {
                     return;
                 }
-                String path = this.main.selectedFile.getPath()
+                final String path = this.main.selectedFile.getPath()
                         .toString().split(Pattern.quote(File.separator))[2];
                 if (path.equals("sorted")) {
                     this.main.db.delete(this.main.selectedFile);
@@ -81,7 +81,7 @@ public class FileActionButtonPressed implements ActionListener {
                 if (main.settings.isBodyLocked()) {
                     body = main.rightPanel.bodyLabel.getText();
                 }
-                ThoughtObject tObj = new SaveNewFile(title, tag, body).save();
+                final ThoughtObject tObj = new SaveNewFile(title, tag, body).save();
                 l.setContentFields(tObj);
                 this.main.leftPanel.leftTabs.setSelectedIndex(0);
                 this.main.selectTextField(this.main.rightPanel.titleLabel);

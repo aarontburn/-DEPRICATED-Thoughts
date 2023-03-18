@@ -55,8 +55,8 @@ public class SettingsHandler {
     public void createSettingsFile() {
         try {
             TC.Paths.SETTINGS_DIRECTORY.createNewFile();
-            FileWriter fWriter = new FileWriter(TC.Paths.SETTINGS_DIRECTORY);
-            HashMap<String, Object> textContent = new HashMap<String, Object>();
+            final FileWriter fWriter = new FileWriter(TC.Paths.SETTINGS_DIRECTORY);
+            final HashMap<String, Object> textContent = new HashMap<>();
 
             textContent.put("isDarkMode", this.isDarkMode);
             textContent.put("isMaximized", this.isMaximized);
@@ -70,7 +70,7 @@ public class SettingsHandler {
             textContent.put("pushOnClose", this.pushOnClose);
             textContent.put("pullOnStartup", this.pullOnStartup);
 
-            JSONObject objJson = new JSONObject(textContent);
+            final JSONObject objJson = new JSONObject(textContent);
             fWriter.write(objJson.toJSONString());
             fWriter.close();
 
@@ -81,7 +81,7 @@ public class SettingsHandler {
 
     private void readFileContents() {
         try (FileReader reader = new FileReader(TC.Paths.SETTINGS_DIRECTORY)) {
-            JSONObject json = (JSONObject) new JSONParser().parse(reader);
+            final JSONObject json = (JSONObject) new JSONParser().parse(reader);
 
             this.isDarkMode = (boolean) json.get("isDarkMode");
             this.isMaximized = (boolean) json.get("isMaximized");
@@ -187,11 +187,11 @@ public class SettingsHandler {
         return (int) this.windowHeight;
     }
 
-    public boolean getIsDarkMode() {
+    public boolean isDarkMode() {
         return this.isDarkMode;
     }
 
-    public boolean getIsMaximized() {
+    public boolean isMaximized() {
         return this.isMaximized;
     }
 

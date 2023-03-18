@@ -6,7 +6,7 @@ import com.beanloaf.view.Thoughts;
 import javax.swing.undo.UndoManager;
 import java.awt.*;
 
-public class BodyTextArea extends TextArea {
+public class BodyTextArea extends AbstractTextArea {
 
     private final GhostText ghostText;
 

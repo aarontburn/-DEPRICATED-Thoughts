@@ -8,7 +8,7 @@ import java.io.File;
  * 
  * @author beanloaf
  */
-public class TC {
+public final class TC {
 
     
     public static final String DEFAULT_TITLE = "<untitled>";
@@ -56,12 +56,12 @@ public class TC {
     }
 
     public class Fonts {
-        public static Font p = new Font("Lato", Font.PLAIN, 25);
-        public static Font h1 = new Font("Lato", Font.PLAIN, 50);
-        public static Font h2 = new Font("Lato", Font.PLAIN, 40);
-        public static Font h3 = new Font("Lato", Font.PLAIN, 30);
-        public static Font h4 = new Font("Lato", Font.PLAIN, 20);
-        public static Font h5 = new Font("Lato", Font.PLAIN, 15);
+        public static final Font p = new Font("Lato", Font.PLAIN, 25);
+        public static final Font h1 = new Font("Lato", Font.PLAIN, 50);
+        public static final Font h2 = new Font("Lato", Font.PLAIN, 40);
+        public static final Font h3 = new Font("Lato", Font.PLAIN, 30);
+        public static final Font h4 = new Font("Lato", Font.PLAIN, 20);
+        public static final Font h5 = new Font("Lato", Font.PLAIN, 15);
     }
 
 }

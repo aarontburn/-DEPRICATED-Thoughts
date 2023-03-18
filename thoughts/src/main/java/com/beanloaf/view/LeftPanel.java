@@ -111,7 +111,8 @@ public class LeftPanel extends JPanel implements PropertyChangeListener {
     }
 
     private void createTagTabs(final DefaultListModel<String> model,
-                               final ArrayList<ThoughtObject> arrayList, String tagName) {
+                               final ArrayList<ThoughtObject> arrayList,
+                               final String tagName) {
 
         final GBC constraints = new GBC(1, 0.01).setFill(GridBagConstraints.HORIZONTAL).setAnchor(GridBagConstraints.NORTH);
 
@@ -138,7 +139,7 @@ public class LeftPanel extends JPanel implements PropertyChangeListener {
 
     }
 
-    private JScrollPane createScrollView(JPanel panel) {
+    private JScrollPane createScrollView(final JPanel panel) {
         final JScrollPane scroll = new JScrollPane(panel,
                 JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -149,9 +150,9 @@ public class LeftPanel extends JPanel implements PropertyChangeListener {
     }
 
     public void setTagModel() {
-        ArrayList<String> tagNames = new ArrayList<>();
-        for (File sortedFile : main.sortedFiles) {
-            ThoughtObject content = main.readFileContents(sortedFile);
+        final ArrayList<String> tagNames = new ArrayList<>();
+        for (final File sortedFile : main.sortedFiles) {
+            final ThoughtObject content = main.readFileContents(sortedFile);
 
             if (content != null) {
                 if (!tagNames.contains(content.getTag())) {
@@ -161,11 +162,11 @@ public class LeftPanel extends JPanel implements PropertyChangeListener {
 
         }
         tagNames.sort(String::compareToIgnoreCase);
-        for (String tagName : tagNames) {
-            DefaultListModel<String> tempTagModel = new DefaultListModel<>();
-            ArrayList<ThoughtObject> thoughtObjectList = new ArrayList<>();
-            for (File sortedFile : main.sortedFiles) {
-                ThoughtObject content = main.readFileContents(sortedFile);
+        for (final String tagName : tagNames) {
+            final DefaultListModel<String> tempTagModel = new DefaultListModel<>();
+            final ArrayList<ThoughtObject> thoughtObjectList = new ArrayList<>();
+            for (final File sortedFile : main.sortedFiles) {
+                final ThoughtObject content = main.readFileContents(sortedFile);
                 if (content != null && content.getTag().equals(tagName)) {
                     tempTagModel.addElement(content.getTitle());
                     thoughtObjectList.add(content);
@@ -184,7 +185,7 @@ public class LeftPanel extends JPanel implements PropertyChangeListener {
 
                 try {
                     leftTabs.setSelectedIndex(index);
-                } catch (Exception e) {
+                } catch (final Exception e) {
                     leftTabs.setSelectedIndex(index - 1);
                 }
             }

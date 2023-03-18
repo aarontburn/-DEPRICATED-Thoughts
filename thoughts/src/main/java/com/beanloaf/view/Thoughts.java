@@ -73,7 +73,7 @@ public class Thoughts {
     public DefaultListModel<String> sortedListModel = new DefaultListModel<>();
     public final ArrayList<String> tagList = new ArrayList<>();
 
-    public boolean ready = false;
+    public boolean ready;
     public final SettingsHandler settings = new SettingsHandler();
     public final FirebaseHandler db = new FirebaseHandler(this);
 
@@ -96,7 +96,7 @@ public class Thoughts {
 
         refreshThoughtList();
 
-        if (this.unsortedThoughtList.size() > 0) {
+        if (this.unsortedThoughtList.isEmpty()) {
             new ListItemPressed(this,
                     this.leftPanel.unsortedListLabel,
                     this.unsortedThoughtList).setContentFields(0);
@@ -130,7 +130,7 @@ public class Thoughts {
             }
         });
 
-        this.window.setExtendedState((settings.getIsMaximized()) ? JFrame.MAXIMIZED_BOTH : JFrame.NORMAL);
+        this.window.setExtendedState(settings.isMaximized() ? JFrame.MAXIMIZED_BOTH : JFrame.NORMAL);
 
         KeyboardFocusManager.getCurrentKeyboardFocusManager()
                 .addKeyEventDispatcher(new KeyBinds());
@@ -216,7 +216,7 @@ public class Thoughts {
         splitPane.setRightComponent(rightPanel);
     }
 
-    public ThoughtObject readFileContents(File filePath) {
+    public ThoughtObject readFileContents(final File filePath) {
 
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             final StringBuilder sb = new StringBuilder();
@@ -343,13 +343,13 @@ public class Thoughts {
 
     public class KeyBinds implements KeyEventDispatcher {
         @Override
-        public boolean dispatchKeyEvent(KeyEvent e) {
+        public boolean dispatchKeyEvent(final KeyEvent event) {
             // 401 is key-down
-            if (e.getID() != 401) {
+            if (event.getID() != 401) {
                 return false;
             }
-            int key = e.getKeyCode();
-            boolean c = e.isControlDown();
+            int key = event.getKeyCode();
+            boolean c = event.isControlDown();
 
             switch (key) {
                 case KeyEvent.VK_Z -> { // Undo
@@ -380,13 +380,15 @@ public class Thoughts {
                 }
                 case KeyEvent.VK_P -> { // Push/Pull
                     if (c) {
-                        if (e.isShiftDown()) { // Pull
+                        if (event.isShiftDown()) { // Pull
                             thoughtsPCS.firePropertyChange(TC.Properties.PULL);
 
                         } else { // Push
                             thoughtsPCS.firePropertyChange(TC.Properties.PUSH);
                         }
                     }
+                }
+                default -> {
                 }
             }
 
@@ -396,8 +398,11 @@ public class Thoughts {
     }
 
     public class CellRenderer extends DefaultListCellRenderer {
-        public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected,
-                boolean cellHasFocus) {
+        public Component getListCellRendererComponent(final JList<?> list,
+                                                      final Object value,
+                                                      final int index,
+                                                      final boolean isSelected,
+                                                      boolean cellHasFocus) {
             JLabel c = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
             c.setHorizontalAlignment(JLabel.CENTER);
             c.setPreferredSize(new Dimension(25, 25));

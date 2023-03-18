@@ -12,7 +12,7 @@ public class ThoughtsPCS extends PropertyChangeSupport {
         super(main);
     }
 
-    public void addPropertyChangeListener(PropertyChangeListener listener) {
+    public void addPropertyChangeListener(final PropertyChangeListener listener) {
         super.addPropertyChangeListener(listener);
     }
 

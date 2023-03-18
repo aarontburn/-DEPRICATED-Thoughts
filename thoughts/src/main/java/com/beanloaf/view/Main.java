@@ -1,6 +1,7 @@
 package com.beanloaf.view;
 
-import javax.swing.*;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 
 public class Main {
 

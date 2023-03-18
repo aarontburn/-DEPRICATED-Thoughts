@@ -6,7 +6,7 @@ import com.beanloaf.objects.TextPropertyObject;
 import com.beanloaf.res.TC;
 import com.beanloaf.textfields.BodyTextArea;
 import com.beanloaf.textfields.TagTextArea;
-import com.beanloaf.textfields.TextArea;
+import com.beanloaf.textfields.AbstractTextArea;
 import com.beanloaf.textfields.TitleTextArea;
 
 import javax.swing.*;
@@ -20,7 +20,7 @@ public class RightPanel extends JPanel implements PropertyChangeListener {
     private final Thoughts main;
 
     public JLabel dateLabel, pushLabel, pullLabel;
-    public TextArea titleLabel, tagLabel, bodyLabel;
+    public AbstractTextArea titleLabel, tagLabel, bodyLabel;
     public UndoManager undoManager = new UndoManager();
     public JButton sortButton, deleteButton, newFileButton, pullButton, pushButton;
 
@@ -209,12 +209,16 @@ public class RightPanel extends JPanel implements PropertyChangeListener {
             case TC.Properties.UNDO -> {
                 try {
                     this.undoManager.undo();
-                } catch (Exception e) {}
+                } catch (Exception e) {
+
+                }
             }
             case TC.Properties.REDO -> {
                 try {
                     this.undoManager.redo();
-                } catch (Exception e){}
+                } catch (Exception e) {
+
+                }
             }
             case TC.Properties.NEW_FILE -> this.newFileButton.doClick();
             case TC.Properties.DELETE -> this.deleteButton.doClick();

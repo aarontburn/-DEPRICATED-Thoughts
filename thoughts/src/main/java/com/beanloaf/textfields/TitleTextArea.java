@@ -4,11 +4,10 @@ import com.beanloaf.input.TabKeyPressed;
 import com.beanloaf.res.TC;
 import com.beanloaf.view.Thoughts;
 
-import javax.swing.event.DocumentEvent;
 import javax.swing.undo.UndoManager;
 import java.awt.*;
 
-public class TitleTextArea extends TextArea {
+public class TitleTextArea extends AbstractTextArea {
 
     private final GhostText ghostText;
 

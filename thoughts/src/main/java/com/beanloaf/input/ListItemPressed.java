@@ -17,22 +17,20 @@ public class ListItemPressed extends MouseAdapter {
     private final ArrayList<ThoughtObject> arrayList;
     private final JList<?> list;
 
-    public ListItemPressed(Thoughts main) {
-        this.main = main;
-        this.arrayList = null;
-        this.list = null;
+    public ListItemPressed(final Thoughts main) {
+        this(main, null, null);
     }
 
-    public ListItemPressed(Thoughts main,
-                           ListTab list,
-                           ArrayList<ThoughtObject> arrayList) {
-
+    public ListItemPressed(final Thoughts main,
+                           final ListTab list,
+                           final ArrayList<ThoughtObject> arrayList) {
+        super();
         this.main = main;
         this.arrayList = arrayList;
         this.list = list;
     }
 
-    public void mousePressed(MouseEvent e) {
+    public void mousePressed(final MouseEvent event) {
         int selectedIndex = this.list.getSelectedIndex();
         setContentFields(selectedIndex);
         this.main.rightPanel.undoManager.discardAllEdits();
@@ -72,7 +70,7 @@ public class ListItemPressed extends MouseAdapter {
 
     }
 
-    public void setContentFields(ThoughtObject obj) {
+    public void setContentFields(final ThoughtObject obj) {
         if (obj == null) {
             return;
         }

@@ -14,12 +14,13 @@ public class ListTabPressed extends MouseAdapter {
 
     private final Thoughts main;
 
-    public ListTabPressed(Thoughts main) {
+    public ListTabPressed(final Thoughts main) {
+        super();
         this.main = main;
     }
 
     @Override
-    public void mousePressed(MouseEvent e) {
+    public void mousePressed(final MouseEvent e) {
         JTabbedPane tabs = main.leftPanel.leftTabs;
 
         JScrollPane scroll = (JScrollPane) tabs.getSelectedComponent();

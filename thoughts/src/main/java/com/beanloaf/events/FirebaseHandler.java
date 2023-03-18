@@ -31,15 +31,15 @@ public class FirebaseHandler implements ValueEventListener {
 
     public boolean isOnline;
 
-    private ArrayList<ThoughtObject> objectList = null;
-    private boolean isStartup = false;
+    private ArrayList<ThoughtObject> objectList;
+    private boolean isStartup;
 
     public FirebaseHandler(Thoughts main) {
         this.main = main;
         try {
             // Checks to see if the pc is connected to the internet
-            URL url = new URL("https://www.google.com");
-            URLConnection connection = url.openConnection();
+            final URL url = new URL("https://www.google.com");
+            final URLConnection connection = url.openConnection();
             connection.connect();
             isOnline = true;
 
@@ -115,9 +115,9 @@ public class FirebaseHandler implements ValueEventListener {
             return false;
         }
         try {
-            File[] sortedFileDirectory = TC.Paths.SORTED_DIRECTORY_PATH.listFiles();
-            for (File file : sortedFileDirectory) {
-                ThoughtObject tObj = this.main.readFileContents(file);
+            final File[] sortedFileDirectory = TC.Paths.SORTED_DIRECTORY_PATH.listFiles();
+            for (final File file : sortedFileDirectory) {
+                final ThoughtObject tObj = this.main.readFileContents(file);
                 if (tObj != null) {
                     update(tObj);
                 }
@@ -141,7 +141,7 @@ public class FirebaseHandler implements ValueEventListener {
         }
         try {
             if (this.objectList != null) {
-                for (ThoughtObject tObj : this.objectList) {
+                for (final ThoughtObject tObj : this.objectList) {
                     new SaveNewFile(tObj).fbSave();
                 }
                 this.main.refreshThoughtList();
@@ -188,7 +188,7 @@ public class FirebaseHandler implements ValueEventListener {
     public void onDataChange(DataSnapshot dataSnapshot) {
         System.out.println("onDataChange() fired");
         objectList = new ArrayList<>();
-        for (DataSnapshot data : dataSnapshot.getChildren()) {
+        for (final DataSnapshot data : dataSnapshot.getChildren()) {
             final Map<String, String> value = (Map<String, String>) data.getValue();
             final String filePath = data.getKey() + ".json";
             final String title = value.get("Title");

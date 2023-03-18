@@ -13,9 +13,9 @@ public class ListTab extends JList<String> {
 
     private final ListItemPressed l;
 
-    public ListTab(Thoughts main,
-                   ArrayList<ThoughtObject> thoughtList,
-                   DefaultListModel<String> model) {
+    public ListTab(final Thoughts main,
+                   final ArrayList<ThoughtObject> thoughtList,
+                   final DefaultListModel<String> model) {
         super(model);
 
         l = new ListItemPressed(main, this, thoughtList);

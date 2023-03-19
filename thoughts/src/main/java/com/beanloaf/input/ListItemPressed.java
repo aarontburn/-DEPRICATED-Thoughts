@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 import javax.swing.JList;
 
-import com.beanloaf.objects.ListTab;
+import com.beanloaf.tagobjects.ListItems;
 import com.beanloaf.objects.ThoughtObject;
 import com.beanloaf.res.TC;
 import com.beanloaf.view.Thoughts;
@@ -21,7 +21,7 @@ public class ListItemPressed extends MouseAdapter {
     }
 
     public ListItemPressed(final Thoughts main,
-                           final ListTab list,
+                           final ListItems list,
                            final ArrayList<ThoughtObject> arrayList) {
         super();
         this.main = main;

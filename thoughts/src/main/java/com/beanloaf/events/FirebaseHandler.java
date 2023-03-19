@@ -7,39 +7,35 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Map;
 
-import com.beanloaf.main.ThoughtsMain;
 import com.beanloaf.objects.ThoughtObject;
 import com.beanloaf.res.TC;
+import com.beanloaf.view.Thoughts;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.DatabaseReference.CompletionListener;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 public class FirebaseHandler implements ValueEventListener {
 
-    private final ThoughtsMain main;
-
-    private FirebaseDatabase firebaseDatabase;
     private static final String DATABASE_URL = "https://thoughts-4144a-default-rtdb.firebaseio.com";
     private static final String KEY_PATH = "serviceAccountKey.json";
+
+    private final Thoughts main;
     private DatabaseReference ref;
-
     public boolean isOnline;
+    private ArrayList<ThoughtObject> objectList;
+    private boolean isStartup;
 
-    private ArrayList<ThoughtObject> objectList = null;
-    private boolean isStartup = false;
-
-    public FirebaseHandler(ThoughtsMain main) {
+    public FirebaseHandler(Thoughts main) {
         this.main = main;
         try {
             // Checks to see if the pc is connected to the internet
-            URL url = new URL("https://www.google.com");
-            URLConnection connection = url.openConnection();
+            final URL url = new URL("https://www.google.com");
+            final URLConnection connection = url.openConnection();
             connection.connect();
             isOnline = true;
 
@@ -49,7 +45,8 @@ public class FirebaseHandler implements ValueEventListener {
                     .setDatabaseUrl(DATABASE_URL)
                     .build();
             FirebaseApp.initializeApp(options);
-            firebaseDatabase = FirebaseDatabase.getInstance(DATABASE_URL);
+
+            final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance(DATABASE_URL);
             ref = firebaseDatabase.getReference("<USERNAME>");
             ref.addValueEventListener(this);
 
@@ -64,10 +61,6 @@ public class FirebaseHandler implements ValueEventListener {
 
     }
 
-    public DatabaseReference getDatabase() {
-        return this.ref;
-    }
-
     /**
      * Creates a new entry in the database, or updates the entry if the same path
      * has been found.
@@ -78,19 +71,11 @@ public class FirebaseHandler implements ValueEventListener {
      * @param body
      * @param fileName
      */
-    public void update(String title, String tag, String date, String body, String fileName) {
-        if (!this.isOnline) {
-            System.out.println("Not connected to the internet!");
-            return;
-        }
-        final String path = fileName.replace(".json", "");
-        ref.child(path).child("Title").setValue(title, null);
-        ref.child(path).child("Tag").setValue(tag, null);
-        ref.child(path).child("Date").setValue(date, null);
-        ref.child(path).child("Body").setValue(body, null);
+    public void update(final String title, final String tag, final String date, final String body, final String fileName) {
+        update(new ThoughtObject(title, date, tag, body, new File(fileName)));
     }
 
-    public void update(ThoughtObject obj) {
+    public void update(final ThoughtObject obj) {
         if (!this.isOnline) {
             System.out.println("Not connected to the internet!");
             return;
@@ -115,9 +100,9 @@ public class FirebaseHandler implements ValueEventListener {
             return false;
         }
         try {
-            File[] sortedFileDirectory = TC.SORTED_DIRECTORY_PATH.listFiles();
-            for (File file : sortedFileDirectory) {
-                ThoughtObject tObj = this.main.readFileContents(file);
+            final File[] sortedFileDirectory = TC.Paths.SORTED_DIRECTORY_PATH.listFiles();
+            for (final File file : sortedFileDirectory) {
+                final ThoughtObject tObj = this.main.readFileContents(file);
                 if (tObj != null) {
                     update(tObj);
                 }
@@ -141,7 +126,7 @@ public class FirebaseHandler implements ValueEventListener {
         }
         try {
             if (this.objectList != null) {
-                for (ThoughtObject tObj : this.objectList) {
+                for (final ThoughtObject tObj : this.objectList) {
                     new SaveNewFile(tObj).fbSave();
                 }
                 this.main.refreshThoughtList();
@@ -165,30 +150,28 @@ public class FirebaseHandler implements ValueEventListener {
      * 
      * @param obj
      */
-    public void delete(ThoughtObject obj) {
+    public void delete(final ThoughtObject obj) {
         if (!this.isOnline) {
             System.out.println("Not connected to the internet!");
             return;
         }
         final String path = obj.getPath().getName().replace(".json", "");
-        ref.child(path).removeValue(new CompletionListener() {
-            @Override
-            public void onComplete(DatabaseError error, DatabaseReference ref) {
-                if (error == null) {
-                    System.out.println("Successfully deleted file.");
-                } else {
-                    System.err.println("Error occured on deletion.");
-                }
+
+        ref.child(path).removeValue((error, ref) -> {
+            if (error == null) {
+                System.out.println("Successfully deleted file.");
+            } else {
+                System.err.println("Error occured on deletion.");
             }
         });
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public void onDataChange(DataSnapshot dataSnapshot) {
+    public void onDataChange(final DataSnapshot dataSnapshot) {
         System.out.println("onDataChange() fired");
         objectList = new ArrayList<>();
-        for (DataSnapshot data : dataSnapshot.getChildren()) {
+        for (final DataSnapshot data : dataSnapshot.getChildren()) {
             final Map<String, String> value = (Map<String, String>) data.getValue();
             final String filePath = data.getKey() + ".json";
             final String title = value.get("Title");
@@ -208,10 +191,8 @@ public class FirebaseHandler implements ValueEventListener {
 
     public void refreshPushPullLabels() {
         if (!this.isOnline) {
-            this.main.pullLabel.setText("Not connected.");
-            this.main.pushLabel.setText("Not connected.");
-            this.main.pullButton.setEnabled(isOnline);
-            this.main.pushButton.setEnabled(isOnline);
+            this.main.thoughtsPCS.firePropertyChange(TC.Properties.DISCONNECTED);
+
             return;
         }
 
@@ -235,13 +216,14 @@ public class FirebaseHandler implements ValueEventListener {
         if (diffPull < 0) {
             diffPull = 0;
         }
-        this.main.pullLabel.setText(String.valueOf(diffPull) + " files can be pulled.");
+        this.main.thoughtsPCS.firePropertyChange(TC.Properties.UNPULLED_FILES, null, diffPull);
         /* Push */
         int diffPush = this.main.sortedThoughtList.size() - this.objectList.size();
         if (diffPush < 0) {
             diffPush = 0;
         }
-        this.main.pushLabel.setText(String.valueOf(diffPush) + " files not pushed.");
+        this.main.thoughtsPCS.firePropertyChange(TC.Properties.UNPUSHED_FILES, null, diffPush);
+
     }
 
     @Override

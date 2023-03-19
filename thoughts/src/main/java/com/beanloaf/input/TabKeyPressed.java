@@ -7,20 +7,14 @@ import java.awt.KeyboardFocusManager;
 import javax.swing.JComponent;
 import javax.swing.JTextArea;
 
-import com.beanloaf.main.ThoughtsMain;
+import com.beanloaf.view.Thoughts;
 
 public class TabKeyPressed extends KeyAdapter {
-    JTextArea textArea;
-    ThoughtsMain main;
+    private final Thoughts main;
 
-    public TabKeyPressed(ThoughtsMain main, JTextArea textArea) {
-        this.textArea = textArea;
+    public TabKeyPressed(final Thoughts main) {
+        super();
         this.main = main;
-    }
-
-    public TabKeyPressed(JTextArea textArea) {
-        this.textArea = textArea;
-        this.main = null;
     }
 
     @Override
@@ -29,7 +23,7 @@ public class TabKeyPressed extends KeyAdapter {
         final String currentFocused = component.getName();
 
         if (e.getKeyCode() == KeyEvent.VK_TAB
-                || (e.getKeyCode() == KeyEvent.VK_ENTER)) {
+                || e.getKeyCode() == KeyEvent.VK_ENTER) {
 
             if (e.getModifiersEx() > 0) { // Going to previous textbox
                 switch (currentFocused) {
@@ -37,7 +31,7 @@ public class TabKeyPressed extends KeyAdapter {
                         // Do nothing
                         break;
                     case "tagLabel":
-                        main.titleLabel.requestFocusInWindow();
+                        main.rightPanel.titleLabel.requestFocusInWindow();
                         break;
                     case "bodyLabel":
                         // Do nothing
@@ -49,10 +43,10 @@ public class TabKeyPressed extends KeyAdapter {
             } else { // Going to next textbox
                 switch (currentFocused) {
                     case "titleLabel":
-                        main.tagLabel.requestFocusInWindow();
+                        main.rightPanel.tagLabel.requestFocusInWindow();
                         break;
                     case "tagLabel":
-                        main.bodyLabel.requestFocusInWindow();
+                        main.rightPanel.bodyLabel.requestFocusInWindow();
                         break;
                     case "bodyLabel":
                         // Do nothing

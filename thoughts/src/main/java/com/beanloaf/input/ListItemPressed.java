@@ -6,40 +6,42 @@ import java.util.ArrayList;
 
 import javax.swing.JList;
 
-import com.beanloaf.main.ThoughtsMain;
 import com.beanloaf.objects.ListTab;
 import com.beanloaf.objects.ThoughtObject;
+import com.beanloaf.res.TC;
+import com.beanloaf.view.Thoughts;
 
 public class ListItemPressed extends MouseAdapter {
-    private final ThoughtsMain main;
-    ArrayList<ThoughtObject> arrayList;
-    JList<?> list;
+    private final Thoughts main;
+    private final ArrayList<ThoughtObject> arrayList;
+    private final JList<?> list;
 
-    public ListItemPressed(ThoughtsMain main) {
-        this.main = main;
-        this.arrayList = null;
-        this.list = null;
+    public ListItemPressed(final Thoughts main) {
+        this(main, null, null);
     }
 
-    public ListItemPressed(ThoughtsMain main,
-            ListTab list,
-            ArrayList<ThoughtObject> arrayList) {
-
+    public ListItemPressed(final Thoughts main,
+                           final ListTab list,
+                           final ArrayList<ThoughtObject> arrayList) {
+        super();
         this.main = main;
         this.arrayList = arrayList;
         this.list = list;
     }
 
-    public void mousePressed(MouseEvent e) {
+    @Override
+    public void mousePressed(final MouseEvent event) {
         int selectedIndex = this.list.getSelectedIndex();
         setContentFields(selectedIndex);
-        this.main.undo.discardAllEdits();
+        this.main.thoughtsPCS.firePropertyChange(TC.Properties.LIST_ITEM_PRESSED);
+
     }
 
 
-    public void setContentFields(int index) {
+    public void setContentFields(final int index) {
         main.refreshThoughtList();
         this.main.ready = false;
+
         ThoughtObject obj = new ThoughtObject(
                 "",
                 "",
@@ -49,7 +51,7 @@ public class ListItemPressed extends MouseAdapter {
 
         if (index < 0) {
             this.main.selectedFile = null;
-            this.main.leftTabs.setSelectedIndex(0);
+            this.main.leftPanel.leftTabs.setSelectedIndex(0);
         }
 
         if (this.arrayList != null && this.arrayList.size() > index) {
@@ -58,23 +60,24 @@ public class ListItemPressed extends MouseAdapter {
 
         }
 
-        this.main.titleLabel.setText(obj.getTitle());
-        this.main.tagLabel.setText(obj.getTag());
-        this.main.dateLabel.setText("Created on: " + obj.getDate());
-        this.main.bodyLabel.setText(obj.getBody());
+        this.main.thoughtsPCS.firePropertyChange(TC.Properties.TEXT, obj);
+
         this.main.ready = true;
 
     }
 
-    public void setContentFields(ThoughtObject obj) {
+    public void setContentFields(final ThoughtObject obj) {
         if (obj == null) {
             return;
         }
         this.main.selectedFile = obj;
-        this.main.titleLabel.setText(obj.getTitle());
-        this.main.tagLabel.setText(obj.getTag());
-        this.main.dateLabel.setText("Created on: " + obj.getDate());
-        this.main.bodyLabel.setText(obj.getBody());
+        this.main.thoughtsPCS.firePropertyChange(TC.Properties.TEXT, obj);
+
+    }
+
+    @Override
+    public String toString() {
+        return arrayList.toString();
     }
 
 }

@@ -1,8 +1,8 @@
 package com.beanloaf.objects;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Objects;
 
@@ -18,7 +18,11 @@ public class ThoughtObject {
     private String body;
     private File file;
 
-    public ThoughtObject(String title, String date, String tag, String body, File file) {
+    public ThoughtObject(final String title,
+                         final String date,
+                         final String tag,
+                         final String body,
+                         final File file) {
         this.title = title;
         this.tag = tag;
         this.date = date;
@@ -28,7 +32,7 @@ public class ThoughtObject {
 
     public void saveFile() {
         if (this.file != null) {
-            try (FileWriter fWriter = new FileWriter(this.file)) {
+            try (BufferedWriter fWriter = Files.newBufferedWriter(Paths.get(this.file.toURI()))) {
                 HashMap<String, String> textContent = new HashMap<>();
                 textContent.put("title", this.title);
                 textContent.put("date", this.date);
@@ -44,17 +48,17 @@ public class ThoughtObject {
 
     }
 
-    public void editTitle(String newTitle) {
+    public void editTitle(final String newTitle) {
         this.title = newTitle;
         saveFile();
     }
 
-    public void editTag(String newTag) {
+    public void editTag(final String newTag) {
         this.tag = newTag;
         saveFile();
     }
 
-    public void editBody(String newBody) {
+    public void editBody(final String newBody) {
         this.body = newBody;
         saveFile();
     }
@@ -63,7 +67,7 @@ public class ThoughtObject {
         return this.file;
     }
 
-    public void setPath(File str) {
+    public void setPath(final File str) {
         this.file = str;
     }
 
@@ -75,7 +79,7 @@ public class ThoughtObject {
         return TC.DEFAULT_BODY;
     }
 
-    public void setBody(String str) {
+    public void setBody(final String str) {
         this.body = str;
     }
 
@@ -93,15 +97,15 @@ public class ThoughtObject {
         return TC.DEFAULT_TAG;
     }
 
-    public void setName(String title) {
+    public void setName(final String title) {
         this.title = title;
     }
 
-    public void setTag(String tag) {
+    public void setTag(final String tag) {
         this.tag = tag;
     }
 
-    public void setDate(String date) {
+    public void setDate(final String date) {
         this.date = date;
     }
 
@@ -110,21 +114,16 @@ public class ThoughtObject {
     }
 
     @Override
-    public boolean equals(Object otherObject) {
+    public boolean equals(final Object otherObject) {
         if (otherObject.getClass() != this.getClass() || otherObject == null) {
             return false;
         }
-        ThoughtObject other = (ThoughtObject) otherObject;
-        if (this.getTitle().equals(other.getTitle())
+        final ThoughtObject other = (ThoughtObject) otherObject;
+        return this.getTitle().equals(other.getTitle())
                 && this.getDate().equals(other.getDate())
                 && this.getBody().equals(other.getBody())
                 && this.getTag().equals(other.getTag())
-                && this.getPath().equals(other.getPath())) {
-            return true;
-
-        }
-
-        return false;
+                && this.getPath().equals(other.getPath());
 
     }
 

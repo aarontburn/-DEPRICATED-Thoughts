@@ -2,9 +2,11 @@ package com.beanloaf.events;
 
 import java.awt.Dimension;
 import java.awt.Point;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
 
 import org.json.simple.JSONObject;
@@ -32,7 +34,7 @@ public class SettingsHandler {
     }
 
     public void check() {
-        if (TC.SETTINGS_DIRECTORY.isFile()) {
+        if (TC.Paths.SETTINGS_DIRECTORY.isFile()) {
             return;
         } else {
             System.err.println("Creating new settings.json...");
@@ -53,10 +55,10 @@ public class SettingsHandler {
     }
 
     public void createSettingsFile() {
-        try {
-            TC.SETTINGS_DIRECTORY.createNewFile();
-            FileWriter fWriter = new FileWriter(TC.SETTINGS_DIRECTORY);
-            HashMap<String, Object> textContent = new HashMap<String, Object>();
+        try (BufferedWriter fWriter = Files.newBufferedWriter(Paths.get(TC.Paths.SETTINGS_DIRECTORY.toURI()))){
+            TC.Paths.SETTINGS_DIRECTORY.createNewFile();
+
+            final HashMap<String, Object> textContent = new HashMap<>();
 
             textContent.put("isDarkMode", this.isDarkMode);
             textContent.put("isMaximized", this.isMaximized);
@@ -70,9 +72,8 @@ public class SettingsHandler {
             textContent.put("pushOnClose", this.pushOnClose);
             textContent.put("pullOnStartup", this.pullOnStartup);
 
-            JSONObject objJson = new JSONObject(textContent);
+            final JSONObject objJson = new JSONObject(textContent);
             fWriter.write(objJson.toJSONString());
-            fWriter.close();
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -80,8 +81,8 @@ public class SettingsHandler {
     }
 
     private void readFileContents() {
-        try (FileReader reader = new FileReader(TC.SETTINGS_DIRECTORY)) {
-            JSONObject json = (JSONObject) new JSONParser().parse(reader);
+        try (BufferedReader reader = Files.newBufferedReader(Paths.get(TC.Paths.SETTINGS_DIRECTORY.toURI()))) {
+            final JSONObject json = (JSONObject) new JSONParser().parse(reader);
 
             this.isDarkMode = (boolean) json.get("isDarkMode");
             this.isMaximized = (boolean) json.get("isMaximized");
@@ -97,7 +98,7 @@ public class SettingsHandler {
 
         } catch (Exception e) {
             System.err.println("Error in settings.json. Regenerating file...");
-            if (TC.SETTINGS_DIRECTORY.delete()) {
+            if (TC.Paths.SETTINGS_DIRECTORY.delete()) {
                 System.err.println("Successfully deleted settings.json.");
             }
         }
@@ -187,11 +188,11 @@ public class SettingsHandler {
         return (int) this.windowHeight;
     }
 
-    public boolean getIsDarkMode() {
+    public boolean isDarkMode() {
         return this.isDarkMode;
     }
 
-    public boolean getIsMaximized() {
+    public boolean isMaximized() {
         return this.isMaximized;
     }
 

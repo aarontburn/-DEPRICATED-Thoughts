@@ -43,7 +43,7 @@ public class LeftPanel extends JPanel implements PropertyChangeListener {
 
         this.leftTabs = new JTabbedPane(JTabbedPane.LEFT);
         this.leftTabs.setFont(TC.Fonts.h4);
-        this.leftTabs.addMouseListener(new ListTabPressed(main));
+        this.leftTabs.addMouseListener(new ListTabPressed(this));
         this.leftTabs.setPreferredSize(new Dimension(200, 200));
         this.leftTabs.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 

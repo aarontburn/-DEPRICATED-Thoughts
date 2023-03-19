@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import javax.swing.JList;
 
 import com.beanloaf.objects.ListTab;
-import com.beanloaf.objects.TextPropertyObject;
 import com.beanloaf.objects.ThoughtObject;
 import com.beanloaf.res.TC;
 import com.beanloaf.view.Thoughts;
@@ -30,10 +29,10 @@ public class ListItemPressed extends MouseAdapter {
         this.list = list;
     }
 
+    @Override
     public void mousePressed(final MouseEvent event) {
         int selectedIndex = this.list.getSelectedIndex();
         setContentFields(selectedIndex);
-        this.main.rightPanel.undoManager.discardAllEdits();
         this.main.thoughtsPCS.firePropertyChange(TC.Properties.LIST_ITEM_PRESSED);
 
     }
@@ -42,6 +41,7 @@ public class ListItemPressed extends MouseAdapter {
     public void setContentFields(final int index) {
         main.refreshThoughtList();
         this.main.ready = false;
+
         ThoughtObject obj = new ThoughtObject(
                 "",
                 "",
@@ -60,11 +60,7 @@ public class ListItemPressed extends MouseAdapter {
 
         }
 
-        this.main.thoughtsPCS.firePropertyChange(TC.Properties.TEXT, null, new TextPropertyObject(
-                obj.getTitle(),
-                obj.getTag(),
-                obj.getDate(),
-                obj.getBody()));
+        this.main.thoughtsPCS.firePropertyChange(TC.Properties.TEXT, obj);
 
         this.main.ready = true;
 
@@ -75,12 +71,13 @@ public class ListItemPressed extends MouseAdapter {
             return;
         }
         this.main.selectedFile = obj;
-        this.main.thoughtsPCS.firePropertyChange(TC.Properties.TEXT, null, new TextPropertyObject(
-                obj.getTitle(),
-                obj.getTag(),
-                obj.getDate(),
-                obj.getBody()));
+        this.main.thoughtsPCS.firePropertyChange(TC.Properties.TEXT, obj);
 
+    }
+
+    @Override
+    public String toString() {
+        return arrayList.toString();
     }
 
 }

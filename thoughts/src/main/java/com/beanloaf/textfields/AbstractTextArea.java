@@ -17,13 +17,21 @@ public abstract class AbstractTextArea extends JTextArea implements DocumentList
 
     public final Thoughts main;
     public final UndoManager undoManager;
+    private final GhostText ghostText;
 
-    public AbstractTextArea(final String text, final Thoughts main, final UndoManager undoManager) {
+    public AbstractTextArea(final String text, final Font font, final Thoughts main, final UndoManager undoManager) {
         super(text);
         this.main = main;
         this.undoManager = undoManager;
+        this.setLayout(new GridBagLayout());
+        this.setFont(font);
+
         defaultDocumentSettings();
         attachEventHandlers();
+
+        ghostText = new GhostText(text, font);
+        this.add(ghostText, GHOST_TEXT_CONSTRAINTS);
+
 
 
     }
@@ -38,7 +46,16 @@ public abstract class AbstractTextArea extends JTextArea implements DocumentList
 
     abstract void attachEventHandlers();
 
-    abstract void textChanged();
+    abstract void editEvent();
+
+    public void textChanged() {
+        if (this.main.ready) {
+            ghostText.setDisplay(this.getText().isBlank());
+            if (this.main.selectedFile != null) {
+                editEvent();
+            }
+        }
+    }
 
     @Override
     public void insertUpdate(final DocumentEvent event) {

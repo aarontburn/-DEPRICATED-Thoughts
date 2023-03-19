@@ -2,7 +2,7 @@ package com.beanloaf.view;
 
 import com.beanloaf.input.FileActionButtonPressed;
 import com.beanloaf.objects.GBC;
-import com.beanloaf.objects.TextPropertyObject;
+import com.beanloaf.objects.ThoughtObject;
 import com.beanloaf.res.TC;
 import com.beanloaf.textfields.BodyTextArea;
 import com.beanloaf.textfields.TagTextArea;
@@ -18,7 +18,6 @@ import java.beans.PropertyChangeListener;
 public class RightPanel extends JPanel implements PropertyChangeListener {
 
     private final Thoughts main;
-
     public JLabel dateLabel, pushLabel, pullLabel;
     public AbstractTextArea titleLabel, tagLabel, bodyLabel;
     public final UndoManager undoManager = new UndoManager();
@@ -184,7 +183,7 @@ public class RightPanel extends JPanel implements PropertyChangeListener {
         }
 
         checkBox.addItemListener(event -> {
-            JCheckBox box = (JCheckBox) event.getSource();
+            final JCheckBox box = (JCheckBox) event.getSource();
             switch (box.getName()) {
                 case "lockTitle" -> main.settings.changeLockTitle(box.isSelected());
                 case "lockTag" -> main.settings.changeLockTag(box.isSelected());
@@ -201,7 +200,7 @@ public class RightPanel extends JPanel implements PropertyChangeListener {
         bodyLabel.changedUpdate(null);
     }
 
-    public void selectTextField(JTextArea textArea) {
+    public void selectTextField(final JTextArea textArea) {
         textArea.requestFocusInWindow();
         textArea.selectAll();
     }
@@ -237,13 +236,16 @@ public class RightPanel extends JPanel implements PropertyChangeListener {
             case TC.Properties.UNPULLED_FILES -> pullLabel.setText(event.getNewValue() + " files can be pulled.");
             case TC.Properties.UNPUSHED_FILES -> pushLabel.setText(event.getNewValue() + " files not pushed.");
             case TC.Properties.TEXT -> {
-                final TextPropertyObject textObject = (TextPropertyObject) event.getNewValue();
-                titleLabel.setText(textObject.title);
-                tagLabel.setText(textObject.tag);
-                dateLabel.setText("Created on: " + textObject.date);
-                bodyLabel.setText(textObject.body);
+                final ThoughtObject textObject = (ThoughtObject) event.getNewValue();
+                titleLabel.setText(textObject.getTitle());
+                tagLabel.setText(textObject.getTag());
+                dateLabel.setText("Created on: " + textObject.getDate());
+                bodyLabel.setText(textObject.getBody());
             }
-            case TC.Properties.LIST_ITEM_PRESSED, TC.Properties.LIST_TAB_PRESSED -> checkEmpty();
+            case TC.Properties.LIST_ITEM_PRESSED, TC.Properties.LIST_TAB_PRESSED -> {
+                checkEmpty();
+                undoManager.discardAllEdits();
+            }
             case TC.Properties.FOCUS_TITLE_FIELD -> selectTextField(titleLabel);
 
             default -> {

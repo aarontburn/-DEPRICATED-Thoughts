@@ -8,26 +8,30 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 
 import com.beanloaf.objects.ListTab;
-import com.beanloaf.view.Thoughts;
+import com.beanloaf.view.LeftPanel;
 
 public class ListTabPressed extends MouseAdapter {
 
-    private final Thoughts main;
+    private final LeftPanel leftPanel;
 
-    public ListTabPressed(final Thoughts main) {
+    public ListTabPressed(final LeftPanel leftPanel) {
         super();
-        this.main = main;
+        this.leftPanel = leftPanel;
     }
 
     @Override
     public void mousePressed(final MouseEvent event) {
-        JTabbedPane tabs = main.leftPanel.leftTabs;
-
-        JScrollPane scroll = (JScrollPane) tabs.getSelectedComponent();
-        JPanel panel = (JPanel) scroll.getViewport().getView();
-        JPanel listContainer = (JPanel) panel.getComponent(1);
-        ListTab list = (ListTab) listContainer.getComponent(0);
-        list.getMouseEvent().setContentFields(0);
+        final JTabbedPane tabs = leftPanel.leftTabs;
         tabs.setSelectedIndex(tabs.getTabCount() - 1); // This is a workaround for a weird bug.
+
+        final JScrollPane scroll = (JScrollPane) tabs.getSelectedComponent();
+        final JPanel panel = (JPanel) scroll.getViewport().getView();
+        final JPanel listContainer = (JPanel) panel.getComponent(1);
+        final ListTab list = (ListTab) listContainer.getComponent(0);
+
+        list.getMouseEvent().setContentFields(0);
+
+
+
     }
 }

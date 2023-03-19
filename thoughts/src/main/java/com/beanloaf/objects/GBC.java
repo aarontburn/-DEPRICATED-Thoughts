@@ -4,7 +4,7 @@ import java.awt.GridBagConstraints;
 import java.awt.Insets;
 
 /**
- * Class that makes implementing GridBagConstraints a bit easier.s
+ * Class that makes implementing GridBagConstraints a bit easier.
  *
  * @author beanloaf
  */
@@ -93,6 +93,21 @@ public class GBC extends GridBagConstraints {
         return this;
     }
 
+    public GBC setIPadX(final int padX) {
+        this.ipadx = padX;
+        return this;
+    }
+
+    public GBC setIPadY(final int padY) {
+        this.ipady = padY;
+        return this;
+    }
+
+    public GBC setIPadXY(final int padX, final int padY) {
+        this.ipadx = padX;
+        this.ipady = padY;
+        return this;
+    }
 
 
 }

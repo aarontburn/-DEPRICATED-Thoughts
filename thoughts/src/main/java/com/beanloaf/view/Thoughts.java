@@ -60,7 +60,6 @@ public class Thoughts {
 
     public LeftPanel leftPanel;
 
-    /* Left Panel */
     public JSplitPane splitPane;
 
     public DefaultListModel<String> unsortedListModel = new DefaultListModel<>();
@@ -114,7 +113,7 @@ public class Thoughts {
                 settings.check();
 
                 if (settings.isPushOnClose()) {
-                    thoughtsPCS.firePropertyChange(TC.Properties.PUSH, null, null);
+                    thoughtsPCS.firePropertyChange(TC.Properties.PUSH);
                 }
                 settings.changeWindowDimension(window.getSize());
                 settings.changeIsMaximized(

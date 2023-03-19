@@ -8,20 +8,12 @@ import java.awt.*;
 
 public class BodyTextArea extends AbstractTextArea {
 
-    private final GhostText ghostText;
-
     public BodyTextArea(final Thoughts main, final UndoManager undoManager) {
-        super(TC.DEFAULT_BODY, main, undoManager);
+        super(TC.DEFAULT_BODY, TC.Fonts.p, main, undoManager);
         this.setTabSize(2);
         this.setBackground(new Color(32, 32, 32));
-        this.setFont(TC.Fonts.p);
         this.setLineWrap(true);
         this.setWrapStyleWord(true);
-        this.setName("bodyLabel");
-        this.setLayout(new GridBagLayout());
-
-        ghostText = new GhostText(TC.DEFAULT_BODY, TC.Fonts.p);
-        this.add(ghostText, GHOST_TEXT_CONSTRAINTS);
 
     }
 
@@ -32,13 +24,9 @@ public class BodyTextArea extends AbstractTextArea {
     }
 
     @Override
-    public void textChanged() {
-        if (this.main.ready) {
-            ghostText.setDisplay(this.getText().isBlank());
-            if (this.main.selectedFile != null) {
-                this.main.selectedFile.editBody(this.getText());
-            }
-        }
+    void editEvent() {
+        this.main.selectedFile.editBody(this.getText());
     }
+
 
 }

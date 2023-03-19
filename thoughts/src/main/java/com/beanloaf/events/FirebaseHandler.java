@@ -16,21 +16,17 @@ import com.google.firebase.FirebaseOptions;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.DatabaseReference.CompletionListener;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 public class FirebaseHandler implements ValueEventListener {
 
-    private final Thoughts main;
-
-    private FirebaseDatabase firebaseDatabase;
     private static final String DATABASE_URL = "https://thoughts-4144a-default-rtdb.firebaseio.com";
     private static final String KEY_PATH = "serviceAccountKey.json";
+
+    private final Thoughts main;
     private DatabaseReference ref;
-
     public boolean isOnline;
-
     private ArrayList<ThoughtObject> objectList;
     private boolean isStartup;
 
@@ -49,7 +45,8 @@ public class FirebaseHandler implements ValueEventListener {
                     .setDatabaseUrl(DATABASE_URL)
                     .build();
             FirebaseApp.initializeApp(options);
-            firebaseDatabase = FirebaseDatabase.getInstance(DATABASE_URL);
+
+            final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance(DATABASE_URL);
             ref = firebaseDatabase.getReference("<USERNAME>");
             ref.addValueEventListener(this);
 
@@ -64,10 +61,6 @@ public class FirebaseHandler implements ValueEventListener {
 
     }
 
-    public DatabaseReference getDatabase() {
-        return this.ref;
-    }
-
     /**
      * Creates a new entry in the database, or updates the entry if the same path
      * has been found.
@@ -78,19 +71,11 @@ public class FirebaseHandler implements ValueEventListener {
      * @param body
      * @param fileName
      */
-    public void update(String title, String tag, String date, String body, String fileName) {
-        if (!this.isOnline) {
-            System.out.println("Not connected to the internet!");
-            return;
-        }
-        final String path = fileName.replace(".json", "");
-        ref.child(path).child("Title").setValue(title, null);
-        ref.child(path).child("Tag").setValue(tag, null);
-        ref.child(path).child("Date").setValue(date, null);
-        ref.child(path).child("Body").setValue(body, null);
+    public void update(final String title, final String tag, final String date, final String body, final String fileName) {
+        update(new ThoughtObject(title, date, tag, body, new File(fileName)));
     }
 
-    public void update(ThoughtObject obj) {
+    public void update(final ThoughtObject obj) {
         if (!this.isOnline) {
             System.out.println("Not connected to the internet!");
             return;
@@ -165,27 +150,25 @@ public class FirebaseHandler implements ValueEventListener {
      * 
      * @param obj
      */
-    public void delete(ThoughtObject obj) {
+    public void delete(final ThoughtObject obj) {
         if (!this.isOnline) {
             System.out.println("Not connected to the internet!");
             return;
         }
         final String path = obj.getPath().getName().replace(".json", "");
-        ref.child(path).removeValue(new CompletionListener() {
-            @Override
-            public void onComplete(DatabaseError error, DatabaseReference ref) {
-                if (error == null) {
-                    System.out.println("Successfully deleted file.");
-                } else {
-                    System.err.println("Error occured on deletion.");
-                }
+
+        ref.child(path).removeValue((error, ref) -> {
+            if (error == null) {
+                System.out.println("Successfully deleted file.");
+            } else {
+                System.err.println("Error occured on deletion.");
             }
         });
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public void onDataChange(DataSnapshot dataSnapshot) {
+    public void onDataChange(final DataSnapshot dataSnapshot) {
         System.out.println("onDataChange() fired");
         objectList = new ArrayList<>();
         for (final DataSnapshot data : dataSnapshot.getChildren()) {

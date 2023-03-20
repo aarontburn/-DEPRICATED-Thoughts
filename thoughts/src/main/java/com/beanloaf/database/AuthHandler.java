@@ -1,9 +1,5 @@
-package com.beanloaf.events;
+package com.beanloaf.database;
 
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthException;
-import com.google.firebase.auth.UserRecord;
 import org.apache.commons.codec.binary.Base32;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -21,14 +17,15 @@ public class AuthHandler {
             "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key="
                     + new String(new Base32().decode(KEY));
 
-    private final FirebaseAuth auth;
 
-    public AuthHandler(final FirebaseApp firebaseApp) {
-        auth = FirebaseAuth.getInstance(firebaseApp);
+    public AuthHandler() {
+
     }
 
 
-    public String signIn(final String email, final String password) {
+    public FirebaseHandler.ThoughtUser signIn(final String email, final String password) {
+
+
         try {
             final HttpURLConnection connection = (HttpURLConnection) new URL(SIGN_IN_URL).openConnection();
             connection.setRequestMethod("POST");
@@ -36,7 +33,7 @@ public class AuthHandler {
             connection.setDoOutput(true);
 
             final String requestBody = "{\"email\":\"" + email + "\",\"password\":\"" + password + "\",\"returnSecureToken\":true}";
-            OutputStream outputStream = connection.getOutputStream();
+            final OutputStream outputStream = connection.getOutputStream();
             outputStream.write(requestBody.getBytes());
             outputStream.flush();
 
@@ -46,13 +43,29 @@ public class AuthHandler {
             while ((line = responseReader.readLine()) != null) {
                 responseBuilder.append(line);
             }
-            final String response = responseBuilder.toString();
-            System.out.println(response);
 
-            JSONObject json = (JSONObject) new JSONParser().parse(new StringReader(response));
-            String userId = (String) json.get("localId");
+            final JSONObject json = (JSONObject) new JSONParser()
+                    .parse(new StringReader(responseBuilder.toString()));
+
+            final String userId = (String) json.get("localId");
+            final String userEmail = (String) json.get("email");
+            final String displayName = (String) json.get("displayName");
+            final String idToken = (String) json.get("idToken");
+            final boolean registered = (Boolean) json.get("registered");
+            final String refreshToken = (String) json.get("refreshToken");
+            final String expiresIn = (String) json.get("expiresIn");
+
+
             System.out.println("User ID: " + userId);
-            return userId;
+            System.out.println("Email: " + userEmail);
+            System.out.println("Display Name: " + displayName);
+            System.out.println("ID Token: " + idToken);
+            System.out.println("Registered: " + registered);
+            System.out.println("Refresh Token: " + refreshToken);
+            System.out.println("Expires in: " + expiresIn);
+
+
+            return new FirebaseHandler.ThoughtUser(userId, userEmail, displayName, idToken, registered, refreshToken, expiresIn);
 
 
 
@@ -60,21 +73,12 @@ public class AuthHandler {
             e.printStackTrace();
         }
 
-        return "";
+        return null;
 
     }
 
     public void createNewUser(final String email, final String password) {
-        try {
-            UserRecord userRecord = auth.createUser(new UserRecord.CreateRequest()
-                    .setEmail(email)
-                    .setPassword(password));
 
-            System.out.println("Successfully created user: " + userRecord.getUid());
-
-        } catch (FirebaseAuthException e) {
-            e.printStackTrace();
-        }
     }
 
 }

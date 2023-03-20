@@ -33,7 +33,7 @@ import com.beanloaf.res.theme.ThoughtsThemeLight;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
-import com.beanloaf.events.FirebaseHandler;
+import com.beanloaf.database.FirebaseHandler;
 import com.beanloaf.events.SettingsHandler;
 import com.beanloaf.input.ListItemPressed;
 import com.beanloaf.objects.ThoughtObject;

@@ -12,10 +12,6 @@ public class ThoughtsPCS extends PropertyChangeSupport {
         super(main);
     }
 
-    public void addPropertyChangeListener(final PropertyChangeListener listener) {
-        super.addPropertyChangeListener(listener);
-    }
-
     public void firePropertyChange(final String propertyName) {
         super.firePropertyChange(propertyName, null, null);
     }

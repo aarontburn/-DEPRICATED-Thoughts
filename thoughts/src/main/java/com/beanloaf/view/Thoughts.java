@@ -12,24 +12,24 @@ import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.BufferedReader;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.List;
 
-import javax.swing.BorderFactory;
-import javax.swing.DefaultListModel;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JSplitPane;
+import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.plaf.basic.BasicSplitPaneDivider;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 
 import com.beanloaf.events.ThoughtsPCS;
 import com.beanloaf.objects.GBC;
+import com.beanloaf.res.theme.ThoughtsThemeDark;
+import com.beanloaf.res.theme.ThoughtsThemeLight;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
@@ -38,23 +38,21 @@ import com.beanloaf.events.SettingsHandler;
 import com.beanloaf.input.ListItemPressed;
 import com.beanloaf.objects.ThoughtObject;
 import com.beanloaf.res.TC;
-import com.beanloaf.res.theme.ThoughtsTheme;
 
 /**
- *
  * @author beanloaf
  */
-public class Thoughts {
+public class Thoughts implements PropertyChangeListener {
 
     public final ThoughtsPCS thoughtsPCS = new ThoughtsPCS(this);
     public ThoughtObject selectedFile;
     public JFrame window;
     public JPanel container;
 
-    public ArrayList<File> unsortedFiles = new ArrayList<>();
-    public ArrayList<File> sortedFiles = new ArrayList<>();
-    public ArrayList<ThoughtObject> unsortedThoughtList = new ArrayList<>();
-    public ArrayList<ThoughtObject> sortedThoughtList = new ArrayList<>();
+    public final List<File> unsortedFiles = new ArrayList<>();
+    public final List<File> sortedFiles = new ArrayList<>();
+    public final List<ThoughtObject> unsortedThoughtList = new ArrayList<>();
+    public final List<ThoughtObject> sortedThoughtList = new ArrayList<>();
 
     public RightPanel rightPanel;
 
@@ -62,8 +60,8 @@ public class Thoughts {
 
     public JSplitPane splitPane;
 
-    public DefaultListModel<String> unsortedListModel = new DefaultListModel<>();
-    public DefaultListModel<String> sortedListModel = new DefaultListModel<>();
+    public final DefaultListModel<String> unsortedListModel = new DefaultListModel<>();
+    public final DefaultListModel<String> sortedListModel = new DefaultListModel<>();
     public final ArrayList<String> tagList = new ArrayList<>();
 
     public boolean ready;
@@ -72,6 +70,14 @@ public class Thoughts {
 
 
     public Thoughts() {
+        if (settings.isLightMode()) {
+            ThoughtsThemeLight.setup();
+        } else {
+            ThoughtsThemeDark.setup();
+        }
+
+        JFrame.setDefaultLookAndFeelDecorated(true);
+
         createGUI();
         this.window.setVisible(true);
         onStartUp();
@@ -86,6 +92,7 @@ public class Thoughts {
             TC.Paths.SORTED_DIRECTORY_PATH.mkdir();
         }
 
+
         refreshThoughtList();
 
         if (this.unsortedThoughtList.isEmpty()) {
@@ -94,18 +101,19 @@ public class Thoughts {
                     this.unsortedThoughtList).setContentFields(0);
         }
 
+        thoughtsPCS.addPropertyChangeListener(this);
+
         this.ready = true;
     }
 
     private void createGUI() {
-        ThoughtsTheme.setup();
-        JFrame.setDefaultLookAndFeelDecorated(true);
 
         this.window = new JFrame("Thoughts");
         this.window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.window.setFocusable(true);
         this.window.setSize(settings.getWindowWidth(), settings.getWindowHeight());
         this.window.setLocation(new Point(settings.getWindowX(), settings.getWindowY()));
+        this.window.setJMenuBar(new MenuBar(thoughtsPCS));
 
         this.window.addWindowListener(new WindowAdapter() {
             @Override
@@ -161,22 +169,6 @@ public class Thoughts {
 
     }
 
-    private void createTopPanel() {
-        final JPanel topPanel = new JPanel(new GridBagLayout());
-        topPanel.setBorder(BorderFactory.createLineBorder(Color.black));
-
-        final JButton testButton = new JButton("test");
-        testButton.addActionListener(e -> {
-            // TODO Auto-generated method stub
-
-        });
-        topPanel.add(testButton);
-
-        this.container.add(topPanel, new GBC(0.1, 0.01).setFill(GridBagConstraints.BOTH).setGridWidth(2));
-    }
-
-
-
     private void createCenterPanel() {
         this.splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
         this.splitPane.resetToPreferredSizes();
@@ -185,14 +177,14 @@ public class Thoughts {
             @Override
             public BasicSplitPaneDivider createDefaultDivider() {
                 return new BasicSplitPaneDivider(this) {
-                    public void setBorder(Border b) {
+                    public void setBorder(final Border border) {
                     }
 
                     @Override
-                    public void paint(Graphics g) {
-                        g.setColor(new Color(48, 48, 48));
-                        g.fillRect(0, 0, getSize().width, getSize().height);
-                        super.paint(g);
+                    public void paint(final Graphics graphics) {
+                        graphics.setColor(new Color(48, 48, 48));
+                        graphics.fillRect(0, 0, getSize().width, getSize().height);
+                        super.paint(graphics);
                     }
                 };
             }
@@ -231,21 +223,20 @@ public class Thoughts {
 
     /**
      * Refreshes through all files in the sorted/unsorted directory.
-     *
+     * <p>
      * IMPORTANT: THIS SHOULD BE CALLED AS FEW TIMES IN A ROW AS POSSIBLE.
-     *
+     * <p>
      * Currently called by:
      * - createGUI();
-     *
+     * <p>
      * - TextAreaFocusListener.focusLost();
-     *
+     * <p>
      * - ListItemPressed.setContentFields();
      * - - FileActionButtonPressed.actionPerformed();
      * - - ListTabbedPressed.mousePressed();
-     *
      */
     public void refreshThoughtList() {
-        long startTime = System.currentTimeMillis();
+        final long startTime = System.currentTimeMillis();
         final File[] unsortedFileDirectory = TC.Paths.UNSORTED_DIRECTORY_PATH.listFiles();
         final File[] sortedFileDirectory = TC.Paths.SORTED_DIRECTORY_PATH.listFiles();
         // Resets number of tags to 2
@@ -293,12 +284,21 @@ public class Thoughts {
             this.db.refreshPushPullLabels();
         }
 
-        long endTime = System.currentTimeMillis();
+        final long endTime = System.currentTimeMillis();
         System.out.println("Total refresh time: " + (endTime - startTime) + "ms");
     }
 
+    @Override
+    public void propertyChange(final PropertyChangeEvent event) {
+        switch (event.getPropertyName()) {
+            case TC.Properties.OPEN_SETTINGS_WINDOW -> new SettingsWindow(this);
+            case TC.Properties.EXIT -> window.dispatchEvent(new WindowEvent(window, WindowEvent.WINDOW_CLOSING));
+            case TC.Properties.REFRESH -> refreshThoughtList();
 
-
+            default -> {
+            }
+        }
+    }
 
 
     public class KeyBinds implements KeyEventDispatcher {
@@ -308,8 +308,8 @@ public class Thoughts {
             if (event.getID() != 401) {
                 return false;
             }
-            int key = event.getKeyCode();
-            boolean c = event.isControlDown();
+            final int key = event.getKeyCode();
+            final boolean c = event.isControlDown();
 
             switch (key) {
                 case KeyEvent.VK_Z -> { // Undo
@@ -356,7 +356,6 @@ public class Thoughts {
         }
 
     }
-
 
 
 }

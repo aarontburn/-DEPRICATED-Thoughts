@@ -46,6 +46,9 @@ public final class TC {
         public static final String SET_TAB_INDEX = "set tab index";
 
         public static final String FOCUS_TITLE_FIELD = "focus text field";
+        public static final String OPEN_SETTINGS_WINDOW = "open settings window";
+        public static final String EXIT = "exit";
+        public static final String REFRESH = "refresh";
 
     }
 
@@ -75,7 +78,7 @@ public final class TC {
                                                       final boolean isSelected,
                                                       final boolean cellHasFocus) {
 
-            JLabel c = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+            final JLabel c = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
             c.setHorizontalAlignment(JLabel.CENTER);
             c.setPreferredSize(new Dimension(25, 25));
             c.setOpaque(true);
@@ -90,18 +93,18 @@ public final class TC {
         }
 
         @Override
-        protected JButton createDecreaseButton(int orientation) {
+        protected JButton createDecreaseButton(final int orientation) {
             return createZeroButton();
         }
 
         @Override
-        protected JButton createIncreaseButton(int orientation) {
+        protected JButton createIncreaseButton(final int orientation) {
             return createZeroButton();
         }
 
         protected JButton createZeroButton() {
-            JButton button = new JButton();
-            Dimension zeroDim = new Dimension(0, 0);
+            final JButton button = new JButton();
+            final Dimension zeroDim = new Dimension(0, 0);
             button.setPreferredSize(zeroDim);
             button.setMinimumSize(zeroDim);
             button.setMaximumSize(zeroDim);

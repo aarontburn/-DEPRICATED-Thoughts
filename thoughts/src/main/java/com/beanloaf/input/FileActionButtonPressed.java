@@ -35,7 +35,7 @@ public class FileActionButtonPressed implements ActionListener {
                     final String path = this.main.selectedFile.getPath()
                             .toString().split(Pattern.quote(File.separator))[2];
 
-                    if (path.equals("unsorted")) {
+                    if ("unsorted".equals(path)) {
                         // Moves the file to sorted
                         final String filePath = this.main.selectedFile.getPath().toString()
                                 .replace("unsorted", "sorted");
@@ -43,7 +43,7 @@ public class FileActionButtonPressed implements ActionListener {
                         this.main.selectedFile.getPath().renameTo(new File(filePath));
                         l.setContentFields(0);
 
-                    } else if (path.equals("sorted")) {
+                    } else if ("sorted".equals(path)) {
                         // Moves file to unsorted
                         final String filePath = this.main.selectedFile.getPath().toString()
                                 .replace("sorted", "unsorted");
@@ -65,7 +65,7 @@ public class FileActionButtonPressed implements ActionListener {
                 }
                 final String path = this.main.selectedFile.getPath()
                         .toString().split(Pattern.quote(File.separator))[2];
-                if (path.equals("sorted")) {
+                if ("sorted".equals(path)) {
                     this.main.db.delete(this.main.selectedFile);
                 }
                 this.main.selectedFile.getPath().delete();
@@ -75,13 +75,13 @@ public class FileActionButtonPressed implements ActionListener {
                 String title, tag, body;
                 title = tag = body = "";
                 if (main.settings.isTitleLocked()) {
-                    title = main.rightPanel.titleLabel.getText();
+                    title = main.rightPanel.titleTextArea.getText();
                 }
                 if (main.settings.isTagLocked()) {
-                    tag = main.rightPanel.tagLabel.getText();
+                    tag = main.rightPanel.tagTextArea.getText();
                 }
                 if (main.settings.isBodyLocked()) {
-                    body = main.rightPanel.bodyLabel.getText();
+                    body = main.rightPanel.bodyTextArea.getText();
                 }
                 final ThoughtObject tObj = new SaveNewFile(title, tag, body).save();
                 l.setContentFields(tObj);

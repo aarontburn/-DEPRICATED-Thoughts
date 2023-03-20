@@ -11,7 +11,14 @@ public class BodyTextArea extends AbstractTextArea {
     public BodyTextArea(final Thoughts main, final UndoManager undoManager) {
         super(TC.DEFAULT_BODY, TC.Fonts.p, main, undoManager);
         this.setTabSize(2);
-        this.setBackground(new Color(32, 32, 32));
+
+
+        if (main.settings.isLightMode()) {
+            this.setBackground(Color.LIGHT_GRAY);
+        } else {
+            this.setBackground(new Color(32, 32, 32));
+        }
+
         this.setLineWrap(true);
         this.setWrapStyleWord(true);
 

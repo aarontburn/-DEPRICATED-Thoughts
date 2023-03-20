@@ -2,7 +2,7 @@ package com.beanloaf.input;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JList;
 
@@ -13,7 +13,7 @@ import com.beanloaf.view.Thoughts;
 
 public class ListItemPressed extends MouseAdapter {
     private final Thoughts main;
-    private final ArrayList<ThoughtObject> arrayList;
+    private final List<ThoughtObject> arrayList;
     private final JList<?> list;
 
     public ListItemPressed(final Thoughts main) {
@@ -22,7 +22,7 @@ public class ListItemPressed extends MouseAdapter {
 
     public ListItemPressed(final Thoughts main,
                            final ListItems list,
-                           final ArrayList<ThoughtObject> arrayList) {
+                           final List<ThoughtObject> arrayList) {
         super();
         this.main = main;
         this.arrayList = arrayList;
@@ -31,7 +31,7 @@ public class ListItemPressed extends MouseAdapter {
 
     @Override
     public void mousePressed(final MouseEvent event) {
-        int selectedIndex = this.list.getSelectedIndex();
+        final int selectedIndex = this.list.getSelectedIndex();
         setContentFields(selectedIndex);
         this.main.thoughtsPCS.firePropertyChange(TC.Properties.LIST_ITEM_PRESSED);
 

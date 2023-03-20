@@ -1,7 +1,7 @@
 package com.beanloaf.tagobjects;
 
 
-import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
@@ -16,7 +16,7 @@ public class ListItems extends JList<String> {
     private final ListItemPressed l;
 
     public ListItems(final Thoughts main,
-                     final ArrayList<ThoughtObject> thoughtList,
+                     final List<ThoughtObject> thoughtList,
                      final DefaultListModel<String> model) {
         super(model);
 

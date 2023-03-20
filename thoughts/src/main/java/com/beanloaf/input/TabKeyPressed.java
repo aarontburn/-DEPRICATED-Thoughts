@@ -5,7 +5,6 @@ import java.awt.event.KeyEvent;
 import java.awt.KeyboardFocusManager;
 
 import javax.swing.JComponent;
-import javax.swing.JTextArea;
 
 import com.beanloaf.view.Thoughts;
 
@@ -18,20 +17,20 @@ public class TabKeyPressed extends KeyAdapter {
     }
 
     @Override
-    public void keyPressed(KeyEvent e) {
-        JComponent component = (JComponent) KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
+    public void keyPressed(final KeyEvent event) {
+        final JComponent component = (JComponent) KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
         final String currentFocused = component.getName();
 
-        if (e.getKeyCode() == KeyEvent.VK_TAB
-                || e.getKeyCode() == KeyEvent.VK_ENTER) {
+        if (event.getKeyCode() == KeyEvent.VK_TAB
+                || event.getKeyCode() == KeyEvent.VK_ENTER) {
 
-            if (e.getModifiersEx() > 0) { // Going to previous textbox
+            if (event.getModifiersEx() > 0) { // Going to previous textbox
                 switch (currentFocused) {
                     case "titleLabel":
                         // Do nothing
                         break;
                     case "tagLabel":
-                        main.rightPanel.titleLabel.requestFocusInWindow();
+                        main.rightPanel.titleTextArea.requestFocusInWindow();
                         break;
                     case "bodyLabel":
                         // Do nothing
@@ -43,10 +42,10 @@ public class TabKeyPressed extends KeyAdapter {
             } else { // Going to next textbox
                 switch (currentFocused) {
                     case "titleLabel":
-                        main.rightPanel.tagLabel.requestFocusInWindow();
+                        main.rightPanel.tagTextArea.requestFocusInWindow();
                         break;
                     case "tagLabel":
-                        main.rightPanel.bodyLabel.requestFocusInWindow();
+                        main.rightPanel.bodyTextArea.requestFocusInWindow();
                         break;
                     case "bodyLabel":
                         // Do nothing
@@ -55,7 +54,7 @@ public class TabKeyPressed extends KeyAdapter {
                         throw new IllegalArgumentException();
                 }
             }
-            e.consume();
+            event.consume();
         }
     }
 }

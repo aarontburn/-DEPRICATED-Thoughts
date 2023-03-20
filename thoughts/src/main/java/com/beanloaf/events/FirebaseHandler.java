@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import com.beanloaf.objects.ThoughtObject;
@@ -13,6 +14,9 @@ import com.beanloaf.view.Thoughts;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
+import com.google.firebase.auth.UserRecord;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -25,12 +29,13 @@ public class FirebaseHandler implements ValueEventListener {
     private static final String KEY_PATH = "serviceAccountKey.json";
 
     private final Thoughts main;
+
     private DatabaseReference ref;
     public boolean isOnline;
-    private ArrayList<ThoughtObject> objectList;
+    private List<ThoughtObject> objectList;
     private boolean isStartup;
 
-    public FirebaseHandler(Thoughts main) {
+    public FirebaseHandler(final Thoughts main) {
         this.main = main;
         try {
             // Checks to see if the pc is connected to the internet
@@ -44,9 +49,22 @@ public class FirebaseHandler implements ValueEventListener {
                     .setCredentials(GoogleCredentials.fromStream(serviceAccount))
                     .setDatabaseUrl(DATABASE_URL)
                     .build();
-            FirebaseApp.initializeApp(options);
+
+            final FirebaseApp app = FirebaseApp.initializeApp(options);
+            AuthHandler authHandler = new AuthHandler(app);
+
+
+
+
+
+
+            final String userID = authHandler.signIn("lovebermany@gmail.com", "password123");
+
+
+
 
             final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance(DATABASE_URL);
+
             ref = firebaseDatabase.getReference("<USERNAME>");
             ref.addValueEventListener(this);
 
@@ -61,19 +79,7 @@ public class FirebaseHandler implements ValueEventListener {
 
     }
 
-    /**
-     * Creates a new entry in the database, or updates the entry if the same path
-     * has been found.
-     * 
-     * @param title
-     * @param tag
-     * @param date
-     * @param body
-     * @param fileName
-     */
-    public void update(final String title, final String tag, final String date, final String body, final String fileName) {
-        update(new ThoughtObject(title, date, tag, body, new File(fileName)));
-    }
+
 
     public void update(final ThoughtObject obj) {
         if (!this.isOnline) {
@@ -141,7 +147,7 @@ public class FirebaseHandler implements ValueEventListener {
         }
     }
 
-    public ArrayList<ThoughtObject> getList() {
+    public List<ThoughtObject> getList() {
         return this.objectList;
     }
 
@@ -227,7 +233,7 @@ public class FirebaseHandler implements ValueEventListener {
     }
 
     @Override
-    public void onCancelled(DatabaseError databaseError) {
+    public void onCancelled(final DatabaseError databaseError) {
         // Do nothing
     }
 

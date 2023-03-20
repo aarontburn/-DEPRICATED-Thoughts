@@ -13,6 +13,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 public class LeftPanel extends JPanel implements PropertyChangeListener {
 
@@ -103,7 +104,7 @@ public class LeftPanel extends JPanel implements PropertyChangeListener {
     }
 
     private void createTagTabs(final DefaultListModel<String> model,
-                               final ArrayList<ThoughtObject> arrayList,
+                               final List<ThoughtObject> arrayList,
                                final String tagName) {
 
         final GBC constraints = new GBC(1, 0.01).setFill(GridBagConstraints.HORIZONTAL).setAnchor(GridBagConstraints.NORTH);
@@ -144,10 +145,8 @@ public class LeftPanel extends JPanel implements PropertyChangeListener {
         for (final File sortedFile : main.sortedFiles) {
             final ThoughtObject content = main.readFileContents(sortedFile);
 
-            if (content != null) {
-                if (!tagNames.contains(content.getTag())) {
-                    tagNames.add(content.getTag());
-                }
+            if (content != null && !tagNames.contains(content.getTag())) {
+                tagNames.add(content.getTag());
             }
 
         }

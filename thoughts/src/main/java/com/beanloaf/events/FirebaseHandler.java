@@ -53,19 +53,12 @@ public class FirebaseHandler implements ValueEventListener {
             final FirebaseApp app = FirebaseApp.initializeApp(options);
             AuthHandler authHandler = new AuthHandler(app);
 
-
-
-
-
-
             final String userID = authHandler.signIn("lovebermany@gmail.com", "password123");
-
-
 
 
             final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance(DATABASE_URL);
 
-            ref = firebaseDatabase.getReference("<USERNAME>");
+            ref = firebaseDatabase.getReference(userID);
             ref.addValueEventListener(this);
 
             System.out.println("Successfully synced with firebase.");

@@ -4,6 +4,7 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.UserRecord;
+import org.apache.commons.codec.binary.Base32;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import java.io.BufferedReader;
@@ -15,8 +16,10 @@ import java.net.URL;
 
 public class AuthHandler {
 
-    private static final String API_KEY = "";
-    private static final String SIGN_IN_URL = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=" + API_KEY;
+    private static final String KEY = "IFEXUYKTPFATGSCXPFHE6OC2LBSEG4JYIJGDC4RNIFWXUUS7L5HEOM2CJ4YWYMA";
+    private static final String SIGN_IN_URL =
+            "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key="
+                    + new String(new Base32().decode(KEY));
 
     private final FirebaseAuth auth;
 

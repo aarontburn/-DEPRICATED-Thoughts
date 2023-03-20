@@ -11,6 +11,7 @@ public class BodyTextArea extends AbstractTextArea {
     public BodyTextArea(final Thoughts main, final UndoManager undoManager) {
         super(TC.DEFAULT_BODY, TC.Fonts.p, main, undoManager);
         this.setTabSize(2);
+        this.setName("bodyTextArea");
 
 
         if (main.settings.isLightMode()) {

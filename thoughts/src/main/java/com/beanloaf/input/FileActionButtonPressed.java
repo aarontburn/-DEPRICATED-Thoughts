@@ -60,6 +60,7 @@ public class FileActionButtonPressed implements ActionListener {
                 }
             }
             case "delete" -> {
+
                 if (this.main.selectedFile == null) {
                     return;
                 }

@@ -12,6 +12,7 @@ public class TagTextArea extends AbstractTextArea {
         super(TC.DEFAULT_TAG, TC.Fonts.h3, main, undoManager);
         this.setColumns(9);
         this.setOpaque(false);
+        this.setName("tagTextArea");
 
     }
 

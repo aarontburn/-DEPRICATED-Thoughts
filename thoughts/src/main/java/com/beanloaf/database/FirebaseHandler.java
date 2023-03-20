@@ -21,13 +21,15 @@ public class FirebaseHandler {
 
     private ThoughtUser user;
 
-    private URL apiURL;
+    public boolean isOnline;
+
+    private String apiURL;
 
     public FirebaseHandler(final Thoughts main) {
         this.main = main;
+        isConnectedToInternet();
         setUserInfo();
         refreshItems();
-        System.out.println("Successfully synced with firebase.");
 
     }
 
@@ -41,7 +43,7 @@ public class FirebaseHandler {
                 throw new IllegalArgumentException();
             }
 
-            apiURL = new URL(DATABASE_URL + user.uid() + ".json?auth=" + user.idToken());
+            apiURL = DATABASE_URL + user.uid() + ".json?auth=" + user.idToken();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -55,10 +57,12 @@ public class FirebaseHandler {
             final URL url = new URL("https://www.google.com");
             final URLConnection connection = url.openConnection();
             connection.connect();
+            isOnline = true;
             return true;
         } catch (Exception e) {
             System.out.println("Not connected to the internet.");
             refreshPushPullLabels();
+            isOnline = false;
             return false;
 
         }
@@ -67,12 +71,12 @@ public class FirebaseHandler {
 
 
     private void refreshItems() {
-        if (!isConnectedToInternet()) {
+        if (!isOnline) {
             return;
         }
         objectList = new ArrayList<>();
         try {
-            final HttpURLConnection connection = (HttpURLConnection) apiURL.openConnection();
+            final HttpURLConnection connection = (HttpURLConnection) new URL(apiURL).openConnection();
             connection.setRequestMethod("GET");
             connection.setRequestProperty("Accept", "application/json");
 
@@ -97,10 +101,10 @@ public class FirebaseHandler {
             }
 
             for (final Object path : json.keySet()) {
-                final String filePath = path + ".json";
+                final String filePath = ((String) path).replace("_", " ") + ".json";
                 final String title = (String) ((JSONObject) json.get(path)).get("Title");
                 final String tag = (String) ((JSONObject) json.get(path)).get("Tag");
-                final String date = (String) ((JSONObject) json.get(path)).get("Date");
+                final String date = ((String) ((JSONObject) json.get(path)).get("Date"));
                 final String body = ((String) ((JSONObject) json.get(path)).get("Body"))
                         .replace("\\n", "\n").replace("\\t", "\t");
 
@@ -117,13 +121,13 @@ public class FirebaseHandler {
 
 
     public void update(final ThoughtObject obj) {
-        if (!isConnectedToInternet()) {
+        if (!isOnline) {
             System.out.println("Not connected to the internet!");
             return;
         }
 
         try {
-            final String path = obj.getPath().getName().replace(".json", "");
+            final String path = obj.getPath().getName().replace(".json", "").replace(" ", "_");
 
             final String json = String.format("{\"%s\": { \"Body\": \"%s\", \"Date\": \"%s\", \"Tag\": \"%s\", \"Title\": \"%s\"}}",
                     path,
@@ -131,10 +135,8 @@ public class FirebaseHandler {
                     obj.getDate(),
                     obj.getTag(),
                     obj.getTitle()).replace("\n", "\\\\n").replace("\t", "\\\\t");
-            System.out.println(json);
 
-
-            final HttpURLConnection connection = (HttpURLConnection) apiURL.openConnection();
+            final HttpURLConnection connection = (HttpURLConnection) new URL(apiURL).openConnection();
             connection.setRequestProperty("X-HTTP-Method-Override", "PATCH");
             connection.setRequestProperty("Content-Type", "application/json");
             connection.setRequestProperty("Authorization", "Bearer " + user.idToken());
@@ -161,7 +163,7 @@ public class FirebaseHandler {
     }
 
     public boolean push() {
-        if (!isConnectedToInternet()) {
+        if (!isOnline) {
             System.out.println("Not connected to the internet!");
             return false;
         }
@@ -182,7 +184,7 @@ public class FirebaseHandler {
 
 
     public boolean pull() {
-        if (!isConnectedToInternet()) {
+        if (!isOnline) {
             System.out.println("Not connected to the internet!");
             return false;
         }
@@ -209,51 +211,49 @@ public class FirebaseHandler {
     }
 
     public void delete(final ThoughtObject obj) {
-        if (!isConnectedToInternet()) {
+        if (!isOnline) {
             System.out.println("Not connected to the internet!");
             return;
         }
-        final String path = obj.getPath().getName().replace(".json", "");
+        try {
+            final HttpURLConnection connection = (HttpURLConnection) new URL(DATABASE_URL + "/" + user.uid + "/" + obj.getPath().getName().replace(" ", "_") + "?auth=" + user.idToken()).openConnection();
+            connection.setRequestMethod("DELETE");
+
+            // Check if the DELETE request was successful
+            if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                System.out.println("Database entry deleted successfully.");
+            } else {
+                System.out.println("Failed to delete database entry.");
+            }
+
+            connection.disconnect();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
 
     }
 
 
     public void refreshPushPullLabels() {
-        if (!isConnectedToInternet()) {
+        if (!isOnline) {
             this.main.thoughtsPCS.firePropertyChange(TC.Properties.DISCONNECTED);
-
             return;
         }
 
         /* Pull */
-        /*-
-         * This way will compares file contents rather than number, but will probably
-         * cause performance issues as more files are added.
-         *
-         *  int newPullFiles = 0;
-         *  for (ThoughtObject obj : this.objectList) {
-         *      for (ThoughtObject mainObj : this.main.sortedThoughtList) {
-         *          if (!mainObj.equals(obj)) {
-         *              newPullFiles++;
-         *          }
-         *      }
-         *  }
-         *
-         */
-
         int diffPull = this.objectList.size() - this.main.sortedThoughtList.size();
         if (diffPull < 0) {
             diffPull = 0;
         }
-        this.main.thoughtsPCS.firePropertyChange(TC.Properties.UNPULLED_FILES, null, diffPull);
+        this.main.thoughtsPCS.firePropertyChange(TC.Properties.UNPULLED_FILES, diffPull);
+
         /* Push */
         int diffPush = this.main.sortedThoughtList.size() - this.objectList.size();
         if (diffPush < 0) {
             diffPush = 0;
         }
-        this.main.thoughtsPCS.firePropertyChange(TC.Properties.UNPUSHED_FILES, null, diffPush);
-
+        this.main.thoughtsPCS.firePropertyChange(TC.Properties.UNPUSHED_FILES, diffPush);
     }
 
 

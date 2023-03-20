@@ -200,7 +200,6 @@ public class Thoughts implements PropertyChangeListener {
     }
 
     public ThoughtObject readFileContents(final File filePath) {
-
         try (BufferedReader reader = Files.newBufferedReader(Paths.get(filePath.toURI()))) {
             final StringBuilder sb = new StringBuilder();
             String line = reader.readLine();
@@ -280,7 +279,7 @@ public class Thoughts implements PropertyChangeListener {
 
         thoughtsPCS.firePropertyChange(TC.Properties.SET_TAB_INDEX, selectedTab);
 
-        if (this.db.isConnectedToInternet() && this.db.getList() != null) {
+        if (this.db.isOnline && this.db.getList() != null) {
             this.db.refreshPushPullLabels();
         }
 

@@ -26,13 +26,13 @@ public class TabKeyPressed extends KeyAdapter {
 
             if (event.getModifiersEx() > 0) { // Going to previous textbox
                 switch (currentFocused) {
-                    case "titleLabel":
+                    case "titleTextArea":
                         // Do nothing
                         break;
-                    case "tagLabel":
+                    case "tagTextArea":
                         main.rightPanel.titleTextArea.requestFocusInWindow();
                         break;
-                    case "bodyLabel":
+                    case "bodyTextArea":
                         // Do nothing
                         break;
                     default:
@@ -41,13 +41,13 @@ public class TabKeyPressed extends KeyAdapter {
 
             } else { // Going to next textbox
                 switch (currentFocused) {
-                    case "titleLabel":
+                    case "titleTextArea":
                         main.rightPanel.tagTextArea.requestFocusInWindow();
                         break;
-                    case "tagLabel":
+                    case "tagTextArea":
                         main.rightPanel.bodyTextArea.requestFocusInWindow();
                         break;
-                    case "bodyLabel":
+                    case "bodyTextArea":
                         // Do nothing
                         break;
                     default:

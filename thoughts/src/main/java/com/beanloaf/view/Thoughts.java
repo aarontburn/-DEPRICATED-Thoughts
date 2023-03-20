@@ -280,7 +280,7 @@ public class Thoughts implements PropertyChangeListener {
 
         thoughtsPCS.firePropertyChange(TC.Properties.SET_TAB_INDEX, selectedTab);
 
-        if (this.db.isOnline && this.db.getList() != null) {
+        if (this.db.isConnectedToInternet() && this.db.getList() != null) {
             this.db.refreshPushPullLabels();
         }
 

@@ -10,7 +10,6 @@ import com.beanloaf.events.SaveNewFile;
 import com.beanloaf.objects.ThoughtObject;
 import com.beanloaf.res.TC;
 import com.beanloaf.view.Thoughts;
-import com.google.common.io.BaseEncoding;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
@@ -18,57 +17,72 @@ public class FirebaseHandler {
 
     private static final String DATABASE_URL = "https://thoughts-4144a-default-rtdb.firebaseio.com/users/";
     private final Thoughts main;
-    public boolean isOnline;
     private List<ThoughtObject> objectList;
 
-    private String userID = "";
+    private ThoughtUser user;
 
-    private String idToken = "";
+    private URL apiURL;
 
     public FirebaseHandler(final Thoughts main) {
         this.main = main;
+        setUserInfo();
+        refreshItems();
+        System.out.println("Successfully synced with firebase.");
 
+    }
+
+    private void setUserInfo() {
+
+        try {
+            final AuthHandler authHandler = new AuthHandler();
+            user = authHandler.signIn("aarontburnham@hotmail.com", "password123");
+
+            if (user == null) {
+                throw new IllegalArgumentException();
+            }
+
+            apiURL = new URL(DATABASE_URL + user.uid() + ".json?auth=" + user.idToken());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public boolean isConnectedToInternet() {
         try {
             // Checks to see if the pc is connected to the internet
             final URL url = new URL("https://www.google.com");
             final URLConnection connection = url.openConnection();
             connection.connect();
-            isOnline = true;
-
-            final AuthHandler authHandler = new AuthHandler();
-            final ThoughtUser user = authHandler.signIn("lovebermany@gmail.com", "password123");
-            userID = user.uid();
-            idToken = user.idToken();
-
-            getAll();
-
-
-            System.out.println("Successfully synced with firebase.");
-
+            return true;
         } catch (Exception e) {
-            isOnline = false;
             System.out.println("Not connected to the internet.");
-
             refreshPushPullLabels();
+            return false;
+
         }
 
     }
 
 
-    private void getAll() {
+    private void refreshItems() {
+        if (!isConnectedToInternet()) {
+            return;
+        }
         objectList = new ArrayList<>();
-
         try {
-            final URL url = new URL(DATABASE_URL + userID + ".json?auth=" + idToken);
-            final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            final HttpURLConnection connection = (HttpURLConnection) apiURL.openConnection();
             connection.setRequestMethod("GET");
             connection.setRequestProperty("Accept", "application/json");
 
             if (connection.getResponseCode() != 200) {
-                throw new RuntimeException("Failed : HTTP error code : " + connection.getResponseCode());
+                throw new RuntimeException("Failed : HTTP error code : "
+                        + connection.getResponseCode());
             }
 
-            final BufferedReader responseReader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            final BufferedReader responseReader = new BufferedReader(
+                    new InputStreamReader(connection.getInputStream()));
             final StringBuilder responseBuilder = new StringBuilder();
             String line;
             while ((line = responseReader.readLine()) != null) {
@@ -78,12 +92,17 @@ public class FirebaseHandler {
             final JSONObject json = (JSONObject) new JSONParser()
                     .parse(responseBuilder.toString());
 
-            for (Object path : json.keySet()) {
+            if (json == null) {
+                return;
+            }
+
+            for (final Object path : json.keySet()) {
                 final String filePath = path + ".json";
                 final String title = (String) ((JSONObject) json.get(path)).get("Title");
                 final String tag = (String) ((JSONObject) json.get(path)).get("Tag");
                 final String date = (String) ((JSONObject) json.get(path)).get("Date");
-                final String body = ((String) ((JSONObject) json.get(path)).get("Body")).replace("\\n", "\n");
+                final String body = ((String) ((JSONObject) json.get(path)).get("Body"))
+                        .replace("\\n", "\n").replace("\\t", "\t");
 
                 objectList.add(new ThoughtObject(title, date, tag, body, new File(filePath)));
 
@@ -98,7 +117,7 @@ public class FirebaseHandler {
 
 
     public void update(final ThoughtObject obj) {
-        if (!this.isOnline) {
+        if (!isConnectedToInternet()) {
             System.out.println("Not connected to the internet!");
             return;
         }
@@ -106,21 +125,19 @@ public class FirebaseHandler {
         try {
             final String path = obj.getPath().getName().replace(".json", "");
 
-            String json = String.format("{\"%s\": { \"Body\": \"%s\", \"Date\": \"%s\", \"Tag\": \"%s\", \"Title\": \"%s\"}}",
+            final String json = String.format("{\"%s\": { \"Body\": \"%s\", \"Date\": \"%s\", \"Tag\": \"%s\", \"Title\": \"%s\"}}",
                     path,
                     obj.getBody(),
                     obj.getDate(),
                     obj.getTag(),
-                    obj.getTitle());
+                    obj.getTitle()).replace("\n", "\\\\n").replace("\t", "\\\\t");
+            System.out.println(json);
 
-            json = json.replace("\n", "\\\\n");
 
-            final URL url = new URL(DATABASE_URL + userID + ".json?auth=" + idToken);
-
-            final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            final HttpURLConnection connection = (HttpURLConnection) apiURL.openConnection();
             connection.setRequestProperty("X-HTTP-Method-Override", "PATCH");
             connection.setRequestProperty("Content-Type", "application/json");
-            connection.setRequestProperty("Authorization", "Bearer " + idToken);
+            connection.setRequestProperty("Authorization", "Bearer " + user.idToken());
             connection.setRequestMethod("POST");
             connection.setDoOutput(true);
 
@@ -144,7 +161,7 @@ public class FirebaseHandler {
     }
 
     public boolean push() {
-        if (!this.isOnline) {
+        if (!isConnectedToInternet()) {
             System.out.println("Not connected to the internet!");
             return false;
         }
@@ -165,11 +182,11 @@ public class FirebaseHandler {
 
 
     public boolean pull() {
-        if (!this.isOnline) {
+        if (!isConnectedToInternet()) {
             System.out.println("Not connected to the internet!");
             return false;
         }
-        getAll();
+        refreshItems();
         try {
             if (this.objectList != null) {
                 for (final ThoughtObject tObj : this.objectList) {
@@ -192,7 +209,7 @@ public class FirebaseHandler {
     }
 
     public void delete(final ThoughtObject obj) {
-        if (!this.isOnline) {
+        if (!isConnectedToInternet()) {
             System.out.println("Not connected to the internet!");
             return;
         }
@@ -203,7 +220,7 @@ public class FirebaseHandler {
 
 
     public void refreshPushPullLabels() {
-        if (!this.isOnline) {
+        if (!isConnectedToInternet()) {
             this.main.thoughtsPCS.firePropertyChange(TC.Properties.DISCONNECTED);
 
             return;

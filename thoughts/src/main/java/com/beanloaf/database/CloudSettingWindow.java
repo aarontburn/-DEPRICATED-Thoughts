@@ -122,7 +122,14 @@ public class CloudSettingWindow extends JFrame {
                 authHandler.registeredPassword.equals("")
                         ? ""
                         : AuthHandler.sp(authHandler.registeredPassword, true));
-        contentContainer.add(passwordInputField, constraints.setGridY(1));
+        contentContainer.add(passwordInputField, constraints.increaseGridY());
+
+
+        final JLabel errorLabel = new JLabel("");
+        errorLabel.setFont(TC.Fonts.h5);
+        errorLabel.setForeground(Color.red);
+        contentContainer.add(errorLabel, constraints.increaseGridY().setWeightY(0.1));
+
 
         final JButton submitButton = new JButton("Login");
         submitButton.setPreferredSize(new Dimension(100, 50));
@@ -135,11 +142,14 @@ public class CloudSettingWindow extends JFrame {
                     authHandler.start();
                     saveLoginInformation(emailInputField.getText(), passwordInputField.getText());
                     this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
+                } else {
+                    errorLabel.setText("Error: Invalid email and password combination.");
+
                 }
 
             }
         });
-        contentContainer.add(submitButton, constraints.setGridY(2).setWeightY(0.4));
+        contentContainer.add(submitButton, constraints.increaseGridY().setWeightY(0.4));
 
     }
 
@@ -156,32 +166,45 @@ public class CloudSettingWindow extends JFrame {
         contentContainer.add(emailInputField, constraints);
 
         final FormattedInputField passwordInputField = new FormattedInputField("Password (needs to be at least 6 characters)", true);
-        contentContainer.add(passwordInputField, constraints.setGridY(1));
+        contentContainer.add(passwordInputField, constraints.increaseGridY());
 
         final FormattedInputField reenterPasswordInputField = new FormattedInputField("Re-enter Password", true);
-        contentContainer.add(reenterPasswordInputField, constraints.setGridY(2));
+        contentContainer.add(reenterPasswordInputField, constraints.increaseGridY());
+
+        final JLabel errorLabel = new JLabel("");
+        errorLabel.setFont(TC.Fonts.h5);
+        errorLabel.setForeground(Color.red);
+        contentContainer.add(errorLabel, constraints.increaseGridY().setWeightY(0.1));
 
         final JButton submitButton = new JButton("Register");
         submitButton.setPreferredSize(new Dimension(150, 50));
         submitButton.setFont(TC.Fonts.h4);
 
         submitButton.addActionListener(event -> {
-            if (emailInputField.getText().contains("@")
-                    && !passwordInputField.getText().isBlank()
-                    && !reenterPasswordInputField.getText().isBlank()
-                    && passwordInputField.getText().equals(reenterPasswordInputField.getText())) {
-
-                if (authHandler.registerNewUser(emailInputField.getText(), passwordInputField.getText())) {
-                    authHandler.start();
-                    saveLoginInformation(emailInputField.getText(), passwordInputField.getText());
-                    this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
-                }
-
+            if (!emailInputField.getText().contains("@")) {
+                errorLabel.setText("Error: Invalid email.");
+                return;
             }
+            if (passwordInputField.getText().isBlank() || passwordInputField.getText().length() < 6) {
+                errorLabel.setText("Error: Invalid Password.");
+                return;
+            }
+            if (!passwordInputField.getText().equals(reenterPasswordInputField.getText())) {
+                errorLabel.setText("Error: Passwords don't match.");
+                return;
+            }
+
+            if (authHandler.registerNewUser(emailInputField.getText(), passwordInputField.getText())) {
+                authHandler.start();
+                saveLoginInformation(emailInputField.getText(), passwordInputField.getText());
+                this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
+            } else {
+                errorLabel.setText("Error: User already exists.");
+            }
+
         });
 
-
-        contentContainer.add(submitButton, constraints.setGridY(3).setWeightY(0.4));
+        contentContainer.add(submitButton, constraints.increaseGridY().setWeightY(0.4));
     }
 
     private void saveLoginInformation(final String email, final String password) {

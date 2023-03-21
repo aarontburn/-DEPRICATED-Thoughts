@@ -76,11 +76,14 @@ public class AuthHandler {
             connection.setRequestProperty("Content-Type", "application/json");
             connection.setDoOutput(true);
 
+
+
             final String requestBody = "{\"email\":\"" + email + "\",\"password\":\"" + password + "\",\"returnSecureToken\":true}";
             final OutputStream outputStream = connection.getOutputStream();
             outputStream.write(requestBody.getBytes());
             outputStream.flush();
             outputStream.close();
+
 
             final BufferedReader responseReader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             final StringBuilder responseBuilder = new StringBuilder();

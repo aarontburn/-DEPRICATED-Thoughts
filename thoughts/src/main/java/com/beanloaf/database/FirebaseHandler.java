@@ -13,6 +13,8 @@ import com.beanloaf.events.SaveNewFile;
 import com.beanloaf.objects.ThoughtObject;
 import com.beanloaf.res.TC;
 import com.beanloaf.view.Thoughts;
+import com.google.common.io.BaseEncoding;
+import org.apache.commons.codec.binary.Base32;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
@@ -58,8 +60,10 @@ public class FirebaseHandler {
                 validInfo = false;
             }
 
+
             if (validInfo) {
                 if (signInUser(registeredEmail, AuthHandler.sp(registeredPassword, true))) {
+
                     start();
                 }
             }
@@ -183,12 +187,13 @@ public class FirebaseHandler {
             }
 
             for (final Object path : json.keySet()) {
-                final String filePath = ((String) path).replace("_", " ") + ".json";
-                final String title = (String) ((JSONObject) json.get(path)).get("Title");
-                final String tag = (String) ((JSONObject) json.get(path)).get("Tag");
-                final String date = (String) ((JSONObject) json.get(path)).get("Date");
-                final String body = ((String) ((JSONObject) json.get(path)).get("Body"))
-                        .replace("\\n", "\n").replace("\\t", "\t");
+                final String filePath = new String(new Base32().decode((String) path))
+                        .replace("_", " ") + ".json";
+                final String title = new String(new Base32().decode((String) ((JSONObject) json.get(path)).get("Title")));
+                final String tag = new String(new Base32().decode((String) ((JSONObject) json.get(path)).get("Tag")));
+                final String date = new String(new Base32().decode((String) ((JSONObject) json.get(path)).get("Date")));
+                final String body = new String(new Base32().decode(((String) ((JSONObject) json.get(path)).get("Body"))
+                        .replace("\\n", "\n").replace("\\t", "\t")));
 
                 objectList.add(new ThoughtObject(title, date, tag, body, new File(filePath)));
 
@@ -213,11 +218,12 @@ public class FirebaseHandler {
             final String path = obj.getPath().getName().replace(".json", "").replace(" ", "_");
 
             final String json = String.format("{\"%s\": { \"Body\": \"%s\", \"Date\": \"%s\", \"Tag\": \"%s\", \"Title\": \"%s\"}}",
-                    path,
-                    obj.getBody(),
-                    obj.getDate(),
-                    obj.getTag(),
-                    obj.getTitle()).replace("\n", "\\\\n").replace("\t", "\\\\t");
+                    BaseEncoding.base32().encode(path.getBytes()).replace("=", ""),
+                    BaseEncoding.base32().encode(obj.getBody().getBytes()),
+                    BaseEncoding.base32().encode(obj.getDate().getBytes()),
+                    BaseEncoding.base32().encode(obj.getTag().getBytes()),
+                    BaseEncoding.base32().encode(obj.getTitle().replace("\n", "\\\\n")
+                            .replace("\t", "\\\\t").getBytes()));
 
             final HttpURLConnection connection = (HttpURLConnection) new URL(apiURL).openConnection();
             connection.setRequestProperty("X-HTTP-Method-Override", "PATCH");
@@ -253,7 +259,7 @@ public class FirebaseHandler {
         }
         try {
             final File[] sortedFileDirectory = TC.Paths.SORTED_DIRECTORY_PATH.listFiles();
-            for (final File file : sortedFileDirectory) {
+            for (final File file : Objects.requireNonNull(sortedFileDirectory)) {
                 final ThoughtObject tObj = this.main.readFileContents(file);
                 if (tObj != null) {
                     update(tObj);
@@ -300,7 +306,10 @@ public class FirebaseHandler {
             return;
         }
         try {
-            final HttpURLConnection connection = (HttpURLConnection) new URL(DATABASE_URL + "/" + user.localId + "/" + obj.getPath().getName().replace(" ", "_") + "?auth=" + user.idToken()).openConnection();
+
+            final String path = obj.getPath().getName().replace(".json", "").replace(" ", "_");
+            final URL url = new URL(DATABASE_URL + user.localId + "/" + BaseEncoding.base32().encode(path.getBytes()).replace("=", "") + ".json?auth=" + user.idToken());
+            final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("DELETE");
 
             // Check if the DELETE request was successful

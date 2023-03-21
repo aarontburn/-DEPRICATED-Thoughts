@@ -20,6 +20,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -63,7 +64,7 @@ public class Thoughts implements PropertyChangeListener {
 
     public final DefaultListModel<String> unsortedListModel = new DefaultListModel<>();
     public final DefaultListModel<String> sortedListModel = new DefaultListModel<>();
-    public final ArrayList<String> tagList = new ArrayList<>();
+    public final List<String> tagList = new ArrayList<>();
 
     public boolean ready;
     public final SettingsHandler settings = new SettingsHandler();
@@ -158,9 +159,9 @@ public class Thoughts implements PropertyChangeListener {
             final String eventName = event.getSource().getClass().getSimpleName();
             // System.out.println(eventName);
             if (event.getID() == 501
-                    && !eventName.equals("JTextArea")
-                    && !eventName.equals("JTabbedPane")
-                    && !eventName.equals("JButton")) {
+                    && !"JTextArea".equals(eventName)
+                    && !"JTabbedPane".equals(eventName)
+                    && !"JButton".equals(eventName)) {
                 KeyboardFocusManager.getCurrentKeyboardFocusManager().clearFocusOwner();
                 refreshThoughtList();
             }
@@ -260,7 +261,7 @@ public class Thoughts implements PropertyChangeListener {
         tagList.clear();
 
         /* UNSORTED FILES */
-        for (final File file : unsortedFileDirectory) {
+        for (final File file : Objects.requireNonNull(unsortedFileDirectory)) {
             final ThoughtObject content = readFileContents(file);
             if (content != null) {
                 unsortedThoughtList.add(content);
@@ -270,7 +271,7 @@ public class Thoughts implements PropertyChangeListener {
         }
 
         /* SORTED FILES */
-        for (final File file : sortedFileDirectory) {
+        for (final File file : Objects.requireNonNull(sortedFileDirectory)) {
             final ThoughtObject content = readFileContents(file);
             if (content != null) {
                 sortedThoughtList.add(content);

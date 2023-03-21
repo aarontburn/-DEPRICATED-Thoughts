@@ -48,6 +48,7 @@ public class FileActionButtonPressed implements ActionListener {
                         final String filePath = this.main.selectedFile.getPath().toString()
                                 .replace("sorted", "unsorted");
 
+                        main.db.delete(main.selectedFile);
                         this.main.selectedFile.getPath().renameTo(new File(filePath));
 
                         l.setContentFields(0);

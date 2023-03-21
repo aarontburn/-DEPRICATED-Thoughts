@@ -77,7 +77,6 @@ public class AuthHandler {
             connection.setDoOutput(true);
 
 
-
             final String requestBody = "{\"email\":\"" + email + "\",\"password\":\"" + password + "\",\"returnSecureToken\":true}";
             final OutputStream outputStream = connection.getOutputStream();
             outputStream.write(requestBody.getBytes());
@@ -104,7 +103,6 @@ public class AuthHandler {
 
             return new FirebaseHandler.ThoughtUser(userId, userEmail, displayName, idToken, true, refreshToken, expiresIn);
 
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -112,12 +110,48 @@ public class AuthHandler {
         return null;
     }
 
+    public boolean sendPasswordResetLink(final String email) {
+        try {
+            final URL url = new URL("https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=" + new String(new Base32().decode(KEY)));
+            final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("POST");
+            connection.setRequestProperty("Content-Type", "application/json");
+            connection.setDoOutput(true);
+
+            final String requestBody = "{\"requestType\":\"PASSWORD_RESET\",\"email\":\"" + email + "\"}";
+            final OutputStream outputStream = connection.getOutputStream();
+            outputStream.write(requestBody.getBytes());
+            outputStream.flush();
+            outputStream.close();
+
+            // Check the response code
+            int responseCode = connection.getResponseCode();
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                System.out.println("Password reset email sent successfully!");
+            } else {
+                System.out.println("Failed to send password reset email. Response code: " + responseCode);
+                return false;
+            }
+
+            return true;
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+
+        }
+
+
+
+        return false;
+
+    }
+
 
     public static String sp(final String p, final boolean d) {
         if (!d) {
             try {
                 final SecureRandom r = new SecureRandom();
-                r.setSeed(p.length());
                 final byte[] t = new byte[16];
                 r.nextBytes(t);
 
@@ -130,8 +164,6 @@ public class AuthHandler {
             }
         }
         return new String(new Base32().decode(r(new Base32().decode(p))));
-
-
     }
 
 

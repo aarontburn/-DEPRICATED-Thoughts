@@ -88,6 +88,10 @@ public class GBC extends GridBagConstraints {
         return this;
     }
 
+    public GBC setInsets(final int inset) {
+        return setInsets(inset, inset, inset, inset);
+    }
+
     public GBC setFill(final int fill) {
         this.fill = fill;
         return this;

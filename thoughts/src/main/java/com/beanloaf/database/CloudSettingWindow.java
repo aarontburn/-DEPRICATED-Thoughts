@@ -114,25 +114,27 @@ public class CloudSettingWindow extends JFrame {
         contentContainer.add(backButton, new GBC().setAnchor(GridBagConstraints.NORTHWEST));
 
         final FormattedInputField emailInputField = new FormattedInputField("Email");
-        emailInputField.setText(authHandler.registeredEmail.equals("") ? "" : authHandler.registeredEmail);
+        emailInputField.setText(
+                "".equals(authHandler.registeredEmail)
+                        ? ""
+                        : authHandler.registeredEmail);
         contentContainer.add(emailInputField, constraints);
 
-        final FormattedInputField passwordInputField = new FormattedInputField("Password", true);
+        final PasswordLoginField passwordInputField = new PasswordLoginField("Password");
         passwordInputField.setText(
-                authHandler.registeredPassword.equals("")
+                "".equals(authHandler.registeredPassword)
                         ? ""
                         : AuthHandler.sp(authHandler.registeredPassword, true));
+        passwordInputField.resetButtonEvent(event -> changeDisplay(this::createPasswordResetUI));
         contentContainer.add(passwordInputField, constraints.increaseGridY());
 
-
-        final JLabel errorLabel = new JLabel("");
+        final JLabel errorLabel = new JLabel(" ");
         errorLabel.setFont(TC.Fonts.h5);
         errorLabel.setForeground(Color.red);
         contentContainer.add(errorLabel, constraints.increaseGridY().setWeightY(0.1));
 
 
         final JButton submitButton = new JButton("Login");
-        submitButton.setPreferredSize(new Dimension(100, 50));
         submitButton.setFont(TC.Fonts.h4);
         submitButton.addActionListener(event -> {
             if (emailInputField.getText().contains("@")
@@ -171,13 +173,12 @@ public class CloudSettingWindow extends JFrame {
         final FormattedInputField reenterPasswordInputField = new FormattedInputField("Re-enter Password", true);
         contentContainer.add(reenterPasswordInputField, constraints.increaseGridY());
 
-        final JLabel errorLabel = new JLabel("");
+        final JLabel errorLabel = new JLabel(" ");
         errorLabel.setFont(TC.Fonts.h5);
         errorLabel.setForeground(Color.red);
         contentContainer.add(errorLabel, constraints.increaseGridY().setWeightY(0.1));
 
         final JButton submitButton = new JButton("Register");
-        submitButton.setPreferredSize(new Dimension(150, 50));
         submitButton.setFont(TC.Fonts.h4);
 
         submitButton.addActionListener(event -> {
@@ -207,6 +208,46 @@ public class CloudSettingWindow extends JFrame {
         contentContainer.add(submitButton, constraints.increaseGridY().setWeightY(0.4));
     }
 
+    private void createPasswordResetUI() {
+        final GBC constraints = new GBC();
+
+        final JButton backButton = new JButton("Back");
+        backButton.setPreferredSize(new Dimension(new Dimension(75, 35)));
+        backButton.setFont(TC.Fonts.h5);
+        backButton.addActionListener(event -> changeDisplay(this::createLoginFields));
+        contentContainer.add(backButton, new GBC().setAnchor(GridBagConstraints.NORTHWEST));
+
+        final FormattedInputField emailInputField = new FormattedInputField("Email");
+        emailInputField.setText(
+                "".equals(authHandler.registeredEmail)
+                        ? ""
+                        : authHandler.registeredEmail);
+        contentContainer.add(emailInputField, constraints.setWeightY(0.3));
+
+        final JLabel errorLabel = new JLabel(" ");
+        errorLabel.setFont(TC.Fonts.h5);
+        contentContainer.add(errorLabel, constraints.increaseGridY().setWeightY(0.1).setAnchor(GridBagConstraints.NORTH));
+
+
+        final JButton submitButton = new JButton("Send Link");
+        submitButton.setFont(TC.Fonts.h4);
+        submitButton.addActionListener(event -> {
+
+
+            if (emailInputField.getText().contains("@")) {
+                if (new AuthHandler().sendPasswordResetLink(emailInputField.getText())) {
+                    errorLabel.setText("Check your email for a link to reset your password.");
+                } else {
+                    errorLabel.setText("Error: No such email found.");
+                }
+
+            }
+
+
+        });
+        contentContainer.add(submitButton, constraints.increaseGridY().setWeightY(0.6));
+    }
+
     private void saveLoginInformation(final String email, final String password) {
 
         try (BufferedWriter fWriter = Files.newBufferedWriter(Paths.get(TC.Paths.LOGIN_DIRECTORY.toURI()))) {
@@ -214,7 +255,7 @@ public class CloudSettingWindow extends JFrame {
             final Map<String, String> textContent = new HashMap<>();
 
             textContent.put("email", email);
-            textContent.put("password", password.equals("") ? password : AuthHandler.sp(password, false));
+            textContent.put("password", "".equals(password) ? password : AuthHandler.sp(password, false));
 
             final JSONObject objJson = new JSONObject(textContent);
             fWriter.write(objJson.toJSONString());

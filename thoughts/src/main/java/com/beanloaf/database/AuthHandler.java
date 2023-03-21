@@ -1,18 +1,22 @@
 package com.beanloaf.database;
 
+import com.google.common.io.BaseEncoding;
 import org.apache.commons.codec.binary.Base32;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.security.SecureRandom;
 
 public class AuthHandler {
 
     private static final String KEY = "IFEXUYKTPFATGSCXPFHE6OC2LBSEG4JYIJGDC4RNIFWXUUS7L5HEOM2CJ4YWYMA";
+
     public AuthHandler() {
 
     }
@@ -32,6 +36,7 @@ public class AuthHandler {
             final OutputStream outputStream = connection.getOutputStream();
             outputStream.write(requestBody.getBytes());
             outputStream.flush();
+            outputStream.close();
 
             final BufferedReader responseReader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             final StringBuilder responseBuilder = new StringBuilder();
@@ -51,16 +56,7 @@ public class AuthHandler {
             final String refreshToken = (String) json.get("refreshToken");
             final String expiresIn = (String) json.get("expiresIn");
 
-            System.out.println("User ID: " + userId);
-            System.out.println("Email: " + userEmail);
-            System.out.println("Display Name: " + displayName);
-            System.out.println("ID Token: " + idToken);
-            System.out.println("Registered: " + registered);
-            System.out.println("Refresh Token: " + refreshToken);
-            System.out.println("Expires in: " + expiresIn);
-
             return new FirebaseHandler.ThoughtUser(userId, userEmail, displayName, idToken, registered, refreshToken, expiresIn);
-
 
 
         } catch (Exception e) {
@@ -84,6 +80,7 @@ public class AuthHandler {
             final OutputStream outputStream = connection.getOutputStream();
             outputStream.write(requestBody.getBytes());
             outputStream.flush();
+            outputStream.close();
 
             final BufferedReader responseReader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             final StringBuilder responseBuilder = new StringBuilder();
@@ -95,20 +92,12 @@ public class AuthHandler {
             final JSONObject json = (JSONObject) new JSONParser()
                     .parse(new StringReader(responseBuilder.toString()));
 
-            System.out.println("Created new Account: ");
             final String userId = (String) json.get("localId");
             final String userEmail = (String) json.get("email");
             final String displayName = (String) json.get("displayName");
             final String idToken = (String) json.get("idToken");
             final String refreshToken = (String) json.get("refreshToken");
             final String expiresIn = (String) json.get("expiresIn");
-
-            System.out.println("User ID: " + userId);
-            System.out.println("Email: " + userEmail);
-            System.out.println("Display Name: " + displayName);
-            System.out.println("ID Token: " + idToken);
-            System.out.println("Refresh Token: " + refreshToken);
-            System.out.println("Expires in: " + expiresIn);
 
             return new FirebaseHandler.ThoughtUser(userId, userEmail, displayName, idToken, true, refreshToken, expiresIn);
 
@@ -118,6 +107,36 @@ public class AuthHandler {
         }
 
         return null;
+    }
+
+
+    public static String sp(final String p, final boolean d) {
+        if (!d) {
+            try {
+                final SecureRandom r = new SecureRandom();
+                r.setSeed(p.length());
+                final byte[] t = new byte[16];
+                r.nextBytes(t);
+
+                return BaseEncoding.base32().encode(
+                        (BaseEncoding.base32().encode(p.getBytes())
+                                + new String(t)).getBytes());
+
+            } catch (Exception e) {
+                return null;
+            }
+        }
+        return new String(new Base32().decode(r(new Base32().decode(p))));
+
+
+    }
+
+
+    public static byte[] r(final byte[] o) {
+        final int l = o.length;
+        final byte[] r = new byte[l - 16];
+        System.arraycopy(o, 0, r, 0, l - 16);
+        return r;
     }
 
 }

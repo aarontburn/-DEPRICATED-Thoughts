@@ -2,10 +2,17 @@ package com.beanloaf.database;
 
 import com.beanloaf.objects.GBC;
 import com.beanloaf.res.TC;
+import org.json.simple.JSONObject;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowEvent;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
 
 public class CloudSettingWindow extends JFrame {
 
@@ -52,7 +59,6 @@ public class CloudSettingWindow extends JFrame {
     }
 
 
-
     private void changeDisplay(final Runnable runnable) {
         contentContainer.removeAll();
         contentContainer.revalidate();
@@ -62,26 +68,21 @@ public class CloudSettingWindow extends JFrame {
 
 
     private void userSignedInScreen() {
-        final GBC c = new GBC().setFill(GridBagConstraints.HORIZONTAL);
+        final GBC c = new GBC().setInsets(0, 25, 0, 25).setAnchor(GridBagConstraints.WEST);
 
-        final JLabel displayName = new JLabel(authHandler.user.displayName());
-        final JLabel email = new JLabel(authHandler.user.email());
-        final JLabel userLocalID = new JLabel(authHandler.user.localId());
-
-
-        contentContainer.add(displayName, c);
-        contentContainer.add(email, c.setGridY(1));
-        contentContainer.add(userLocalID, c.setGridY(2));
-
+        final FormattedUserLabel userDisplay = new FormattedUserLabel(authHandler.user);
+        contentContainer.add(userDisplay, c.increaseGridY());
 
         final JButton signOutButton = new JButton("Sign Out");
-
+        signOutButton.setFont(TC.Fonts.h4);
         signOutButton.addActionListener(event -> {
+            saveLoginInformation(authHandler.user.email(), "");
+            authHandler.checkUserFile();
             authHandler.signOut();
             changeDisplay(this::createLoginRegisterButtons);
 
         });
-        contentContainer.add(signOutButton, c.setGridY(3));
+        contentContainer.add(signOutButton, c.increaseGridY().setAnchor(GridBagConstraints.EAST));
 
 
     }
@@ -90,7 +91,10 @@ public class CloudSettingWindow extends JFrame {
         final JButton loginButton = new JButton("Login");
         loginButton.setFont(TC.Fonts.h4);
         loginButton.setPreferredSize(new Dimension(150, 75));
-        loginButton.addActionListener(event -> changeDisplay(this::createLoginFields));
+        loginButton.addActionListener(event -> {
+            changeDisplay(this::createLoginFields);
+            authHandler.checkUserFile();
+        });
         contentContainer.add(loginButton, new GBC());
 
         final JButton registerButton = new JButton("Register");
@@ -110,9 +114,14 @@ public class CloudSettingWindow extends JFrame {
         contentContainer.add(backButton, new GBC().setAnchor(GridBagConstraints.NORTHWEST));
 
         final FormattedInputField emailInputField = new FormattedInputField("Email");
+        emailInputField.setText(authHandler.registeredEmail.equals("") ? "" : authHandler.registeredEmail);
         contentContainer.add(emailInputField, constraints);
 
         final FormattedInputField passwordInputField = new FormattedInputField("Password", true);
+        passwordInputField.setText(
+                authHandler.registeredPassword.equals("")
+                        ? ""
+                        : AuthHandler.sp(authHandler.registeredPassword, true));
         contentContainer.add(passwordInputField, constraints.setGridY(1));
 
         final JButton submitButton = new JButton("Login");
@@ -124,6 +133,7 @@ public class CloudSettingWindow extends JFrame {
 
                 if (authHandler.signInUser(emailInputField.getText(), passwordInputField.getText())) {
                     authHandler.start();
+                    saveLoginInformation(emailInputField.getText(), passwordInputField.getText());
                     this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
                 }
 
@@ -163,6 +173,7 @@ public class CloudSettingWindow extends JFrame {
 
                 if (authHandler.registerNewUser(emailInputField.getText(), passwordInputField.getText())) {
                     authHandler.start();
+                    saveLoginInformation(emailInputField.getText(), passwordInputField.getText());
                     this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
                 }
 
@@ -171,6 +182,25 @@ public class CloudSettingWindow extends JFrame {
 
 
         contentContainer.add(submitButton, constraints.setGridY(3).setWeightY(0.4));
+    }
+
+    private void saveLoginInformation(final String email, final String password) {
+
+        try (BufferedWriter fWriter = Files.newBufferedWriter(Paths.get(TC.Paths.LOGIN_DIRECTORY.toURI()))) {
+
+            final Map<String, String> textContent = new HashMap<>();
+
+            textContent.put("email", email);
+            textContent.put("password", password.equals("") ? password : AuthHandler.sp(password, false));
+
+            final JSONObject objJson = new JSONObject(textContent);
+            fWriter.write(objJson.toJSONString());
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
 

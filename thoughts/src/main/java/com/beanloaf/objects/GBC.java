@@ -10,6 +10,10 @@ import java.awt.Insets;
  */
 public class GBC extends GridBagConstraints {
 
+    private int xPosition;
+
+    private int yPosition;
+
     public GBC() {
         this(0, 0);
     }
@@ -42,6 +46,18 @@ public class GBC extends GridBagConstraints {
 
     public GBC setGridY(final int gridY) {
         this.gridy = gridY;
+        return this;
+    }
+
+    public GBC increaseGridX() {
+        xPosition++;
+        this.gridx = xPosition;
+        return this;
+    }
+
+    public GBC increaseGridY() {
+        yPosition++;
+        this.gridy = yPosition;
         return this;
     }
 

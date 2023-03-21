@@ -58,6 +58,7 @@ public final class TC {
         public static final File SORTED_DIRECTORY_PATH = new File("thoughts/storage/sorted/");
 
         public static final File SETTINGS_DIRECTORY = new File("thoughts/settings.json");
+        public static final File LOGIN_DIRECTORY = new File("thoughts/src/main/java/com/beanloaf/res/user.json");
 
         public static final String ICON_DIRECTORY = "thoughts/src/main/java/com/beanloaf/res/icons/";
     }

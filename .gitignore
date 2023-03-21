@@ -6,3 +6,4 @@ serviceAccountKey.json
 thoughts/settings.json
 storage/
 target/
+thoughts/src/main/java/com/beanloaf/res/user.json

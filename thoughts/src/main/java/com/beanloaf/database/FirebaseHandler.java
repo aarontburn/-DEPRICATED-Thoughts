@@ -1,11 +1,12 @@
 package com.beanloaf.database;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Paths;
 import java.util.*;
 
 import com.beanloaf.events.SaveNewFile;
@@ -27,13 +28,55 @@ public class FirebaseHandler {
 
     private String apiURL;
 
+    public String registeredEmail = "";
+
+    public String registeredPassword = "";
+
     public FirebaseHandler(final Thoughts main) {
         this.main = main;
+        checkUserFile();
+    }
+
+    public void checkUserFile() {
+
+        try (BufferedReader reader = Files.newBufferedReader(Paths.get(TC.Paths.LOGIN_DIRECTORY.toURI()))) {
+            final JSONObject json = (JSONObject) new JSONParser().parse(reader);
+            final String email = (String) json.get("email");
+            final String password = (String) json.get("password");
+
+            boolean validInfo = true;
+
+
+            registeredEmail = email;
+            registeredPassword = password;
+
+
+            if (!email.contains("@")) {
+                validInfo = false;
+            }
+            if (password.isEmpty()) {
+                validInfo = false;
+            }
+
+            if (validInfo) {
+                if (signInUser(registeredEmail, AuthHandler.sp(registeredPassword, true))) {
+                    start();
+                }
+            }
+
+
+        } catch (NoSuchFileException e) {
+            System.err.println("Creating user.json");
+        } catch (Exception e) {
+            e.printStackTrace();
+
+        }
+
     }
 
     public void start() {
         isConnectedToInternet();
-        setUserInfo();
+        registerURL();
         refreshItems();
     }
 
@@ -49,7 +92,6 @@ public class FirebaseHandler {
             System.err.println("Error: a user is already logged in! Sign out first.");
             return false;
         }
-
 
         final ThoughtUser returningUser = new AuthHandler().signIn(email, password);
         if (returningUser != null) {
@@ -77,7 +119,7 @@ public class FirebaseHandler {
         return false;
     }
 
-    private void setUserInfo() {
+    private void registerURL() {
         try {
             if (user == null) {
                 throw new IllegalArgumentException();
@@ -125,13 +167,13 @@ public class FirebaseHandler {
                         + connection.getResponseCode());
             }
 
-            final BufferedReader responseReader = new BufferedReader(
-                    new InputStreamReader(connection.getInputStream()));
+            final BufferedReader responseReader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             final StringBuilder responseBuilder = new StringBuilder();
             String line;
             while ((line = responseReader.readLine()) != null) {
                 responseBuilder.append(line);
             }
+            responseReader.close();
 
             final JSONObject json = (JSONObject) new JSONParser()
                     .parse(responseBuilder.toString());
@@ -144,7 +186,7 @@ public class FirebaseHandler {
                 final String filePath = ((String) path).replace("_", " ") + ".json";
                 final String title = (String) ((JSONObject) json.get(path)).get("Title");
                 final String tag = (String) ((JSONObject) json.get(path)).get("Tag");
-                final String date = ((String) ((JSONObject) json.get(path)).get("Date"));
+                final String date = (String) ((JSONObject) json.get(path)).get("Date");
                 final String body = ((String) ((JSONObject) json.get(path)).get("Body"))
                         .replace("\\n", "\n").replace("\\t", "\t");
 
@@ -187,8 +229,9 @@ public class FirebaseHandler {
             final OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream());
             writer.write(json);
             writer.flush();
+            writer.close();
 
-            int responseCode = connection.getResponseCode();
+            final int responseCode = connection.getResponseCode();
             if (responseCode == HttpURLConnection.HTTP_OK) {
                 System.out.println("Data successfully inserted to the database.");
             } else {

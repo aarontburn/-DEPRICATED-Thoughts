@@ -48,4 +48,12 @@ public class FormattedInputField extends JPanel {
         return textField.getText();
     }
 
+    public void setText(final String text) {
+        if (forPassword) {
+            passwordField.setText(text);
+            return;
+        }
+        textField.setText(text);
+    }
+
 }

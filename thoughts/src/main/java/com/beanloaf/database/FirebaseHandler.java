@@ -1,5 +1,7 @@
 package com.beanloaf.database;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -19,7 +21,7 @@ public class FirebaseHandler {
     private final Thoughts main;
     private List<ThoughtObject> objectList;
 
-    private ThoughtUser user;
+    public ThoughtUser user;
 
     public boolean isOnline;
 
@@ -27,23 +29,61 @@ public class FirebaseHandler {
 
     public FirebaseHandler(final Thoughts main) {
         this.main = main;
+    }
+
+    public void start() {
         isConnectedToInternet();
         setUserInfo();
         refreshItems();
+    }
+
+    public void signOut() {
+        user = null;
+        isOnline = false;
+        objectList = null;
+        refreshPushPullLabels();
+    }
+
+    public boolean signInUser(final String email, final String password) {
+        if (user != null) {
+            System.err.println("Error: a user is already logged in! Sign out first.");
+            return false;
+        }
+
+
+        final ThoughtUser returningUser = new AuthHandler().signIn(email, password);
+        if (returningUser != null) {
+            user = returningUser;
+            main.thoughtsPCS.firePropertyChange(TC.Properties.CONNECTED);
+            return true;
+        }
+        System.err.println("Error logging in user.");
+        return false;
 
     }
 
+    public boolean registerNewUser(final String email, final String password) {
+        if (user != null) {
+            System.err.println("Error: a user is already logged in! Sign out first.");
+            return false;
+        }
+        final ThoughtUser newUser = new AuthHandler().signUp(email, password);
+        if (newUser != null) {
+            user = newUser;
+            main.thoughtsPCS.firePropertyChange(TC.Properties.CONNECTED);
+            return true;
+        }
+        System.err.println("Error registering new user.");
+        return false;
+    }
+
     private void setUserInfo() {
-
         try {
-            final AuthHandler authHandler = new AuthHandler();
-            user = authHandler.signIn("aarontburnham@hotmail.com", "password123");
-
             if (user == null) {
                 throw new IllegalArgumentException();
             }
 
-            apiURL = DATABASE_URL + user.uid() + ".json?auth=" + user.idToken();
+            apiURL = DATABASE_URL + user.localId() + ".json?auth=" + user.idToken();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -113,6 +153,7 @@ public class FirebaseHandler {
             }
 
             connection.disconnect();
+            refreshPushPullLabels();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -216,7 +257,7 @@ public class FirebaseHandler {
             return;
         }
         try {
-            final HttpURLConnection connection = (HttpURLConnection) new URL(DATABASE_URL + "/" + user.uid + "/" + obj.getPath().getName().replace(" ", "_") + "?auth=" + user.idToken()).openConnection();
+            final HttpURLConnection connection = (HttpURLConnection) new URL(DATABASE_URL + "/" + user.localId + "/" + obj.getPath().getName().replace(" ", "_") + "?auth=" + user.idToken()).openConnection();
             connection.setRequestMethod("DELETE");
 
             // Check if the DELETE request was successful
@@ -236,7 +277,7 @@ public class FirebaseHandler {
 
 
     public void refreshPushPullLabels() {
-        if (!isOnline) {
+        if (!isOnline || user == null) {
             this.main.thoughtsPCS.firePropertyChange(TC.Properties.DISCONNECTED);
             return;
         }
@@ -257,7 +298,7 @@ public class FirebaseHandler {
     }
 
 
-    public record ThoughtUser(String uid,
+    public record ThoughtUser(String localId,
                               String email,
                               String displayName,
                               String idToken,

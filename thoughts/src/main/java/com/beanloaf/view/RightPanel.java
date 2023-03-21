@@ -226,6 +226,10 @@ public class RightPanel extends JPanel implements PropertyChangeListener {
                 pullButton.setEnabled(false);
                 pushButton.setEnabled(false);
             }
+            case TC.Properties.CONNECTED -> {
+                pullButton.setEnabled(true);
+                pushButton.setEnabled(true);
+            }
             case TC.Properties.UNPULLED_FILES -> pullLabel.setText(event.getNewValue() + " files can be pulled.");
             case TC.Properties.UNPUSHED_FILES -> pushLabel.setText(event.getNewValue() + " files not pushed.");
             case TC.Properties.TEXT -> {

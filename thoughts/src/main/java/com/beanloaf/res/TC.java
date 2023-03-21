@@ -7,17 +7,16 @@ import java.io.File;
 
 /**
  * Holds constants for Thoughts
- * 
+ *
  * @author beanloaf
  */
 public final class TC {
 
-    
+
     public static final String DEFAULT_TITLE = "<untitled>";
     public static final String DEFAULT_BODY = "<description>";
     public static final String DEFAULT_TAG = "<untagged>";
     public static final String DEFAULT_DATE = "<date>";
-
 
 
     public static class Properties {
@@ -34,7 +33,7 @@ public final class TC {
 
         public static final String DISCONNECTED = "disconnected";
 
-        public static final String ONLINE = "ONLINE";
+        public static final String CONNECTED = "online";
         public static final String UNPUSHED_FILES = "unpushed files";
         public static final String UNPULLED_FILES = "unpulled files";
 
@@ -49,6 +48,7 @@ public final class TC {
         public static final String OPEN_SETTINGS_WINDOW = "open settings window";
         public static final String EXIT = "exit";
         public static final String REFRESH = "refresh";
+        public static final String CLOUD_SETTINGS = "cloud settings";
 
     }
 

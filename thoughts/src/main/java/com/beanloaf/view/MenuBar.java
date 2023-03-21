@@ -49,6 +49,8 @@ public class MenuBar extends JMenuBar {
         final Map<String, Runnable> cloudOptions = new LinkedHashMap<>();
         cloudOptions.put("Push Files", () -> pcs.firePropertyChange(TC.Properties.PUSH));
         cloudOptions.put("Pull Files", () -> pcs.firePropertyChange(TC.Properties.PULL));
+        cloudOptions.put(null, null);
+        cloudOptions.put("Cloud Settings", () -> pcs.firePropertyChange(TC.Properties.CLOUD_SETTINGS));
         menuMap.put("Cloud", cloudOptions);
 
 

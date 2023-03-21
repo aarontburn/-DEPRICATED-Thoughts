@@ -265,6 +265,7 @@ public class FirebaseHandler {
                     update(tObj);
                 }
             }
+            refreshItems();
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -320,6 +321,7 @@ public class FirebaseHandler {
             }
 
             connection.disconnect();
+            refreshItems();
         } catch (Exception e) {
             e.printStackTrace();
         }

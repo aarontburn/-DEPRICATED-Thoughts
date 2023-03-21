@@ -1,5 +1,7 @@
 package com.beanloaf.database;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -18,7 +20,7 @@ import org.apache.commons.codec.binary.Base32;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
-public class FirebaseHandler {
+public class FirebaseHandler implements PropertyChangeListener {
 
     private static final String DATABASE_URL = "https://thoughts-4144a-default-rtdb.firebaseio.com/users/";
     private final Thoughts main;
@@ -61,11 +63,8 @@ public class FirebaseHandler {
             }
 
 
-            if (validInfo) {
-                if (signInUser(registeredEmail, AuthHandler.sp(registeredPassword, true))) {
-
-                    start();
-                }
+            if (validInfo && signInUser(registeredEmail, AuthHandler.sp(registeredPassword, true))) {
+                start();
             }
 
 
@@ -126,7 +125,7 @@ public class FirebaseHandler {
     private void registerURL() {
         try {
             if (user == null) {
-                throw new IllegalArgumentException();
+                throw new IllegalArgumentException("User cannot be null when registering URL.");
             }
 
             apiURL = DATABASE_URL + user.localId() + ".json?auth=" + user.idToken();
@@ -208,7 +207,7 @@ public class FirebaseHandler {
     }
 
 
-    public void update(final ThoughtObject obj) {
+    public void addEntryIntoDatabase(final ThoughtObject obj) {
         if (!isOnline) {
             System.out.println("Not connected to the internet!");
             return;
@@ -262,7 +261,7 @@ public class FirebaseHandler {
             for (final File file : Objects.requireNonNull(sortedFileDirectory)) {
                 final ThoughtObject tObj = this.main.readFileContents(file);
                 if (tObj != null) {
-                    update(tObj);
+                    addEntryIntoDatabase(tObj);
                 }
             }
             refreshItems();
@@ -301,7 +300,7 @@ public class FirebaseHandler {
         return this.objectList;
     }
 
-    public void delete(final ThoughtObject obj) {
+    public void removeEntryFromDatabase(final ThoughtObject obj) {
         if (!isOnline) {
             System.out.println("Not connected to the internet!");
             return;
@@ -336,19 +335,16 @@ public class FirebaseHandler {
             return;
         }
 
-        /* Pull */
-        int diffPull = this.objectList.size() - this.main.sortedThoughtList.size();
-        if (diffPull < 0) {
-            diffPull = 0;
-        }
-        this.main.thoughtsPCS.firePropertyChange(TC.Properties.UNPULLED_FILES, diffPull);
+        this.main.thoughtsPCS.firePropertyChange(TC.Properties.UNPULLED_FILES, Math.max(this.objectList.size() - this.main.sortedThoughtList.size(), 0));
 
-        /* Push */
-        int diffPush = this.main.sortedThoughtList.size() - this.objectList.size();
-        if (diffPush < 0) {
-            diffPush = 0;
+        this.main.thoughtsPCS.firePropertyChange(TC.Properties.UNPUSHED_FILES, Math.max(this.main.sortedThoughtList.size() - this.objectList.size(), 0));
+    }
+
+    @Override
+    public void propertyChange(final PropertyChangeEvent event) {
+        switch (event.getPropertyName()) {
+            case TC.Properties.REFRESH -> refreshItems();
         }
-        this.main.thoughtsPCS.firePropertyChange(TC.Properties.UNPUSHED_FILES, diffPush);
     }
 
 

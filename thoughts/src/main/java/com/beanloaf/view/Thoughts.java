@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.plaf.basic.BasicSplitPaneDivider;
@@ -135,6 +136,12 @@ public class Thoughts implements PropertyChangeListener {
         });
 
         this.window.setExtendedState(settings.isMaximized() ? JFrame.MAXIMIZED_BOTH : JFrame.NORMAL);
+
+        try {
+            this.window.setIconImage(ImageIO.read(new File(TC.Paths.ICON_DIRECTORY + "gear.png")));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         KeyboardFocusManager.getCurrentKeyboardFocusManager()
                 .addKeyEventDispatcher(new KeyBinds());

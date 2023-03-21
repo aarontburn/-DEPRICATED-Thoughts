@@ -48,7 +48,7 @@ public class FileActionButtonPressed implements ActionListener {
                         final String filePath = this.main.selectedFile.getPath().toString()
                                 .replace("sorted", "unsorted");
 
-                        main.db.delete(main.selectedFile);
+                        main.db.removeEntryFromDatabase(main.selectedFile);
                         this.main.selectedFile.getPath().renameTo(new File(filePath));
 
                         l.setContentFields(0);
@@ -68,7 +68,7 @@ public class FileActionButtonPressed implements ActionListener {
                 final String path = this.main.selectedFile.getPath()
                         .toString().split(Pattern.quote(File.separator))[2];
                 if ("sorted".equals(path)) {
-                    this.main.db.delete(this.main.selectedFile);
+                    this.main.db.removeEntryFromDatabase(this.main.selectedFile);
                 }
                 this.main.selectedFile.getPath().delete();
                 l.setContentFields(0);

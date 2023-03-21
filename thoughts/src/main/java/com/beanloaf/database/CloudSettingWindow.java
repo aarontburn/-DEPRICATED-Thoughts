@@ -39,7 +39,6 @@ public class CloudSettingWindow extends JFrame {
         final JLabel displayLabel = new JLabel("Thoughts: Cloud Integration", SwingConstants.CENTER);
         displayLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         displayLabel.setFont(TC.Fonts.h2);
-        displayLabel.setForeground(Color.white);
         displayLabel.setPreferredSize(new Dimension(700, 100));
         this.add(displayLabel);
 
@@ -137,8 +136,7 @@ public class CloudSettingWindow extends JFrame {
         final JButton submitButton = new JButton("Login");
         submitButton.setFont(TC.Fonts.h4);
         submitButton.addActionListener(event -> {
-            if (emailInputField.getText().contains("@")
-                    && !passwordInputField.getText().isBlank()) {
+            if (emailInputField.getText().contains("@") && !passwordInputField.getText().isBlank()) {
 
                 if (authHandler.signInUser(emailInputField.getText(), passwordInputField.getText())) {
                     authHandler.start();
@@ -240,7 +238,8 @@ public class CloudSettingWindow extends JFrame {
                 } else {
                     errorLabel.setText("Error: No such email found.");
                 }
-
+            } else {
+                errorLabel.setText("Error: Invalid email.");
             }
 
 

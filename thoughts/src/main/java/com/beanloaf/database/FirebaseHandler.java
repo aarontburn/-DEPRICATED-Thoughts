@@ -38,6 +38,7 @@ public class FirebaseHandler implements PropertyChangeListener {
 
     public FirebaseHandler(final Thoughts main) {
         this.main = main;
+        this.main.thoughtsPCS.addPropertyChangeListener(this);
         checkUserFile();
     }
 
@@ -107,12 +108,12 @@ public class FirebaseHandler implements PropertyChangeListener {
 
     }
 
-    public boolean registerNewUser(final String email, final String password) {
+    public boolean registerNewUser(final String displayName, final String email, final String password) {
         if (user != null) {
             System.err.println("Error: a user is already logged in! Sign out first.");
             return false;
         }
-        final ThoughtUser newUser = new AuthHandler().signUp(email, password);
+        final ThoughtUser newUser = new AuthHandler().signUp(displayName, email, password);
         if (newUser != null) {
             user = newUser;
             main.thoughtsPCS.firePropertyChange(TC.Properties.CONNECTED);

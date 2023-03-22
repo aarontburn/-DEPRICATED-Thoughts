@@ -17,11 +17,14 @@ import java.beans.PropertyChangeListener;
 
 public class RightPanel extends JPanel implements PropertyChangeListener {
 
+    private final static String NOT_CONNECTED_MESSAGE = "Not connected";
+
     private final Thoughts main;
     public JLabel dateLabel, pushLabel, pullLabel;
     public AbstractTextArea titleTextArea, tagTextArea, bodyTextArea;
     public final UndoManager undoManager = new UndoManager();
     public JButton sortButton, deleteButton, newFileButton, pullButton, pushButton;
+    private JLabel userNameLabel;
 
 
     public RightPanel(final Thoughts main) {
@@ -125,11 +128,16 @@ public class RightPanel extends JPanel implements PropertyChangeListener {
                 .setAnchor(GridBagConstraints.LINE_START)
                 .setInsets(10, 15, 0, 0);
 
+
+        userNameLabel = new JLabel(main.db.user == null  ? NOT_CONNECTED_MESSAGE : "Logged in as: " + main.db.user.displayName());
+        userNameLabel.setFont(TC.Fonts.h4);
+        settingsBar.add(userNameLabel, settingConstraints.setGridWidth(GridBagConstraints.REMAINDER));
+
         final Dimension buttonDim = new Dimension(90, 35);
         pushButton = new JButton("Push");
         pushButton.setPreferredSize(buttonDim);
         pushButton.setFont(TC.Fonts.h4);
-        settingsBar.add(pushButton, settingConstraints);
+        settingsBar.add(pushButton, settingConstraints.setGridWidth(1).increaseGridY());
         pushButton.addActionListener(event -> {
             if (main.db != null) {
                 main.db.push();
@@ -141,12 +149,12 @@ public class RightPanel extends JPanel implements PropertyChangeListener {
         pushLabel = new JLabel("");
         pushLabel.setOpaque(false);
         pushLabel.setFont(TC.Fonts.h5);
-        settingsBar.add(pushLabel, settingConstraints.setGridX(1));
+        settingsBar.add(pushLabel, settingConstraints.increaseGridX());
 
         pullButton = new JButton("Pull");
         pullButton.setPreferredSize(buttonDim);
         pullButton.setFont(TC.Fonts.h4);
-        settingsBar.add(pullButton, settingConstraints.setGridX(2));
+        settingsBar.add(pullButton, settingConstraints.increaseGridX());
         pullButton.addActionListener(event -> {
             if (main.db != null) {
                 main.db.pull();
@@ -156,7 +164,7 @@ public class RightPanel extends JPanel implements PropertyChangeListener {
         pullLabel = new JLabel("");
         pullLabel.setOpaque(false);
         pullLabel.setFont(TC.Fonts.h5);
-        settingsBar.add(pullLabel, settingConstraints.setGridX(3));
+        settingsBar.add(pullLabel, settingConstraints.increaseGridX());
 
     }
 
@@ -221,12 +229,14 @@ public class RightPanel extends JPanel implements PropertyChangeListener {
             case TC.Properties.DELETE -> this.deleteButton.doClick();
             case TC.Properties.SORT -> this.sortButton.doClick();
             case TC.Properties.DISCONNECTED -> {
+                userNameLabel.setText(NOT_CONNECTED_MESSAGE);
                 pullLabel.setText("Not connected.");
                 pushLabel.setText("Not connected.");
                 pullButton.setEnabled(false);
                 pushButton.setEnabled(false);
             }
             case TC.Properties.CONNECTED -> {
+                userNameLabel.setText(main.db.user == null  ? NOT_CONNECTED_MESSAGE : "Logged in as: " + main.db.user.displayName());
                 pullButton.setEnabled(true);
                 pushButton.setEnabled(true);
             }

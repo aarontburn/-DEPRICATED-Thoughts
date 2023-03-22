@@ -67,7 +67,7 @@ public class AuthHandler {
 
     }
 
-    public FirebaseHandler.ThoughtUser signUp(final String email, final String password) {
+    public FirebaseHandler.ThoughtUser signUp(final String userName, final String email, final String password) {
         try {
             final URL url = new URL("https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=" + new String(new Base32().decode(KEY)));
 
@@ -91,17 +91,18 @@ public class AuthHandler {
                 responseBuilder.append(line);
             }
 
+
             final JSONObject json = (JSONObject) new JSONParser()
                     .parse(new StringReader(responseBuilder.toString()));
 
             final String userId = (String) json.get("localId");
             final String userEmail = (String) json.get("email");
-            final String displayName = (String) json.get("displayName");
             final String idToken = (String) json.get("idToken");
             final String refreshToken = (String) json.get("refreshToken");
             final String expiresIn = (String) json.get("expiresIn");
 
-            return new FirebaseHandler.ThoughtUser(userId, userEmail, displayName, idToken, true, refreshToken, expiresIn);
+            return new FirebaseHandler.ThoughtUser(userId, userEmail, setUsername(userName, idToken), idToken, true, refreshToken, expiresIn);
+
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -109,6 +110,48 @@ public class AuthHandler {
 
         return null;
     }
+
+    public String setUsername(final String userName, final String token) {
+        try {
+            final URL url = new URL("https://identitytoolkit.googleapis.com/v1/accounts:update?key=" + new String(new Base32().decode(KEY)));
+
+            final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("POST");
+            connection.setRequestProperty("Content-Type", "application/json");
+            connection.setDoOutput(true);
+
+
+            final String requestBody = "{\"idToken\":\"[ID_TOKEN]\",\"displayName\":\"[NAME]\",\"returnSecureToken\":true}"
+                    .replace("[ID_TOKEN]", token)
+                    .replace("[NAME]", userName);
+
+
+            final OutputStream outputStream = connection.getOutputStream();
+            outputStream.write(requestBody.getBytes());
+            outputStream.flush();
+            outputStream.close();
+
+
+            final BufferedReader responseReader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            final StringBuilder responseBuilder = new StringBuilder();
+            String line;
+            while ((line = responseReader.readLine()) != null) {
+                responseBuilder.append(line);
+            }
+
+
+            final JSONObject json = (JSONObject) new JSONParser()
+                    .parse(new StringReader(responseBuilder.toString()));
+
+            return (String) json.get("displayName");
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
 
     public boolean sendPasswordResetLink(final String email) {
         try {
@@ -141,8 +184,6 @@ public class AuthHandler {
 
         }
 
-
-
         return false;
 
     }
@@ -151,13 +192,18 @@ public class AuthHandler {
     public static String sp(final String p, final boolean d) {
         if (!d) {
             try {
-                final SecureRandom r = new SecureRandom();
-                final byte[] t = new byte[16];
-                r.nextBytes(t);
+                final String ch = "ABCDEFGHIJKLNOPRSTUVWXYZabcdefghjklmnopqrstuvxyz01245678";
+                final StringBuilder s = new StringBuilder(16);
+
+                final SecureRandom random = new SecureRandom();
+                for (int i = 0; i < 16; i++) {
+                    final int index = random.nextInt(ch.length());
+                    s.append(ch.charAt(index));
+                }
 
                 return BaseEncoding.base32().encode(
                         (BaseEncoding.base32().encode(p.getBytes())
-                                + new String(t)).getBytes());
+                                + s).getBytes());
 
             } catch (Exception e) {
                 return null;
@@ -168,9 +214,8 @@ public class AuthHandler {
 
 
     public static byte[] r(final byte[] o) {
-        final int l = o.length;
-        final byte[] r = new byte[l - 16];
-        System.arraycopy(o, 0, r, 0, l - 16);
+        final byte[] r = new byte[o.length - 16];
+        System.arraycopy(o, 0, r, 0, o.length - 16);
         return r;
     }
 

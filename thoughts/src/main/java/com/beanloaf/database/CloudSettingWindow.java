@@ -162,8 +162,11 @@ public class CloudSettingWindow extends JFrame {
         backButton.addActionListener(event -> changeDisplay(this::createLoginRegisterButtons));
         contentContainer.add(backButton, new GBC().setAnchor(GridBagConstraints.NORTHWEST));
 
+        final FormattedInputField displayNameInputField = new FormattedInputField("Display Name");
+        contentContainer.add(displayNameInputField, constraints);
+
         final FormattedInputField emailInputField = new FormattedInputField("Email");
-        contentContainer.add(emailInputField, constraints);
+        contentContainer.add(emailInputField, constraints.increaseGridY());
 
         final FormattedInputField passwordInputField = new FormattedInputField("Password (needs to be at least 6 characters)", true);
         contentContainer.add(passwordInputField, constraints.increaseGridY());
@@ -180,6 +183,12 @@ public class CloudSettingWindow extends JFrame {
         submitButton.setFont(TC.Fonts.h4);
 
         submitButton.addActionListener(event -> {
+
+            if (displayNameInputField.getText().isEmpty()) {
+                errorLabel.setText("Error: Invalid username.");
+                return;
+            }
+
             if (!emailInputField.getText().contains("@")) {
                 errorLabel.setText("Error: Invalid email.");
                 return;
@@ -193,7 +202,7 @@ public class CloudSettingWindow extends JFrame {
                 return;
             }
 
-            if (authHandler.registerNewUser(emailInputField.getText(), passwordInputField.getText())) {
+            if (authHandler.registerNewUser(displayNameInputField.getText(), emailInputField.getText(), passwordInputField.getText())) {
                 authHandler.start();
                 saveLoginInformation(emailInputField.getText(), passwordInputField.getText());
                 this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));

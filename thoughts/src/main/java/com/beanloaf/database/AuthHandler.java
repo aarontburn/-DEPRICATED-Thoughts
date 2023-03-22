@@ -12,6 +12,8 @@ import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.SecureRandom;
+import java.util.HashMap;
+import java.util.Map;
 
 public class AuthHandler {
 
@@ -32,9 +34,13 @@ public class AuthHandler {
             connection.setRequestProperty("Content-Type", "application/json");
             connection.setDoOutput(true);
 
-            final String requestBody = "{\"email\":\"" + email + "\",\"password\":\"" + password + "\",\"returnSecureToken\":true}";
+            final Map<String, Object> requestMap = new HashMap<>();
+            requestMap.put("email", email);
+            requestMap.put("password", password);
+            requestMap.put("returnSecureToken", true);
+
             final OutputStream outputStream = connection.getOutputStream();
-            outputStream.write(requestBody.getBytes());
+            outputStream.write(new JSONObject(requestMap).toJSONString().getBytes());
             outputStream.flush();
             outputStream.close();
 
@@ -76,10 +82,13 @@ public class AuthHandler {
             connection.setRequestProperty("Content-Type", "application/json");
             connection.setDoOutput(true);
 
+            final Map<String, Object> requestMap = new HashMap<>();
+            requestMap.put("email", email);
+            requestMap.put("password", password);
+            requestMap.put("returnSecureToken", true);
 
-            final String requestBody = "{\"email\":\"" + email + "\",\"password\":\"" + password + "\",\"returnSecureToken\":true}";
             final OutputStream outputStream = connection.getOutputStream();
-            outputStream.write(requestBody.getBytes());
+            outputStream.write(new JSONObject(requestMap).toJSONString().getBytes());
             outputStream.flush();
             outputStream.close();
 
@@ -120,17 +129,15 @@ public class AuthHandler {
             connection.setRequestProperty("Content-Type", "application/json");
             connection.setDoOutput(true);
 
-
-            final String requestBody = "{\"idToken\":\"[ID_TOKEN]\",\"displayName\":\"[NAME]\",\"returnSecureToken\":true}"
-                    .replace("[ID_TOKEN]", token)
-                    .replace("[NAME]", userName);
-
+            final Map<String, Object> requestMap = new HashMap<>();
+            requestMap.put("idToken", token);
+            requestMap.put("displayName", userName);
+            requestMap.put("returnSecureToken", true);
 
             final OutputStream outputStream = connection.getOutputStream();
-            outputStream.write(requestBody.getBytes());
+            outputStream.write(new JSONObject(requestMap).toJSONString().getBytes());
             outputStream.flush();
             outputStream.close();
-
 
             final BufferedReader responseReader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             final StringBuilder responseBuilder = new StringBuilder();
@@ -138,7 +145,6 @@ public class AuthHandler {
             while ((line = responseReader.readLine()) != null) {
                 responseBuilder.append(line);
             }
-
 
             final JSONObject json = (JSONObject) new JSONParser()
                     .parse(new StringReader(responseBuilder.toString()));
@@ -161,14 +167,18 @@ public class AuthHandler {
             connection.setRequestProperty("Content-Type", "application/json");
             connection.setDoOutput(true);
 
-            final String requestBody = "{\"requestType\":\"PASSWORD_RESET\",\"email\":\"" + email + "\"}";
+
+            final Map<String, Object> requestMap = new HashMap<>();
+            requestMap.put("requestType", "PASSWORD_RESET");
+            requestMap.put("email", email);
+
             final OutputStream outputStream = connection.getOutputStream();
-            outputStream.write(requestBody.getBytes());
+            outputStream.write(new JSONObject(requestMap).toJSONString().getBytes());
             outputStream.flush();
             outputStream.close();
 
             // Check the response code
-            int responseCode = connection.getResponseCode();
+            final int responseCode = connection.getResponseCode();
             if (responseCode == HttpURLConnection.HTTP_OK) {
                 System.out.println("Password reset email sent successfully!");
             } else {

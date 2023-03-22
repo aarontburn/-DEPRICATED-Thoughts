@@ -69,8 +69,39 @@ public class CloudSettingWindow extends JFrame {
     private void userSignedInScreen() {
         final GBC c = new GBC().setInsets(0, 25, 0, 25).setAnchor(GridBagConstraints.WEST);
 
-        final FormattedUserLabel userDisplay = new FormattedUserLabel(authHandler.user);
-        contentContainer.add(userDisplay, c.increaseGridY());
+
+        final JPanel userPanel = new JPanel(new GridBagLayout());
+        final GBC panelConstraints = new GBC().setAnchor(GridBagConstraints.WEST);
+
+        final JLabel userNameText = new JLabel("Name");
+        userNameText.setFont(TC.Fonts.h4);
+        userPanel.add(userNameText, panelConstraints.increaseGridY());
+        final JLabel userNameLabel = new JLabel(authHandler.user.displayName().isEmpty() ? " " : authHandler.user.displayName());
+        userNameLabel.setFont(TC.Fonts.h4);
+        userPanel.add(userNameLabel, panelConstraints.increaseGridY());
+
+        userPanel.add(new JLabel(" "), panelConstraints.increaseGridY());
+
+        final JLabel emailText = new JLabel("Email");
+        emailText.setFont(TC.Fonts.h4);
+        userPanel.add(emailText, panelConstraints.increaseGridY());
+        final JLabel emailLabel = new JLabel(authHandler.user.email());
+        emailLabel.setFont(TC.Fonts.h4);
+        userPanel.add(emailLabel, panelConstraints.increaseGridY());
+
+        userPanel.add(new JLabel(" "), panelConstraints.increaseGridY());
+
+        final JLabel userIdText = new JLabel("User Id");
+        userIdText.setFont(TC.Fonts.h4);
+        userPanel.add(userIdText, panelConstraints.increaseGridY());
+        final JLabel userIdLabel = new JLabel(authHandler.user.localId());
+        userIdLabel.setFont(TC.Fonts.h4);
+        userPanel.add(userIdLabel, panelConstraints.increaseGridY());
+
+        contentContainer.add(userPanel, c.increaseGridY());
+
+
+
 
         final JButton signOutButton = new JButton("Sign Out");
         signOutButton.setFont(TC.Fonts.h4);

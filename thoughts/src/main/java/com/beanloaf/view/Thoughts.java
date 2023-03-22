@@ -360,6 +360,8 @@ public class Thoughts implements PropertyChangeListener {
                         }
                     }
                 }
+                case KeyEvent.VK_F5 -> thoughtsPCS.firePropertyChange(TC.Properties.REFRESH);
+
                 default -> {
                 }
             }

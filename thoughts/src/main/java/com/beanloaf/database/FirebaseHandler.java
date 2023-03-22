@@ -186,13 +186,15 @@ public class FirebaseHandler implements PropertyChangeListener {
                 return;
             }
 
+
+            final Base32 b32 = new Base32();
             for (final Object path : json.keySet()) {
-                final String filePath = new String(new Base32().decode((String) path))
+                final String filePath = new String(b32.decode((String) path))
                         .replace("_", " ") + ".json";
-                final String title = new String(new Base32().decode((String) ((JSONObject) json.get(path)).get("Title")));
-                final String tag = new String(new Base32().decode((String) ((JSONObject) json.get(path)).get("Tag")));
-                final String date = new String(new Base32().decode((String) ((JSONObject) json.get(path)).get("Date")));
-                final String body = new String(new Base32().decode(((String) ((JSONObject) json.get(path)).get("Body"))
+                final String title = new String(b32.decode((String) ((JSONObject) json.get(path)).get("Title")));
+                final String tag = new String(b32.decode((String) ((JSONObject) json.get(path)).get("Tag")));
+                final String date = new String(b32.decode((String) ((JSONObject) json.get(path)).get("Date")));
+                final String body = new String(b32.decode(((String) ((JSONObject) json.get(path)).get("Body"))
                         .replace("\\n", "\n").replace("\\t", "\t")));
 
                 objectList.add(new ThoughtObject(title, date, tag, body, new File(filePath)));
@@ -336,15 +338,20 @@ public class FirebaseHandler implements PropertyChangeListener {
             return;
         }
 
-        this.main.thoughtsPCS.firePropertyChange(TC.Properties.UNPULLED_FILES, Math.max(this.objectList.size() - this.main.sortedThoughtList.size(), 0));
+        this.main.thoughtsPCS.firePropertyChange(TC.Properties.UNPULLED_FILES,
+                Math.max(this.objectList.size() - this.main.sortedThoughtList.size(), 0));
 
-        this.main.thoughtsPCS.firePropertyChange(TC.Properties.UNPUSHED_FILES, Math.max(this.main.sortedThoughtList.size() - this.objectList.size(), 0));
+        this.main.thoughtsPCS.firePropertyChange(TC.Properties.UNPUSHED_FILES,
+                Math.max(this.main.sortedThoughtList.size() - this.objectList.size(), 0));
     }
 
     @Override
     public void propertyChange(final PropertyChangeEvent event) {
         switch (event.getPropertyName()) {
             case TC.Properties.REFRESH -> refreshItems();
+
+            default -> {
+            }
         }
     }
 

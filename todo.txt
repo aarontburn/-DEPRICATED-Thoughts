@@ -12,6 +12,7 @@ To do:
 
         - Scrollbar position resets on refresh
 
+        - change json parsing to 2 files (one for sorted, one for unsorted) for faster performance.
 
         - Application Icon:
             - Apply Icon to all popout windows (cloud window, settings window)
@@ -36,4 +37,5 @@ Current Keybinds:
     - CTRL + Q = Sort file
     - CTRL + P = Push to database
     - CTRL + SHIFT + P = Pull from database
+    - F5 = Refresh
 

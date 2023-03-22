@@ -40,7 +40,9 @@ public class FileActionButtonPressed implements ActionListener {
                         final String filePath = this.main.selectedFile.getPath().toString()
                                 .replace("unsorted", "sorted");
 
+
                         this.main.selectedFile.getPath().renameTo(new File(filePath));
+                        main.db.addEntryIntoDatabase(main.selectedFile);
                         l.setContentFields(0);
 
                     } else if ("sorted".equals(path)) {

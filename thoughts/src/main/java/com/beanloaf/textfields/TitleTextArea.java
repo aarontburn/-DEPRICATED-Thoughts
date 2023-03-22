@@ -12,6 +12,7 @@ public class TitleTextArea extends AbstractTextArea {
         super(TC.DEFAULT_TITLE, TC.Fonts.h1, main, undoManager);
         this.setColumns(6);
         this.setOpaque(false);
+        this.setName("titleTextArea");
 
     }
 

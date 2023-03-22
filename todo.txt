@@ -1,10 +1,6 @@
 To do:
 
-    General:
         - Create a user guide
-        - Add light mode/dark mode toggle
-
-    ThoughtsMain:
         - Add multiple tags per object, split by comma
         - Sort by tag
         - Checkbox to auto save file on edit, else use a save button
@@ -16,13 +12,11 @@ To do:
 
         - Scrollbar position resets on refresh
 
+        - change json parsing to 2 files (one for sorted, one for unsorted) for faster performance.
 
-        - Database:
-            - Add authentication system
-            - Make it like github where it pushes and pulls data instead of automatically doing it
-
-            - Option to push data on close
-            - Option to pull data on open
+        - Application Icon:
+            - Apply Icon to all popout windows (cloud window, settings window)
+            - Invert Icon color based on light/dark mode
 
 
 Settings to modify
@@ -43,4 +37,5 @@ Current Keybinds:
     - CTRL + Q = Sort file
     - CTRL + P = Push to database
     - CTRL + SHIFT + P = Pull from database
+    - F5 = Refresh
 

@@ -2,9 +2,10 @@ package com.beanloaf.view;
 
 import com.beanloaf.input.ListTabPressed;
 import com.beanloaf.objects.GBC;
-import com.beanloaf.objects.ListTab;
+import com.beanloaf.tagobjects.ListItems;
 import com.beanloaf.objects.ThoughtObject;
 import com.beanloaf.res.TC;
+import com.beanloaf.tagobjects.TabLabel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,13 +13,9 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 public class LeftPanel extends JPanel implements PropertyChangeListener {
-
-    /**
-     * Default size of each tag label.
-     */
-    private static final Dimension TAG_DIM = new Dimension(150, 25);
 
     /**
      * Number of tags on the displayed.
@@ -29,7 +26,7 @@ public class LeftPanel extends JPanel implements PropertyChangeListener {
 
     private final Thoughts main;
 
-    public ListTab unsortedListLabel, sortedListLabel;
+    public ListItems unsortedListLabel, sortedListLabel;
 
     public final JTabbedPane leftTabs;
 
@@ -64,9 +61,7 @@ public class LeftPanel extends JPanel implements PropertyChangeListener {
         this.leftTabs.add(createScrollView(unsortedPanel),
                 "Unsorted");
 
-        final JLabel tabLabel = new JLabel("Unsorted", SwingConstants.CENTER);
-        tabLabel.setFont(TC.Fonts.h4);
-        tabLabel.setPreferredSize(TAG_DIM);
+        final TabLabel tabLabel = new TabLabel("Unsorted");
         leftTabs.setTabComponentAt(0, tabLabel);
 
         final GBC constraints = new GBC(1, 0.01).setFill(GridBagConstraints.HORIZONTAL).setAnchor(GridBagConstraints.NORTH);
@@ -80,7 +75,7 @@ public class LeftPanel extends JPanel implements PropertyChangeListener {
         listContainer.setOpaque(false);
         unsortedPanel.add(listContainer, constraints.setGridY(1).setWeightY(1));
 
-        unsortedListLabel = new ListTab(main, main.unsortedThoughtList, main.unsortedListModel);
+        unsortedListLabel = new ListItems(main, main.unsortedThoughtList, main.unsortedListModel);
         listContainer.add(unsortedListLabel, BorderLayout.CENTER);
     }
 
@@ -89,9 +84,7 @@ public class LeftPanel extends JPanel implements PropertyChangeListener {
         final JPanel sortedPanel = new JPanel(new GridBagLayout());
         leftTabs.add(createScrollView(sortedPanel), "Sorted");
 
-        final JLabel tabLabel = new JLabel("Sorted", SwingConstants.CENTER);
-        tabLabel.setFont(TC.Fonts.h4);
-        tabLabel.setPreferredSize(TAG_DIM);
+        final TabLabel tabLabel = new TabLabel("Sorted");
         leftTabs.setTabComponentAt(1, tabLabel);
 
         final GBC constraints = new GBC(1, 0.01).setFill(GridBagConstraints.HORIZONTAL).setAnchor(GridBagConstraints.NORTH);
@@ -105,13 +98,13 @@ public class LeftPanel extends JPanel implements PropertyChangeListener {
         listContainer.setOpaque(false);
         sortedPanel.add(listContainer, constraints.setGridY(1).setWeightY(1));
 
-        sortedListLabel = new ListTab(main, main.sortedThoughtList, main.sortedListModel);
+        sortedListLabel = new ListItems(main, main.sortedThoughtList, main.sortedListModel);
         listContainer.add(sortedListLabel, BorderLayout.CENTER);
 
     }
 
     private void createTagTabs(final DefaultListModel<String> model,
-                               final ArrayList<ThoughtObject> arrayList,
+                               final List<ThoughtObject> arrayList,
                                final String tagName) {
 
         final GBC constraints = new GBC(1, 0.01).setFill(GridBagConstraints.HORIZONTAL).setAnchor(GridBagConstraints.NORTH);
@@ -119,9 +112,7 @@ public class LeftPanel extends JPanel implements PropertyChangeListener {
         final JPanel tagPanel = new JPanel(new GridBagLayout());
         leftTabs.add(createScrollView(tagPanel), tagName);
 
-        final JLabel tabLabel = new JLabel(tagName, SwingConstants.CENTER);
-        tabLabel.setFont(TC.Fonts.h4);
-        tabLabel.setPreferredSize(TAG_DIM);
+        final TabLabel tabLabel = new TabLabel(tagName);
         leftTabs.setTabComponentAt(numTags, tabLabel);
         numTags++;
 
@@ -134,7 +125,7 @@ public class LeftPanel extends JPanel implements PropertyChangeListener {
         listContainer.setOpaque(false);
         tagPanel.add(listContainer, constraints.setGridY(1).setWeightY(1));
 
-        final ListTab tagListLabel = new ListTab(main, arrayList, model);
+        final ListItems tagListLabel = new ListItems(main, arrayList, model);
         listContainer.add(tagListLabel, BorderLayout.CENTER);
 
     }
@@ -154,10 +145,8 @@ public class LeftPanel extends JPanel implements PropertyChangeListener {
         for (final File sortedFile : main.sortedFiles) {
             final ThoughtObject content = main.readFileContents(sortedFile);
 
-            if (content != null) {
-                if (!tagNames.contains(content.getTag())) {
-                    tagNames.add(content.getTag());
-                }
+            if (content != null && !tagNames.contains(content.getTag())) {
+                tagNames.add(content.getTag());
             }
 
         }

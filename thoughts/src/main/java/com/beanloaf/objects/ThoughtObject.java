@@ -3,8 +3,8 @@ package com.beanloaf.objects;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.HashMap;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.json.simple.JSONObject;
 
@@ -33,7 +33,7 @@ public class ThoughtObject {
     public void saveFile() {
         if (this.file != null) {
             try (BufferedWriter fWriter = Files.newBufferedWriter(Paths.get(this.file.toURI()))) {
-                HashMap<String, String> textContent = new HashMap<>();
+                final ConcurrentHashMap<String, String> textContent = new ConcurrentHashMap<>();
                 textContent.put("title", this.title);
                 textContent.put("date", this.date);
                 textContent.put("tag", this.tag);
@@ -115,7 +115,7 @@ public class ThoughtObject {
 
     @Override
     public boolean equals(final Object otherObject) {
-        if (otherObject.getClass() != this.getClass() || otherObject == null) {
+        if (otherObject.getClass() != this.getClass()) {
             return false;
         }
         final ThoughtObject other = (ThoughtObject) otherObject;

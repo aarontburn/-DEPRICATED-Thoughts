@@ -27,7 +27,7 @@ public class TextAreaFocusListener implements FocusListener {
     }
 
     @Override
-    public void focusLost(FocusEvent e) {
+    public void focusLost(final FocusEvent event) {
         if (main != null) {
             main.refreshThoughtList();
 

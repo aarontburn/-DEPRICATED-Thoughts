@@ -7,17 +7,16 @@ import java.io.File;
 
 /**
  * Holds constants for Thoughts
- * 
+ *
  * @author beanloaf
  */
 public final class TC {
 
-    
+
     public static final String DEFAULT_TITLE = "<untitled>";
     public static final String DEFAULT_BODY = "<description>";
     public static final String DEFAULT_TAG = "<untagged>";
     public static final String DEFAULT_DATE = "<date>";
-
 
 
     public static class Properties {
@@ -34,7 +33,7 @@ public final class TC {
 
         public static final String DISCONNECTED = "disconnected";
 
-        public static final String ONLINE = "ONLINE";
+        public static final String CONNECTED = "online";
         public static final String UNPUSHED_FILES = "unpushed files";
         public static final String UNPULLED_FILES = "unpulled files";
 
@@ -46,6 +45,10 @@ public final class TC {
         public static final String SET_TAB_INDEX = "set tab index";
 
         public static final String FOCUS_TITLE_FIELD = "focus text field";
+        public static final String OPEN_SETTINGS_WINDOW = "open settings window";
+        public static final String EXIT = "exit";
+        public static final String REFRESH = "refresh";
+        public static final String CLOUD_SETTINGS = "cloud settings";
 
     }
 
@@ -55,6 +58,7 @@ public final class TC {
         public static final File SORTED_DIRECTORY_PATH = new File("thoughts/storage/sorted/");
 
         public static final File SETTINGS_DIRECTORY = new File("thoughts/settings.json");
+        public static final File LOGIN_DIRECTORY = new File("thoughts/src/main/java/com/beanloaf/res/user.json");
 
         public static final String ICON_DIRECTORY = "thoughts/src/main/java/com/beanloaf/res/icons/";
     }
@@ -75,7 +79,7 @@ public final class TC {
                                                       final boolean isSelected,
                                                       final boolean cellHasFocus) {
 
-            JLabel c = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+            final JLabel c = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
             c.setHorizontalAlignment(JLabel.CENTER);
             c.setPreferredSize(new Dimension(25, 25));
             c.setOpaque(true);
@@ -90,18 +94,18 @@ public final class TC {
         }
 
         @Override
-        protected JButton createDecreaseButton(int orientation) {
+        protected JButton createDecreaseButton(final int orientation) {
             return createZeroButton();
         }
 
         @Override
-        protected JButton createIncreaseButton(int orientation) {
+        protected JButton createIncreaseButton(final int orientation) {
             return createZeroButton();
         }
 
         protected JButton createZeroButton() {
-            JButton button = new JButton();
-            Dimension zeroDim = new Dimension(0, 0);
+            final JButton button = new JButton();
+            final Dimension zeroDim = new Dimension(0, 0);
             button.setPreferredSize(zeroDim);
             button.setMinimumSize(zeroDim);
             button.setMaximumSize(zeroDim);

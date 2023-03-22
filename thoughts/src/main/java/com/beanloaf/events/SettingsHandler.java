@@ -16,7 +16,7 @@ import com.beanloaf.res.TC;
 
 public class SettingsHandler {
     // Setting fields
-    private boolean isDarkMode;
+    private boolean isLightMode;
     private boolean isMaximized;
     private double windowWidth;
     private double windowHeight;
@@ -39,7 +39,7 @@ public class SettingsHandler {
         } else {
             System.err.println("Creating new settings.json...");
             // Default values
-            this.isDarkMode = true;
+            this.isLightMode = false;
             this.isMaximized = true;
             this.windowWidth = 1650;
             this.windowHeight = 1080;
@@ -60,7 +60,7 @@ public class SettingsHandler {
 
             final HashMap<String, Object> textContent = new HashMap<>();
 
-            textContent.put("isDarkMode", this.isDarkMode);
+            textContent.put("isLightMode", this.isLightMode);
             textContent.put("isMaximized", this.isMaximized);
             textContent.put("windowWidth", this.windowWidth);
             textContent.put("windowHeight", this.windowHeight);
@@ -84,7 +84,7 @@ public class SettingsHandler {
         try (BufferedReader reader = Files.newBufferedReader(Paths.get(TC.Paths.SETTINGS_DIRECTORY.toURI()))) {
             final JSONObject json = (JSONObject) new JSONParser().parse(reader);
 
-            this.isDarkMode = (boolean) json.get("isDarkMode");
+            this.isLightMode = (boolean) json.get("isLightMode");
             this.isMaximized = (boolean) json.get("isMaximized");
             this.windowHeight = (double) json.get("windowHeight");
             this.windowWidth = (double) json.get("windowWidth");
@@ -104,50 +104,50 @@ public class SettingsHandler {
         }
     }
 
-    public void changePushOnClose(boolean b) {
+    public void changePushOnClose(final boolean b) {
         this.pushOnClose = b;
         System.out.println("pushonclose set to: " + this.pushOnClose);
         createSettingsFile();
     }
 
-    public void changePullOnStartup(boolean b) {
+    public void changePullOnStartup(final boolean b) {
         this.pullOnStartup = b;
         createSettingsFile();
     }
 
-    public void changeWindowPosition(Point point) {
+    public void changeWindowPosition(final Point point) {
         this.windowX = point.getX();
         this.windowY = point.getY();
         createSettingsFile();
     }
 
-    public void changeIsDarkMode(boolean b) {
-        this.isDarkMode = b;
+    public void changeIsLightMode(final boolean b) {
+        this.isLightMode = b;
         createSettingsFile();
     }
 
-    public void changeIsMaximized(boolean b) {
+    public void changeIsMaximized(final boolean b) {
         this.isMaximized = b;
         createSettingsFile();
     }
 
-    public void changeWindowDimension(Dimension newDimension) {
+    public void changeWindowDimension(final Dimension newDimension) {
         this.windowWidth = newDimension.getWidth();
         this.windowHeight = newDimension.getHeight();
         createSettingsFile();
     }
 
-    public void changeLockTitle(boolean b) {
+    public void changeLockTitle(final boolean b) {
         this.lockTitle = b;
         createSettingsFile();
     }
 
-    public void changeLockTag(boolean b) {
+    public void changeLockTag(final boolean b) {
         this.lockTag = b;
         createSettingsFile();
     }
 
-    public void changeLockBody(boolean b) {
+    public void changeLockBody(final boolean b) {
         this.lockBody = b;
         createSettingsFile();
     }
@@ -188,8 +188,8 @@ public class SettingsHandler {
         return (int) this.windowHeight;
     }
 
-    public boolean isDarkMode() {
-        return this.isDarkMode;
+    public boolean isLightMode() {
+        return this.isLightMode;
     }
 
     public boolean isMaximized() {

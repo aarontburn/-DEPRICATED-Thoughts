@@ -3,11 +3,7 @@ package com.beanloaf.view;
 import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 
-import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -16,14 +12,12 @@ import javax.swing.JTabbedPane;
 
 import com.beanloaf.objects.GBC;
 import com.beanloaf.res.TC;
-import com.beanloaf.res.theme.ThoughtsTheme;
 
 public class SettingsWindow {
 
     private final Thoughts main;
 
     private final JFrame window;
-    private JPanel container;
     private JTabbedPane tabs;
 
     public SettingsWindow(final Thoughts main) {
@@ -34,28 +28,24 @@ public class SettingsWindow {
     }
 
     private void createGUI() {
-        ThoughtsTheme.setup();
-        JFrame.setDefaultLookAndFeelDecorated(true);
-
         this.window.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         this.window.setFocusable(true);
         this.window.setSize(500, 600);
         this.window.setLocationRelativeTo(null);
 
-        this.container = new JPanel(new GridBagLayout());
-        this.container.setBackground(new Color(32, 32, 32));
-        this.window.add(this.container);
+        final JPanel container = new JPanel(new GridBagLayout());
+        container.setBackground(new Color(32, 32, 32));
+        this.window.add(container);
 
         this.tabs = new JTabbedPane(JTabbedPane.LEFT);
         this.tabs.setFont(TC.Fonts.h4);
-        this.container.add(this.tabs, new GBC().setFill(GridBagConstraints.BOTH));
+        container.add(this.tabs, new GBC().setFill(GridBagConstraints.BOTH));
         generalSettings();
 
     }
 
     private void generalSettings() {
         final JPanel generalSettingsPanel = new JPanel(new GridBagLayout());
-        generalSettingsPanel.setBorder(BorderFactory.createLineBorder(Color.red));
         this.tabs.add(generalSettingsPanel, "General");
 
         final GBC panelConstraints = new GBC().setAnchor(GridBagConstraints.NORTHWEST)
@@ -92,7 +82,7 @@ public class SettingsWindow {
         switch (actionName) {
             case "push" -> checkBox.setSelected(this.main.settings.isPushOnClose());
             case "pull" -> checkBox.setSelected(this.main.settings.isPullOnStartup());
-            case "lightMode" -> System.out.println("placeholder");
+            case "lightMode" -> checkBox.setSelected(this.main.settings.isLightMode());
             default -> throw new IllegalArgumentException();
         }
 
@@ -100,7 +90,7 @@ public class SettingsWindow {
             switch (actionName) {
                 case "push" -> main.settings.changePushOnClose(checkBox.isSelected());
                 case "pull" -> main.settings.changePullOnStartup(checkBox.isSelected());
-                case "lightMode" -> System.out.println("placeholder");
+                case "lightMode" -> main.settings.changeIsLightMode(checkBox.isSelected());
                 default -> throw new IllegalArgumentException();
             }
 

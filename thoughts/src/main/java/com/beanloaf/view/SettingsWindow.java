@@ -6,11 +6,10 @@ import java.awt.event.WindowEvent;
 
 import javax.swing.*;
 
-import com.beanloaf.database.FirebaseHandler;
 import com.beanloaf.objects.GBC;
 import com.beanloaf.res.TC;
 
-public class SettingsWindow extends JFrame{
+public final class SettingsWindow extends JFrame{
 
     private static SettingsWindow instance;
 
@@ -26,7 +25,6 @@ public class SettingsWindow extends JFrame{
             instance.setVisible(true);
         } else {
             instance.toFront();
-            instance.setState(Frame.NORMAL);
         }
         return instance;
     }
@@ -57,9 +55,14 @@ public class SettingsWindow extends JFrame{
 
         this.tabs = new JTabbedPane(JTabbedPane.LEFT);
         this.tabs.setFont(TC.Fonts.h4);
-        this.add(this.tabs, new GBC().setFill(GridBagConstraints.BOTH));
+        this.add(this.tabs, new GBC().setFill(GBC.Fill.BOTH));
         generalSettings();
         cloudSettings();
+
+
+
+
+
 
     }
 
@@ -67,8 +70,8 @@ public class SettingsWindow extends JFrame{
         final JPanel generalSettingsPanel = new JPanel(new GridBagLayout());
         this.tabs.add(generalSettingsPanel, "General");
 
-        final GBC panelConstraints = new GBC().setAnchor(GridBagConstraints.NORTHWEST)
-                .setFill(GridBagConstraints.HORIZONTAL);
+        final GBC panelConstraints = new GBC().setAnchor(GBC.Anchor.NORTHWEST)
+                .setFill(GBC.Fill.HORIZONTAL);
 
         final JLabel generalSettingsLabel = new JLabel("General Settings");
         generalSettingsLabel.setHorizontalAlignment(JLabel.CENTER);
@@ -91,7 +94,7 @@ public class SettingsWindow extends JFrame{
         final JPanel cloudPanel = new JPanel(new GridBagLayout());
         this.tabs.add(cloudPanel, "Cloud");
 
-        final GBC panelConstraints = new GBC().setAnchor(GridBagConstraints.NORTH);
+        final GBC panelConstraints = new GBC().setAnchor(GBC.Anchor.NORTH);
 
         final JLabel cloudSettingsTitle = new JLabel("Cloud Settings");
         cloudSettingsTitle.setHorizontalAlignment(JLabel.CENTER);
@@ -119,7 +122,7 @@ public class SettingsWindow extends JFrame{
         final JLabel textLabel = new JLabel(label);
         textLabel.setFont(TC.Fonts.h4);
 
-        panelContainer.add(textLabel, new GBC().setAnchor(GridBagConstraints.LINE_START)
+        panelContainer.add(textLabel, new GBC().setAnchor(GBC.Anchor.LINE_START)
                 .setInsets(0, 30, 0, 0));
 
         final JCheckBox checkBox = new JCheckBox();
@@ -141,7 +144,7 @@ public class SettingsWindow extends JFrame{
         });
 
         panelContainer.add(checkBox, new GBC(0.9, 0.1)
-                .setAnchor(GridBagConstraints.LINE_END)
+                .setAnchor(GBC.Anchor.LINE_END)
                 .setInsets(0, 0, 0, 30));
 
         return panelContainer;

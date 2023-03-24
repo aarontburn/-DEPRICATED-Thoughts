@@ -21,7 +21,7 @@ public class FormattedInputField extends JPanel {
         super(new GridBagLayout());
         this.forPassword = forPassword;
 
-        final GBC constraints = new GBC().setAnchor(GridBagConstraints.WEST).setFill(GridBagConstraints.HORIZONTAL);
+        final GBC constraints = new GBC().setAnchor(GBC.Anchor.WEST).setFill(GBC.Fill.HORIZONTAL);
 
         final JLabel fieldNameLabel = new JLabel(fieldName);
         fieldNameLabel.setFont(TC.Fonts.h4);

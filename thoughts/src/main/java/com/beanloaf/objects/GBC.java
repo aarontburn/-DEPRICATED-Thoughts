@@ -143,6 +143,13 @@ public class GBC extends GridBagConstraints {
     }
 
     public static class Anchor {
+
+        public final static int ABOVE_BASE_LINE = GridBagConstraints.ABOVE_BASELINE;
+        public final static int ABOVE_BASELINE_LEADING = GridBagConstraints.ABOVE_BASELINE_LEADING;
+        public final static int ABOVE_BASELINE_TRAILING = GridBagConstraints.ABOVE_BASELINE_TRAILING;
+        public final static int BELOW_BASELINE = GridBagConstraints.BELOW_BASELINE;
+        public final static int BELOW_BASELINE_LEADING = GridBagConstraints.BELOW_BASELINE_LEADING;
+        public final static int BELOW_BASELINE_TRAILING = GridBagConstraints.BELOW_BASELINE_TRAILING;
         public final static int PAGE_START = GridBagConstraints.PAGE_START;
         public final static int PAGE_END = GridBagConstraints.PAGE_END;
         public final static int LINE_START = GridBagConstraints.LINE_START;
@@ -151,8 +158,25 @@ public class GBC extends GridBagConstraints {
         public final static int FIRST_LINE_END = GridBagConstraints.FIRST_LINE_END;
         public final static int LAST_LINE_END = GridBagConstraints.LAST_LINE_END;
         public final static int LAST_LINE_START = GridBagConstraints.LAST_LINE_START;
+        public final static int NORTH = GridBagConstraints.NORTH;
+        public final static int NORTHEAST = GridBagConstraints.NORTHEAST;
+        public final static int EAST = GridBagConstraints.EAST;
+        public final static int SOUTHEAST = GridBagConstraints.SOUTHEAST;
+        public final static int SOUTHWEST = GridBagConstraints.SOUTHWEST;
+        public final static int WEST = GridBagConstraints.WEST;
+        public final static int NORTHWEST = GridBagConstraints.NORTHWEST;
+        public final static int CENTER = GridBagConstraints.CENTER;
+
 
     }
+
+    public static class Grid {
+        public final static int REMAINDER = GridBagConstraints.REMAINDER;
+        public final static int RELATIVE = GridBagConstraints.RELATIVE;
+    }
+
+
+
 
 
 }

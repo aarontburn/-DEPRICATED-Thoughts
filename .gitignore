@@ -1,7 +1,6 @@
 .idea/
 test.java
 .vscode/
-.idea/
 serviceAccountKey.json
 thoughts/settings.json
 storage/

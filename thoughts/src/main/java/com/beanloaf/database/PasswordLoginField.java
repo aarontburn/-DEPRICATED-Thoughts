@@ -4,7 +4,6 @@ import com.beanloaf.objects.GBC;
 import com.beanloaf.res.TC;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionListener;
 
 public class PasswordLoginField extends FormattedInputField {
@@ -16,7 +15,7 @@ public class PasswordLoginField extends FormattedInputField {
 
         resetPasswordButton = new JButton("Reset Password");
         resetPasswordButton.setFont(TC.Fonts.h5);
-        this.add(resetPasswordButton, new GBC().setGridY(3).setAnchor(GridBagConstraints.EAST));
+        this.add(resetPasswordButton, new GBC().setGridY(3).setAnchor(GBC.Anchor.EAST));
 
     }
 

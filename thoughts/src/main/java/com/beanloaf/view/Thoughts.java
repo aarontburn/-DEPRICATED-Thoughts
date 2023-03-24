@@ -3,7 +3,6 @@ package com.beanloaf.view;
 import java.awt.AWTEvent;
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.KeyEventDispatcher;
 import java.awt.KeyboardFocusManager;
@@ -202,7 +201,7 @@ public class Thoughts implements PropertyChangeListener {
         });
 
         this.container.add(splitPane, new GBC(0, 1, 0.1, 1)
-                .setFill(GridBagConstraints.BOTH));
+                .setFill(GBC.Fill.BOTH));
         leftPanel = new LeftPanel(this);
         rightPanel = new RightPanel(this);
         splitPane.setLeftComponent(leftPanel);

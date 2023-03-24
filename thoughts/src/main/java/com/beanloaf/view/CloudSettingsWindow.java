@@ -12,8 +12,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -21,7 +19,7 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
-public class CloudSettingsWindow extends JFrame {
+public final class CloudSettingsWindow extends JFrame {
 
     private static CloudSettingsWindow instance;
 
@@ -45,7 +43,6 @@ public class CloudSettingsWindow extends JFrame {
             instance.setVisible(true);
         } else {
             instance.toFront();
-            instance.setState(Frame.NORMAL);
         }
         return instance;
     }
@@ -97,11 +94,11 @@ public class CloudSettingsWindow extends JFrame {
 
 
     private void userSignedInScreen() {
-        final GBC c = new GBC().setInsets(0, 25, 0, 25).setAnchor(GridBagConstraints.WEST);
+        final GBC c = new GBC().setInsets(0, 25, 0, 25).setAnchor(GBC.Anchor.WEST);
 
 
         final JPanel userPanel = new JPanel(new GridBagLayout());
-        final GBC panelConstraints = new GBC().setAnchor(GridBagConstraints.WEST);
+        final GBC panelConstraints = new GBC().setAnchor(GBC.Anchor.WEST);
 
         final JLabel userNameText = new JLabel("Name");
         userNameText.setFont(TC.Fonts.h4);
@@ -140,7 +137,7 @@ public class CloudSettingsWindow extends JFrame {
             changeDisplay(this::createLoginRegisterButtons);
 
         });
-        contentContainer.add(signOutButton, c.increaseGridY().setAnchor(GridBagConstraints.EAST));
+        contentContainer.add(signOutButton, c.increaseGridY().setAnchor(GBC.Anchor.EAST));
 
 
     }
@@ -169,7 +166,7 @@ public class CloudSettingsWindow extends JFrame {
         backButton.setPreferredSize(new Dimension(new Dimension(75, 35)));
         backButton.setFont(TC.Fonts.h5);
         backButton.addActionListener(event -> changeDisplay(this::createLoginRegisterButtons));
-        contentContainer.add(backButton, new GBC().setAnchor(GridBagConstraints.NORTHWEST));
+        contentContainer.add(backButton, new GBC().setAnchor(GBC.Anchor.NORTHWEST));
 
         final FormattedInputField emailInputField = new FormattedInputField("Email");
         emailInputField.setText(
@@ -219,7 +216,7 @@ public class CloudSettingsWindow extends JFrame {
         backButton.setPreferredSize(new Dimension(new Dimension(75, 35)));
         backButton.setFont(TC.Fonts.h5);
         backButton.addActionListener(event -> changeDisplay(this::createLoginRegisterButtons));
-        contentContainer.add(backButton, new GBC().setAnchor(GridBagConstraints.NORTHWEST));
+        contentContainer.add(backButton, new GBC().setAnchor(GBC.Anchor.NORTHWEST));
 
         final FormattedInputField displayNameInputField = new FormattedInputField("Display Name");
         contentContainer.add(displayNameInputField, constraints);
@@ -281,7 +278,7 @@ public class CloudSettingsWindow extends JFrame {
         backButton.setPreferredSize(new Dimension(new Dimension(75, 35)));
         backButton.setFont(TC.Fonts.h5);
         backButton.addActionListener(event -> changeDisplay(this::createLoginFields));
-        contentContainer.add(backButton, new GBC().setAnchor(GridBagConstraints.NORTHWEST));
+        contentContainer.add(backButton, new GBC().setAnchor(GBC.Anchor.NORTHWEST));
 
         final FormattedInputField emailInputField = new FormattedInputField("Email");
         emailInputField.setText(
@@ -292,7 +289,7 @@ public class CloudSettingsWindow extends JFrame {
 
         final JLabel errorLabel = new JLabel(" ");
         errorLabel.setFont(TC.Fonts.h5);
-        contentContainer.add(errorLabel, constraints.increaseGridY().setWeightY(0.1).setAnchor(GridBagConstraints.NORTH));
+        contentContainer.add(errorLabel, constraints.increaseGridY().setWeightY(0.1).setAnchor(GBC.Anchor.NORTH));
 
 
         final JButton submitButton = new JButton("Send Link");

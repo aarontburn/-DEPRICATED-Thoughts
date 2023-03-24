@@ -44,12 +44,12 @@ public class RightPanel extends JPanel implements PropertyChangeListener {
         /* Top */
         final JPanel topPanel = new JPanel(new GridBagLayout());
         topPanel.setOpaque(false);
-        this.add(topPanel, new GBC(0, 1).setAnchor(GridBagConstraints.WEST)
+        this.add(topPanel, new GBC(0, 1).setAnchor(GBC.Anchor.WEST)
                 .setInsets(-20, 10, -40, 0));
 
-        final GBC topPanelConstraints = new GBC().setAnchor(GridBagConstraints.LINE_START);
+        final GBC topPanelConstraints = new GBC().setAnchor(GBC.Anchor.LINE_START);
 
-        final GBC titlePanelConstraints = new GBC().setAnchor(GridBagConstraints.LINE_START);
+        final GBC titlePanelConstraints = new GBC().setAnchor(GBC.Anchor.LINE_START);
         final JPanel titlePanel = new JPanel(new GridBagLayout());
         titlePanel.setOpaque(false);
         titlePanel.add(createCheckBox("lockTitle"), titlePanelConstraints.setGridX(0).setWeightY(0.1));
@@ -57,7 +57,7 @@ public class RightPanel extends JPanel implements PropertyChangeListener {
         titlePanel.add(titleTextArea, titlePanelConstraints.setGridX(1).setWeightY(0.9));
         topPanel.add(titlePanel, topPanelConstraints.setGridY(0));
 
-        final GBC tagPanelConstraints = new GBC().setAnchor(GridBagConstraints.LINE_START);
+        final GBC tagPanelConstraints = new GBC().setAnchor(GBC.Anchor.LINE_START);
         final JPanel tagPanel = new JPanel(new GridBagLayout());
         tagPanel.add(createCheckBox("lockTag"), tagPanelConstraints);
         tagTextArea = new TagTextArea(main, undoManager);
@@ -71,7 +71,7 @@ public class RightPanel extends JPanel implements PropertyChangeListener {
 
         /* Bottom */
         this.add(createCheckBox("lockBody"), new GBC(0, 2, 0.1, 0.001)
-                .setAnchor(GridBagConstraints.NORTHEAST));
+                .setAnchor(GBC.Anchor.NORTHEAST));
 
         bodyTextArea = new BodyTextArea(main, undoManager);
         final JScrollPane bodyScroll = new JScrollPane(bodyTextArea,
@@ -80,9 +80,9 @@ public class RightPanel extends JPanel implements PropertyChangeListener {
         bodyScroll.setPreferredSize(new Dimension(0, 0));
         bodyScroll.getVerticalScrollBar().setUI(new TC.ScrollBar());
         this.add(bodyScroll, new GBC(0, 3, 0.1, 0.9)
-                .setAnchor(GridBagConstraints.CENTER)
+                .setAnchor(GBC.Anchor.CENTER)
                 .setInsets(5, 5, 5, 5)
-                .setFill(GridBagConstraints.BOTH));
+                .setFill(GBC.Fill.BOTH));
 
         createFileButtons();
 
@@ -92,12 +92,12 @@ public class RightPanel extends JPanel implements PropertyChangeListener {
         // Buttons
         final JPanel buttonPanel = new JPanel(new GridBagLayout());
         this.add(buttonPanel, new GBC(0, 4, 0.3, 0.05)
-                .setAnchor(GridBagConstraints.CENTER)
+                .setAnchor(GBC.Anchor.CENTER)
                 .setInsets(5, 5, 5, 5)
-                .setFill(GridBagConstraints.BOTH));
+                .setFill(GBC.Fill.BOTH));
 
 
-        final GBC buttonConstraints = new GBC().setWeightXY(0.3, 0.1).setFill(GridBagConstraints.BOTH);
+        final GBC buttonConstraints = new GBC().setWeightXY(0.3, 0.1).setFill(GBC.Fill.BOTH);
         sortButton = new JButton("Sort/Unsort");
         sortButton.setName("sort");
         sortButton.setFont(TC.Fonts.h4);
@@ -120,31 +120,25 @@ public class RightPanel extends JPanel implements PropertyChangeListener {
     private void createSettingsBar() {
         final JPanel settingsBar = new JPanel(new GridBagLayout());
         this.add(settingsBar, new GBC().setWeightY(0.005)
-                .setAnchor(GridBagConstraints.WEST)
-                .setFill(GridBagConstraints.BOTH));
+                .setAnchor(GBC.Anchor.WEST)
+                .setFill(GBC.Fill.BOTH));
 
         final GBC settingConstraints = new GBC().setWeightX(0.01)
-                .setFill(GridBagConstraints.HORIZONTAL)
-                .setAnchor(GridBagConstraints.LINE_START)
+                .setFill(GBC.Fill.HORIZONTAL)
+                .setAnchor(GBC.Anchor.LINE_START)
                 .setInsets(10, 15, 0, 0);
 
 
         userNameLabel = new JLabel(main.db.user == null  ? NOT_CONNECTED_MESSAGE : "Logged in as: " + main.db.user.displayName());
         userNameLabel.setFont(TC.Fonts.h4);
-        settingsBar.add(userNameLabel, settingConstraints.setGridWidth(GridBagConstraints.REMAINDER));
+        settingsBar.add(userNameLabel, settingConstraints.setGridWidth(GBC.Grid.REMAINDER));
 
         final Dimension buttonDim = new Dimension(90, 35);
         pushButton = new JButton("Push");
         pushButton.setPreferredSize(buttonDim);
         pushButton.setFont(TC.Fonts.h4);
         settingsBar.add(pushButton, settingConstraints.setGridWidth(1).increaseGridY());
-        pushButton.addActionListener(event -> {
-            if (main.db != null) {
-                main.db.push();
-            } else {
-                System.err.println("not pushing");
-            }
-        });
+        pushButton.addActionListener(event -> main.db.push());
 
         pushLabel = new JLabel("");
         pushLabel.setOpaque(false);
@@ -155,11 +149,7 @@ public class RightPanel extends JPanel implements PropertyChangeListener {
         pullButton.setPreferredSize(buttonDim);
         pullButton.setFont(TC.Fonts.h4);
         settingsBar.add(pullButton, settingConstraints.increaseGridX());
-        pullButton.addActionListener(event -> {
-            if (main.db != null) {
-                main.db.pull();
-            }
-        });
+        pullButton.addActionListener(event -> main.db.pull());
 
         pullLabel = new JLabel("");
         pullLabel.setOpaque(false);

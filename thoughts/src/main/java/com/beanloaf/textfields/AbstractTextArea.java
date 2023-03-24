@@ -13,7 +13,7 @@ import java.awt.*;
 public abstract class AbstractTextArea extends JTextArea implements DocumentListener {
 
     public static final GBC GHOST_TEXT_CONSTRAINTS = new GBC(0, 0, 0.1, 0.1)
-            .setAnchor(GridBagConstraints.NORTHWEST);
+            .setAnchor(GBC.Anchor.NORTHWEST);
 
     public final Thoughts main;
     public final UndoManager undoManager;

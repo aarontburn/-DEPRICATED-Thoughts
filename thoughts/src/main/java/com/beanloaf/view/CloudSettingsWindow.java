@@ -43,6 +43,7 @@ public final class CloudSettingsWindow extends JFrame {
             instance.setVisible(true);
         } else {
             instance.toFront();
+            instance.setExtendedState(JFrame.NORMAL);
         }
         return instance;
     }

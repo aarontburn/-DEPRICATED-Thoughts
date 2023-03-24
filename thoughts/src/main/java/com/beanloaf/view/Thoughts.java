@@ -28,7 +28,6 @@ import javax.swing.border.Border;
 import javax.swing.plaf.basic.BasicSplitPaneDivider;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 
-import com.beanloaf.database.CloudSettingWindow;
 import com.beanloaf.events.ThoughtsPCS;
 import com.beanloaf.objects.GBC;
 import com.beanloaf.res.theme.ThoughtsThemeDark;
@@ -122,6 +121,7 @@ public class Thoughts implements PropertyChangeListener {
         this.window.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(final WindowEvent event) {
+                ready = false;
                 settings.check();
 
                 if (settings.isPushOnClose()) {
@@ -302,10 +302,10 @@ public class Thoughts implements PropertyChangeListener {
     @Override
     public void propertyChange(final PropertyChangeEvent event) {
         switch (event.getPropertyName()) {
-            case TC.Properties.OPEN_SETTINGS_WINDOW -> new SettingsWindow(this);
+            case TC.Properties.OPEN_SETTINGS_WINDOW -> SettingsWindow.getInstance(this);
             case TC.Properties.EXIT -> window.dispatchEvent(new WindowEvent(window, WindowEvent.WINDOW_CLOSING));
             case TC.Properties.REFRESH -> refreshThoughtList();
-            case TC.Properties.CLOUD_SETTINGS -> new CloudSettingWindow(db);
+            case TC.Properties.CLOUD_SETTINGS -> CloudSettingsWindow.getInstance(db);
 
             default -> {
             }

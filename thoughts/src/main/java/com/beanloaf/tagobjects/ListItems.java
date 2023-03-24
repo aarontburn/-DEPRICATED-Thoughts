@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import com.beanloaf.input.ListItemPressed;
 import com.beanloaf.objects.ThoughtObject;

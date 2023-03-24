@@ -10,6 +10,7 @@ import java.awt.Insets;
  */
 public class GBC extends GridBagConstraints {
 
+
     private int xPosition;
 
     private int yPosition;
@@ -127,6 +128,30 @@ public class GBC extends GridBagConstraints {
         this.ipadx = padX;
         this.ipady = padY;
         return this;
+    }
+
+
+
+    public static class Fill {
+
+        public final static int NONE = GridBagConstraints.NONE;
+        public final static int HORIZONTAL = GridBagConstraints.HORIZONTAL;
+        public final static int BOTH = GridBagConstraints.BOTH;
+        public final static int VERTICAL = GridBagConstraints.VERTICAL;
+
+
+    }
+
+    public static class Anchor {
+        public final static int PAGE_START = GridBagConstraints.PAGE_START;
+        public final static int PAGE_END = GridBagConstraints.PAGE_END;
+        public final static int LINE_START = GridBagConstraints.LINE_START;
+        public final static int LINE_END = GridBagConstraints.LINE_END;
+        public final static int FIRST_LINE_START = GridBagConstraints.FIRST_LINE_START;
+        public final static int FIRST_LINE_END = GridBagConstraints.FIRST_LINE_END;
+        public final static int LAST_LINE_END = GridBagConstraints.LAST_LINE_END;
+        public final static int LAST_LINE_START = GridBagConstraints.LAST_LINE_START;
+
     }
 
 

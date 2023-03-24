@@ -39,8 +39,9 @@ public class ListItemPressed extends MouseAdapter {
 
 
     public void setContentFields(final int index) {
-        main.refreshThoughtList();
         this.main.ready = false;
+
+        main.refreshThoughtList();
 
         ThoughtObject obj = new ThoughtObject(
                 "",
@@ -59,6 +60,7 @@ public class ListItemPressed extends MouseAdapter {
             this.main.selectedFile = obj;
 
         }
+
 
         this.main.thoughtsPCS.firePropertyChange(TC.Properties.TEXT, obj);
 

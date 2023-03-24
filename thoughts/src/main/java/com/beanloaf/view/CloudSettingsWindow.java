@@ -1,12 +1,19 @@
-package com.beanloaf.database;
+package com.beanloaf.view;
 
+import com.beanloaf.database.AuthHandler;
+import com.beanloaf.database.FirebaseHandler;
+import com.beanloaf.database.FormattedInputField;
+import com.beanloaf.database.PasswordLoginField;
 import com.beanloaf.objects.GBC;
 import com.beanloaf.res.TC;
 import org.json.simple.JSONObject;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -14,13 +21,16 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
-public class CloudSettingWindow extends JFrame {
+public class CloudSettingsWindow extends JFrame {
+
+    private static CloudSettingsWindow instance;
+
 
     private final FirebaseHandler authHandler;
     private JPanel contentContainer;
 
 
-    public CloudSettingWindow(final FirebaseHandler auth) {
+    private CloudSettingsWindow(final FirebaseHandler auth) {
         super("Cloud Settings");
         this.authHandler = auth;
         createUI();
@@ -28,7 +38,27 @@ public class CloudSettingWindow extends JFrame {
 
     }
 
+
+    public static CloudSettingsWindow getInstance(final FirebaseHandler auth) {
+        if (instance == null) {
+            instance = new CloudSettingsWindow(auth);
+            instance.setVisible(true);
+        } else {
+            instance.toFront();
+            instance.setState(Frame.NORMAL);
+        }
+        return instance;
+    }
+
     private void createUI() {
+        this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(final WindowEvent event) {
+                super.windowClosing(event);
+                instance = null;
+            }
+        });
+
         this.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         this.setFocusable(true);
         this.setSize(700, 615);
@@ -99,8 +129,6 @@ public class CloudSettingWindow extends JFrame {
         userPanel.add(userIdLabel, panelConstraints.increaseGridY());
 
         contentContainer.add(userPanel, c.increaseGridY());
-
-
 
 
         final JButton signOutButton = new JButton("Sign Out");
@@ -305,6 +333,5 @@ public class CloudSettingWindow extends JFrame {
         }
 
     }
-
 
 }

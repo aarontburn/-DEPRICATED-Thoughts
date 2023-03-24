@@ -249,7 +249,7 @@ public class RightPanel extends JPanel implements PropertyChangeListener {
                 dateLabel.setText("Created on: " + textObject.getDate());
                 bodyTextArea.setText(textObject.getBody());
             }
-            case TC.Properties.LIST_ITEM_PRESSED, TC.Properties.LIST_TAB_PRESSED -> {
+            case TC.Properties.LIST_ITEM_PRESSED -> {
                 checkEmpty();
                 undoManager.discardAllEdits();
             }

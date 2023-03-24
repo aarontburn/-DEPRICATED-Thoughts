@@ -1,46 +1,65 @@
 package com.beanloaf.view;
 
-import java.awt.Color;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
+import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
-import javax.swing.JCheckBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
+import javax.swing.*;
 
+import com.beanloaf.database.FirebaseHandler;
 import com.beanloaf.objects.GBC;
 import com.beanloaf.res.TC;
 
-public class SettingsWindow {
+public class SettingsWindow extends JFrame{
+
+    private static SettingsWindow instance;
+
 
     private final Thoughts main;
 
-    private final JFrame window;
     private JTabbedPane tabs;
 
-    public SettingsWindow(final Thoughts main) {
+
+    public static SettingsWindow getInstance(final Thoughts main) {
+        if (instance == null) {
+            instance = new SettingsWindow(main);
+            instance.setVisible(true);
+        } else {
+            instance.toFront();
+            instance.setState(Frame.NORMAL);
+        }
+        return instance;
+    }
+
+    private SettingsWindow(final Thoughts main) {
+        super("Settings");
         this.main = main;
-        this.window = new JFrame("Settings");
         createGUI();
-        this.window.setVisible(true);
+        this.setVisible(true);
     }
 
     private void createGUI() {
-        this.window.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-        this.window.setFocusable(true);
-        this.window.setSize(500, 600);
-        this.window.setLocationRelativeTo(null);
 
-        final JPanel container = new JPanel(new GridBagLayout());
-        container.setBackground(new Color(32, 32, 32));
-        this.window.add(container);
+        this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(final WindowEvent event) {
+                super.windowClosing(event);
+                instance = null;
+            }
+        });
+
+        this.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        this.setFocusable(true);
+        this.setSize(500, 600);
+        this.setLocationRelativeTo(null);
+
+        this.setLayout(new GridBagLayout());
 
         this.tabs = new JTabbedPane(JTabbedPane.LEFT);
         this.tabs.setFont(TC.Fonts.h4);
-        container.add(this.tabs, new GBC().setFill(GridBagConstraints.BOTH));
+        this.add(this.tabs, new GBC().setFill(GridBagConstraints.BOTH));
         generalSettings();
+        cloudSettings();
 
     }
 
@@ -52,20 +71,45 @@ public class SettingsWindow {
                 .setFill(GridBagConstraints.HORIZONTAL);
 
         final JLabel generalSettingsLabel = new JLabel("General Settings");
-        generalSettingsLabel.setBackground(new Color(32, 32, 32));
         generalSettingsLabel.setHorizontalAlignment(JLabel.CENTER);
         generalSettingsLabel.setFont(TC.Fonts.h3);
         generalSettingsPanel.add(generalSettingsLabel, panelConstraints);
 
         generalSettingsPanel.add(createCheckboxPanel("Push on close:", "push"),
-                panelConstraints.setGridY(1).setWeightY(0.01));
+                panelConstraints.increaseGridY().setWeightY(0.01));
 
         generalSettingsPanel.add(createCheckboxPanel("Pull on startup:", "pull"),
-                panelConstraints.setGridY(2).setWeightY(0.01));
+                panelConstraints.increaseGridY().setWeightY(0.01));
 
 
         generalSettingsPanel.add(createCheckboxPanel("Light mode:", "lightMode"),
-                panelConstraints.setGridY(3).setWeightY(0.9));
+                panelConstraints.increaseGridY().setWeightY(0.9));
+
+    }
+
+    private void cloudSettings() {
+        final JPanel cloudPanel = new JPanel(new GridBagLayout());
+        this.tabs.add(cloudPanel, "Cloud");
+
+        final GBC panelConstraints = new GBC().setAnchor(GridBagConstraints.NORTH);
+
+        final JLabel cloudSettingsTitle = new JLabel("Cloud Settings");
+        cloudSettingsTitle.setHorizontalAlignment(JLabel.CENTER);
+        cloudSettingsTitle.setFont(TC.Fonts.h3);
+        cloudPanel.add(cloudSettingsTitle, panelConstraints.increaseGridY());
+
+        final JLabel openCloudText = new JLabel(
+                "<html>To change cloud settings, press the button below to open an external window.</html>", SwingConstants.CENTER);
+        openCloudText.setFont(TC.Fonts.h5);
+        cloudPanel.add(openCloudText, panelConstraints.increaseGridY().setFill(GBC.Fill.HORIZONTAL).setWeightY(0.1).setInsets(15));
+
+
+        final JButton openCloudButton = new JButton("Open Cloud settings");
+        openCloudButton.setFont(TC.Fonts.h4);
+        openCloudButton.addActionListener(event -> main.thoughtsPCS.firePropertyChange(TC.Properties.CLOUD_SETTINGS));
+        cloudPanel.add(openCloudButton, panelConstraints.increaseGridY().setFill(GBC.Fill.NONE).setWeightY(0.6).setInsets(0));
+
+
 
     }
 

@@ -1,11 +1,9 @@
 package com.beanloaf.view;
 
-import com.beanloaf.input.ListTabPressed;
 import com.beanloaf.objects.GBC;
 import com.beanloaf.tagobjects.ListItems;
 import com.beanloaf.objects.ThoughtObject;
 import com.beanloaf.res.TC;
-import com.beanloaf.tagobjects.TabLabel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,9 +15,12 @@ import java.util.List;
 
 public class LeftPanel extends JPanel implements PropertyChangeListener {
 
+    private static final Dimension TAB_DIM = new Dimension(150, 25);
+
+
     /**
      * Number of tags on the displayed.
-     *
+     * <p>
      * Default to 2 for sorted/unsorted.
      */
     public int numTags = 2;
@@ -40,9 +41,25 @@ public class LeftPanel extends JPanel implements PropertyChangeListener {
 
         this.leftTabs = new JTabbedPane(JTabbedPane.LEFT);
         this.leftTabs.setFont(TC.Fonts.h4);
-        this.leftTabs.addMouseListener(new ListTabPressed(this));
         this.leftTabs.setPreferredSize(new Dimension(200, 200));
         this.leftTabs.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
+
+        this.leftTabs.addChangeListener(event -> {
+            if (main.ready) {
+                try {
+                    final JScrollPane scroll = (JScrollPane) leftTabs.getSelectedComponent();
+                    final JPanel panel = (JPanel) scroll.getViewport().getView();
+                    final JPanel listContainer = (JPanel) panel.getComponent(1);
+                    final ListItems list = (ListItems) listContainer.getComponent(0);
+                    if (!list.getValueIsAdjusting()) {
+                        list.getMouseEvent().setContentFields(0);
+                    }
+                } catch (Exception e) {
+                }
+            }
+
+        });
+
 
         this.add(this.leftTabs, new GBC(0, 1, 0.2, 1).setFill(GridBagConstraints.BOTH));
 
@@ -61,13 +78,15 @@ public class LeftPanel extends JPanel implements PropertyChangeListener {
         this.leftTabs.add(createScrollView(unsortedPanel),
                 "Unsorted");
 
-        final TabLabel tabLabel = new TabLabel("Unsorted");
+        final JLabel tabLabel = new JLabel("Unsorted", SwingConstants.CENTER);
+        tabLabel.setFont(TC.Fonts.h4);
+        tabLabel.setPreferredSize(TAB_DIM);
+
         leftTabs.setTabComponentAt(0, tabLabel);
 
         final GBC constraints = new GBC(1, 0.01).setFill(GridBagConstraints.HORIZONTAL).setAnchor(GridBagConstraints.NORTH);
 
-        final JLabel unsortedLabel = new JLabel("Unsorted");
-        unsortedLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        final JLabel unsortedLabel = new JLabel("Unsorted", SwingConstants.CENTER);
         unsortedLabel.setFont(TC.Fonts.h3);
         unsortedPanel.add(unsortedLabel, constraints.setGridY(0).setWeightY(0.01));
 
@@ -84,13 +103,13 @@ public class LeftPanel extends JPanel implements PropertyChangeListener {
         final JPanel sortedPanel = new JPanel(new GridBagLayout());
         leftTabs.add(createScrollView(sortedPanel), "Sorted");
 
-        final TabLabel tabLabel = new TabLabel("Sorted");
-        leftTabs.setTabComponentAt(1, tabLabel);
+        final JLabel tabLabel = new JLabel("Sorted", SwingConstants.CENTER);
+        tabLabel.setFont(TC.Fonts.h4);
+        tabLabel.setPreferredSize(TAB_DIM);
 
         final GBC constraints = new GBC(1, 0.01).setFill(GridBagConstraints.HORIZONTAL).setAnchor(GridBagConstraints.NORTH);
 
-        final JLabel sortedLabel = new JLabel("Sorted");
-        sortedLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        final JLabel sortedLabel = new JLabel("Sorted", SwingConstants.CENTER);
         sortedLabel.setFont(TC.Fonts.h3);
         sortedPanel.add(sortedLabel, constraints.setGridY(0).setWeightY(0.01));
 
@@ -112,12 +131,12 @@ public class LeftPanel extends JPanel implements PropertyChangeListener {
         final JPanel tagPanel = new JPanel(new GridBagLayout());
         leftTabs.add(createScrollView(tagPanel), tagName);
 
-        final TabLabel tabLabel = new TabLabel(tagName);
-        leftTabs.setTabComponentAt(numTags, tabLabel);
+        final JLabel tabLabel = new JLabel(tagName, SwingConstants.CENTER);
+        tabLabel.setFont(TC.Fonts.h4);
+        tabLabel.setPreferredSize(TAB_DIM);
         numTags++;
 
-        final JLabel tagNameLabel = new JLabel(tagName);
-        tagNameLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        final JLabel tagNameLabel = new JLabel(tagName, SwingConstants.CENTER);
         tagNameLabel.setFont(TC.Fonts.h3);
         tagPanel.add(tagNameLabel, constraints.setGridY(0).setWeightY(0.01));
 

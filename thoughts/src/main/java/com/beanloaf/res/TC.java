@@ -21,29 +21,20 @@ public final class TC {
 
     public static class Properties {
         public static final String SORT = "sort";
-
         public static final String PUSH = "push";
         public static final String PULL = "pull";
-
         public static final String DELETE = "delete";
         public static final String UNDO = "undo";
         public static final String REDO = "redo";
-
         public static final String NEW_FILE = "new file";
-
         public static final String DISCONNECTED = "disconnected";
-
         public static final String CONNECTED = "online";
         public static final String UNPUSHED_FILES = "unpushed files";
         public static final String UNPULLED_FILES = "unpulled files";
-
         public static final String TEXT = "text";
-
         public static final String LIST_ITEM_PRESSED = "list item pressed";
         public static final String LIST_TAB_PRESSED = "list tab pressed";
-
         public static final String SET_TAB_INDEX = "set tab index";
-
         public static final String FOCUS_TITLE_FIELD = "focus text field";
         public static final String OPEN_SETTINGS_WINDOW = "open settings window";
         public static final String EXIT = "exit";
@@ -53,11 +44,13 @@ public final class TC {
     }
 
     public static class Paths {
+
         public static final File UNSORTED_DIRECTORY_PATH = new File("thoughts/storage/unsorted/");
 
         public static final File SORTED_DIRECTORY_PATH = new File("thoughts/storage/sorted/");
 
         public static final File SETTINGS_DIRECTORY = new File("thoughts/settings.json");
+
         public static final File LOGIN_DIRECTORY = new File("thoughts/src/main/java/com/beanloaf/res/user.json");
 
         public static final String ICON_DIRECTORY = "thoughts/src/main/java/com/beanloaf/res/icons/";

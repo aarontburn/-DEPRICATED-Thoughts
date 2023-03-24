@@ -15,19 +15,16 @@ import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AuthHandler {
+public final class AuthHandler {
 
     private static final String KEY = "IFEXUYKTPFATGSCXPFHE6OC2LBSEG4JYIJGDC4RNIFWXUUS7L5HEOM2CJ4YWYMA";
 
-    public AuthHandler() {
+    private static final Base32 b32 = new Base32();
 
-    }
-
-
-    public FirebaseHandler.ThoughtUser signIn(final String email, final String password) {
+    public static FirebaseHandler.ThoughtUser signIn(final String email, final String password) {
 
         try {
-            final URL url = new URL("https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=" + new String(new Base32().decode(KEY)));
+            final URL url = new URL("https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=" + new String(b32.decode(KEY)));
 
             final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("POST");
@@ -73,9 +70,9 @@ public class AuthHandler {
 
     }
 
-    public FirebaseHandler.ThoughtUser signUp(final String userName, final String email, final String password) {
+    public static FirebaseHandler.ThoughtUser signUp(final String userName, final String email, final String password) {
         try {
-            final URL url = new URL("https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=" + new String(new Base32().decode(KEY)));
+            final URL url = new URL("https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=" + new String(b32.decode(KEY)));
 
             final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("POST");
@@ -120,9 +117,9 @@ public class AuthHandler {
         return null;
     }
 
-    public String setUsername(final String userName, final String token) {
+    public static String setUsername(final String userName, final String token) {
         try {
-            final URL url = new URL("https://identitytoolkit.googleapis.com/v1/accounts:update?key=" + new String(new Base32().decode(KEY)));
+            final URL url = new URL("https://identitytoolkit.googleapis.com/v1/accounts:update?key=" + new String(b32.decode(KEY)));
 
             final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("POST");
@@ -159,9 +156,9 @@ public class AuthHandler {
     }
 
 
-    public boolean sendPasswordResetLink(final String email) {
+    public static boolean sendPasswordResetLink(final String email) {
         try {
-            final URL url = new URL("https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=" + new String(new Base32().decode(KEY)));
+            final URL url = new URL("https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=" + new String(b32.decode(KEY)));
             final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("POST");
             connection.setRequestProperty("Content-Type", "application/json");
@@ -219,7 +216,7 @@ public class AuthHandler {
                 return null;
             }
         }
-        return new String(new Base32().decode(r(new Base32().decode(p))));
+        return new String(b32.decode(r(b32.decode(p))));
     }
 
 

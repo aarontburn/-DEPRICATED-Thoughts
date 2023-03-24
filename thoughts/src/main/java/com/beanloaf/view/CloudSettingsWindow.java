@@ -298,7 +298,7 @@ public final class CloudSettingsWindow extends JFrame {
 
 
             if (emailInputField.getText().contains("@")) {
-                if (new AuthHandler().sendPasswordResetLink(emailInputField.getText())) {
+                if (AuthHandler.sendPasswordResetLink(emailInputField.getText())) {
                     errorLabel.setText("Check your email for a link to reset your password.");
                 } else {
                     errorLabel.setText("Error: No such email found.");

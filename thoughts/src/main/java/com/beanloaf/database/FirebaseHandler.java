@@ -97,7 +97,7 @@ public class FirebaseHandler implements PropertyChangeListener {
             return false;
         }
 
-        final ThoughtUser returningUser = new AuthHandler().signIn(email, password);
+        final ThoughtUser returningUser = AuthHandler.signIn(email, password);
         if (returningUser != null) {
             user = returningUser;
             main.thoughtsPCS.firePropertyChange(TC.Properties.CONNECTED);
@@ -113,7 +113,7 @@ public class FirebaseHandler implements PropertyChangeListener {
             System.err.println("Error: a user is already logged in! Sign out first.");
             return false;
         }
-        final ThoughtUser newUser = new AuthHandler().signUp(displayName, email, password);
+        final ThoughtUser newUser = AuthHandler.signUp(displayName, email, password);
         if (newUser != null) {
             user = newUser;
             main.thoughtsPCS.firePropertyChange(TC.Properties.CONNECTED);
@@ -246,6 +246,9 @@ public class FirebaseHandler implements PropertyChangeListener {
                 System.out.println("Failed to insert data to the database. Response code: " + responseCode);
             }
 
+            refreshItems();
+
+
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -323,10 +326,10 @@ public class FirebaseHandler implements PropertyChangeListener {
             }
 
             connection.disconnect();
-            refreshItems();
         } catch (Exception e) {
             e.printStackTrace();
         }
+        refreshItems();
 
 
     }

@@ -137,7 +137,7 @@ public class Thoughts implements PropertyChangeListener {
         this.window.setExtendedState(settings.isMaximized() ? JFrame.MAXIMIZED_BOTH : JFrame.NORMAL);
 
         try {
-            this.window.setIconImage(ImageIO.read(new File(TC.Paths.ICON_DIRECTORY + "gear.png")));
+            this.window.setIconImage(ImageIO.read(new File(TC.Paths.ICON_DIRECTORY + "icon.png")));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -163,7 +163,6 @@ public class Thoughts implements PropertyChangeListener {
              */
 
             final String eventName = event.getSource().getClass().getSimpleName();
-            // System.out.println(eventName);
             if (event.getID() == 501
                     && !"JTextArea".equals(eventName)
                     && !"JTabbedPane".equals(eventName)
@@ -346,14 +345,12 @@ public class Thoughts implements PropertyChangeListener {
                 case KeyEvent.VK_Q -> { // Sort File
                     if (c) {
                         thoughtsPCS.firePropertyChange(TC.Properties.SORT);
-
                     }
                 }
                 case KeyEvent.VK_P -> { // Push/Pull
                     if (c) {
                         if (event.isShiftDown()) { // Pull
                             thoughtsPCS.firePropertyChange(TC.Properties.PULL);
-
                         } else { // Push
                             thoughtsPCS.firePropertyChange(TC.Properties.PUSH);
                         }

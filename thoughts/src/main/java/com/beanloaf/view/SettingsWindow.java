@@ -59,11 +59,6 @@ public final class SettingsWindow extends JFrame{
         generalSettings();
         cloudSettings();
 
-
-
-
-
-
     }
 
     private void generalSettings() {

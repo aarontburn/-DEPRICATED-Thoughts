@@ -12,9 +12,6 @@ import java.awt.*;
 
 public abstract class AbstractTextArea extends JTextArea implements DocumentListener {
 
-    public static final GBC GHOST_TEXT_CONSTRAINTS = new GBC(0, 0, 0.1, 0.1)
-            .setAnchor(GBC.Anchor.NORTHWEST);
-
     public final Thoughts main;
     public final UndoManager undoManager;
     private final GhostText ghostText;
@@ -30,9 +27,8 @@ public abstract class AbstractTextArea extends JTextArea implements DocumentList
         attachEventHandlers();
 
         ghostText = new GhostText(text, font);
-        this.add(ghostText, GHOST_TEXT_CONSTRAINTS);
-
-
+        this.add(ghostText, new GBC(0, 0, 0.1, 0.1)
+                .setAnchor(GBC.Anchor.NORTHWEST));
 
     }
 

@@ -61,7 +61,6 @@ public class ListItemPressed extends MouseAdapter {
 
         }
 
-
         this.main.thoughtsPCS.firePropertyChange(TC.Properties.TEXT, obj);
 
         this.main.ready = true;

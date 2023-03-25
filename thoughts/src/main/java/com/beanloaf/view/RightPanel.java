@@ -9,9 +9,16 @@ import com.beanloaf.textfields.TagTextArea;
 import com.beanloaf.textfields.AbstractTextArea;
 import com.beanloaf.textfields.TitleTextArea;
 
-import javax.swing.*;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.undo.UndoManager;
-import java.awt.*;
+import java.awt.Dimension;
+import java.awt.GridBagLayout;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
@@ -22,7 +29,7 @@ public class RightPanel extends JPanel implements PropertyChangeListener {
     private final Thoughts main;
     public JLabel dateLabel, pushLabel, pullLabel;
 
-    private JScrollPane bodyScroll;
+
     public AbstractTextArea titleTextArea, tagTextArea, bodyTextArea;
     public final UndoManager undoManager = new UndoManager();
     public JButton sortButton, deleteButton, newFileButton, pullButton, pushButton;
@@ -76,11 +83,12 @@ public class RightPanel extends JPanel implements PropertyChangeListener {
                 .setAnchor(GBC.Anchor.NORTHEAST));
 
         bodyTextArea = new BodyTextArea(main, undoManager);
-        bodyScroll = new JScrollPane(bodyTextArea,
+        final JScrollPane bodyScroll = new JScrollPane(bodyTextArea,
                 JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         bodyScroll.setBorder(null);
         bodyScroll.setPreferredSize(new Dimension(0, 0));
         bodyScroll.getVerticalScrollBar().setUI(new TC.ScrollBar());
+
         this.add(bodyScroll, new GBC(0, 3, 0.1, 0.9)
                 .setAnchor(GBC.Anchor.CENTER)
                 .setInsets(5, 5, 5, 5)
@@ -235,18 +243,21 @@ public class RightPanel extends JPanel implements PropertyChangeListener {
             case TC.Properties.UNPULLED_FILES -> pullLabel.setText(event.getNewValue() + " files can be pulled.");
             case TC.Properties.UNPUSHED_FILES -> pushLabel.setText(event.getNewValue() + " files not pushed.");
             case TC.Properties.TEXT -> {
+
                 final ThoughtObject textObject = (ThoughtObject) event.getNewValue();
                 titleTextArea.setText(textObject.getTitle());
                 tagTextArea.setText(textObject.getTag());
                 dateLabel.setText("Created on: " + textObject.getDate());
                 bodyTextArea.setText(textObject.getBody());
-
-            }
-            case TC.Properties.LIST_ITEM_PRESSED -> {
-                checkEmpty();
                 undoManager.discardAllEdits();
 
+                bodyTextArea.setCaretPosition(0);
+
+
+
+
             }
+            case TC.Properties.LIST_ITEM_PRESSED -> checkEmpty();
             case TC.Properties.FOCUS_TITLE_FIELD -> selectTextField(titleTextArea);
 
             default -> {

@@ -75,6 +75,8 @@ public final class CloudSettingsWindow extends JFrame {
         contentContainer.setPreferredSize(new Dimension(700, 500));
         this.add(contentContainer);
 
+        authHandler.checkUserFile();
+
 
         if (authHandler.user == null) {
             createLoginRegisterButtons();
@@ -104,7 +106,10 @@ public final class CloudSettingsWindow extends JFrame {
         final JLabel userNameText = new JLabel("Name");
         userNameText.setFont(TC.Fonts.h4);
         userPanel.add(userNameText, panelConstraints.increaseGridY());
-        final JLabel userNameLabel = new JLabel(authHandler.user.displayName().isEmpty() ? " " : authHandler.user.displayName());
+        final JLabel userNameLabel = new JLabel(
+                authHandler.user.displayName().isEmpty()
+                        ? " "
+                        : authHandler.user.displayName());
         userNameLabel.setFont(TC.Fonts.h4);
         userPanel.add(userNameLabel, panelConstraints.increaseGridY());
 
@@ -144,6 +149,7 @@ public final class CloudSettingsWindow extends JFrame {
     }
 
     private void createLoginRegisterButtons() {
+
         final JButton loginButton = new JButton("Login");
         loginButton.setFont(TC.Fonts.h4);
         loginButton.setPreferredSize(new Dimension(150, 75));
@@ -161,6 +167,12 @@ public final class CloudSettingsWindow extends JFrame {
     }
 
     private void createLoginFields() {
+        if (authHandler.user != null) {
+            changeDisplay(this::userSignedInScreen);
+            return;
+        }
+
+
         final GBC constraints = new GBC().setWeightY(0.2);
 
         final JButton backButton = new JButton("Back");
@@ -211,6 +223,10 @@ public final class CloudSettingsWindow extends JFrame {
     }
 
     private void createRegisterFields() {
+        if (authHandler.user != null) {
+            changeDisplay(this::userSignedInScreen);
+            return;
+        }
         final GBC constraints = new GBC().setWeightY(0.2);
 
         final JButton backButton = new JButton("Back");
@@ -273,6 +289,11 @@ public final class CloudSettingsWindow extends JFrame {
     }
 
     private void createPasswordResetUI() {
+        if (authHandler.user != null) {
+            changeDisplay(this::userSignedInScreen);
+            return;
+
+        }
         final GBC constraints = new GBC();
 
         final JButton backButton = new JButton("Back");

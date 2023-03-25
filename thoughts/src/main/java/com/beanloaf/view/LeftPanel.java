@@ -51,19 +51,17 @@ public class LeftPanel extends JPanel implements PropertyChangeListener {
                     if (scroll == null) {
                         return;
                     }
-
                     final JPanel panel = (JPanel) scroll.getViewport().getView();
-                    if (panel.getComponents().length < 2) {
+                    if ((panel.getHeight() == 0 && panel.getWidth() == 0) || panel.getComponents().length < 2) {
                         return;
                     }
-
                     final JPanel listContainer = (JPanel) panel.getComponent(1);
                     final ListItems list = (ListItems) listContainer.getComponent(0);
                     if (!list.getValueIsAdjusting()) {
                         list.getMouseEvent().setContentFields(0);
                     }
                 } catch (Exception e) {
-                    e.printStackTrace();
+//                    e.printStackTrace();
                 }
             }
 
@@ -143,6 +141,7 @@ public class LeftPanel extends JPanel implements PropertyChangeListener {
         final JLabel tabLabel = new JLabel(tagName, SwingConstants.CENTER);
         tabLabel.setFont(TC.Fonts.h4);
         tabLabel.setPreferredSize(TAB_DIM);
+
         numTags++;
 
         final JLabel tagNameLabel = new JLabel(tagName, SwingConstants.CENTER);

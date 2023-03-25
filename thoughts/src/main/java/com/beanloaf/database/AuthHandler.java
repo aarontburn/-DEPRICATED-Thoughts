@@ -70,7 +70,9 @@ public final class AuthHandler {
 
     }
 
-    public static FirebaseHandler.ThoughtUser signUp(final String userName, final String email, final String password) {
+    public static FirebaseHandler.ThoughtUser signUp(final String userName,
+                                                     final String email,
+                                                     final String password) {
         try {
             final URL url = new URL("https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=" + new String(b32.decode(KEY)));
 
@@ -107,7 +109,13 @@ public final class AuthHandler {
             final String refreshToken = (String) json.get("refreshToken");
             final String expiresIn = (String) json.get("expiresIn");
 
-            return new FirebaseHandler.ThoughtUser(userId, userEmail, setUsername(userName, idToken), idToken, true, refreshToken, expiresIn);
+            return new FirebaseHandler.ThoughtUser(userId,
+                    userEmail,
+                    setUsername(userName, idToken),
+                    idToken,
+                    true,
+                    refreshToken,
+                    expiresIn);
 
 
         } catch (Exception e) {
@@ -203,9 +211,8 @@ public final class AuthHandler {
                 final StringBuilder s = new StringBuilder(16);
 
                 final SecureRandom random = new SecureRandom();
-                for (int i = 0; i < 16; i++) {
-                    final int index = random.nextInt(ch.length());
-                    s.append(ch.charAt(index));
+                for (int i = 0; i < s.capacity(); i++) {
+                    s.append(ch.charAt(random.nextInt(ch.length())));
                 }
 
                 return BaseEncoding.base32().encode(

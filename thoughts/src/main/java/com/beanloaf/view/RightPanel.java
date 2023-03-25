@@ -21,6 +21,8 @@ public class RightPanel extends JPanel implements PropertyChangeListener {
 
     private final Thoughts main;
     public JLabel dateLabel, pushLabel, pullLabel;
+
+    private JScrollPane bodyScroll;
     public AbstractTextArea titleTextArea, tagTextArea, bodyTextArea;
     public final UndoManager undoManager = new UndoManager();
     public JButton sortButton, deleteButton, newFileButton, pullButton, pushButton;
@@ -74,7 +76,7 @@ public class RightPanel extends JPanel implements PropertyChangeListener {
                 .setAnchor(GBC.Anchor.NORTHEAST));
 
         bodyTextArea = new BodyTextArea(main, undoManager);
-        final JScrollPane bodyScroll = new JScrollPane(bodyTextArea,
+        bodyScroll = new JScrollPane(bodyTextArea,
                 JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         bodyScroll.setBorder(null);
         bodyScroll.setPreferredSize(new Dimension(0, 0));
@@ -238,10 +240,12 @@ public class RightPanel extends JPanel implements PropertyChangeListener {
                 tagTextArea.setText(textObject.getTag());
                 dateLabel.setText("Created on: " + textObject.getDate());
                 bodyTextArea.setText(textObject.getBody());
+
             }
             case TC.Properties.LIST_ITEM_PRESSED -> {
                 checkEmpty();
                 undoManager.discardAllEdits();
+
             }
             case TC.Properties.FOCUS_TITLE_FIELD -> selectTextField(titleTextArea);
 

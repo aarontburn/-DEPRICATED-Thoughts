@@ -48,13 +48,22 @@ public class LeftPanel extends JPanel implements PropertyChangeListener {
             if (main.ready) {
                 try {
                     final JScrollPane scroll = (JScrollPane) leftTabs.getSelectedComponent();
+                    if (scroll == null) {
+                        return;
+                    }
+
                     final JPanel panel = (JPanel) scroll.getViewport().getView();
+                    if (panel.getComponents().length < 2) {
+                        return;
+                    }
+
                     final JPanel listContainer = (JPanel) panel.getComponent(1);
                     final ListItems list = (ListItems) listContainer.getComponent(0);
                     if (!list.getValueIsAdjusting()) {
                         list.getMouseEvent().setContentFields(0);
                     }
                 } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
 

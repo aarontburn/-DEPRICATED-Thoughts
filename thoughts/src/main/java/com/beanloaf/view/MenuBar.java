@@ -3,8 +3,11 @@ package com.beanloaf.view;
 import com.beanloaf.events.ThoughtsPCS;
 import com.beanloaf.res.TC;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.SwingConstants;
+import java.awt.Desktop;
 import java.net.URI;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -30,6 +33,7 @@ public class MenuBar extends JMenuBar {
         fileOptions.put(null, null);
         fileOptions.put("Exit", () -> pcs.firePropertyChange(TC.Properties.EXIT));
         menuMap.put("File", fileOptions);
+
 
         /* Edit */
         final Map<String, Runnable> editOptions = new LinkedHashMap<>();

@@ -47,8 +47,6 @@ public class LeftPanel extends JPanel implements PropertyChangeListener {
         this.leftTabs.addChangeListener(event -> {
             if (main.ready) {
                 try {
-                    System.out.println(event.getSource());
-
                     final JScrollPane scroll = (JScrollPane) leftTabs.getSelectedComponent();
                     if (scroll == null) {
                         return;

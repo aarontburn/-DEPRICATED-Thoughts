@@ -61,7 +61,7 @@ public class LeftPanel extends JPanel implements PropertyChangeListener {
                         list.getMouseEvent().setContentFields(0);
                     }
                 } catch (Exception e) {
-//                    e.printStackTrace();
+                    e.printStackTrace();
                 }
             }
 

@@ -1,5 +1,6 @@
 package com.beanloaf.view;
 
+import com.beanloaf.events.ThoughtsPCS;
 import com.beanloaf.input.FileActionButtonPressed;
 import com.beanloaf.objects.GBC;
 import com.beanloaf.objects.ThoughtObject;
@@ -43,7 +44,7 @@ public class RightPanel extends JPanel implements PropertyChangeListener {
         this.setLayout(new GridBagLayout());
         this.setPreferredSize(new Dimension(750, 0));
         this.setMinimumSize(new Dimension(0, 0));
-        main.thoughtsPCS.addPropertyChangeListener(this);
+        ThoughtsPCS.getInstance().addPropertyChangeListener(this);
         createUI();
     }
 

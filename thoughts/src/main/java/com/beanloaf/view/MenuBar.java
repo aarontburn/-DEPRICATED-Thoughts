@@ -15,46 +15,46 @@ import java.util.Map;
 public class MenuBar extends JMenuBar {
 
 
-    public MenuBar(final ThoughtsPCS pcs) {
+    public MenuBar() {
         super();
-        setMenuOperations(pcs);
+        setMenuOperations();
 
     }
 
-    private void setMenuOperations(final ThoughtsPCS pcs) {
+    private void setMenuOperations() {
         final Map<String, Map<String, Runnable>> menuMap = new LinkedHashMap<>();
 
         /* File */
         final Map<String, Runnable> fileOptions = new LinkedHashMap<>();
-        fileOptions.put("New File", () -> pcs.firePropertyChange(TC.Properties.NEW_FILE));
-        fileOptions.put("Sort File", () -> pcs.firePropertyChange(TC.Properties.SORT));
-        fileOptions.put("Delete File", () -> pcs.firePropertyChange(TC.Properties.DELETE));
-        fileOptions.put("Refresh", () -> pcs.firePropertyChange(TC.Properties.REFRESH));
+        fileOptions.put("New File", () -> ThoughtsPCS.getInstance().firePropertyChange(TC.Properties.NEW_FILE));
+        fileOptions.put("Sort File", () -> ThoughtsPCS.getInstance().firePropertyChange(TC.Properties.SORT));
+        fileOptions.put("Delete File", () -> ThoughtsPCS.getInstance().firePropertyChange(TC.Properties.DELETE));
+        fileOptions.put("Refresh", () -> ThoughtsPCS.getInstance().firePropertyChange(TC.Properties.REFRESH));
         fileOptions.put(null, null);
-        fileOptions.put("Exit", () -> pcs.firePropertyChange(TC.Properties.EXIT));
+        fileOptions.put("Exit", () -> ThoughtsPCS.getInstance().firePropertyChange(TC.Properties.EXIT));
         menuMap.put("File", fileOptions);
 
 
         /* Edit */
         final Map<String, Runnable> editOptions = new LinkedHashMap<>();
-        editOptions.put("Undo", () -> pcs.firePropertyChange(TC.Properties.UNDO));
-        editOptions.put("Redo", () -> pcs.firePropertyChange(TC.Properties.REDO));
+        editOptions.put("Undo", () -> ThoughtsPCS.getInstance().firePropertyChange(TC.Properties.UNDO));
+        editOptions.put("Redo", () -> ThoughtsPCS.getInstance().firePropertyChange(TC.Properties.REDO));
         menuMap.put("Edit", editOptions);
 
 
         /* Tools */
         final Map<String, Runnable> toolOptions = new LinkedHashMap<>();
         toolOptions.put("Export", () -> System.out.println("placeholder"));
-        toolOptions.put("Settings", () -> pcs.firePropertyChange(TC.Properties.OPEN_SETTINGS_WINDOW));
+        toolOptions.put("Settings", () -> ThoughtsPCS.getInstance().firePropertyChange(TC.Properties.OPEN_SETTINGS_WINDOW));
         menuMap.put("Tools", toolOptions);
 
 
         /* Cloud*/
         final Map<String, Runnable> cloudOptions = new LinkedHashMap<>();
-        cloudOptions.put("Push Files", () -> pcs.firePropertyChange(TC.Properties.PUSH));
-        cloudOptions.put("Pull Files", () -> pcs.firePropertyChange(TC.Properties.PULL));
+        cloudOptions.put("Push Files", () -> ThoughtsPCS.getInstance().firePropertyChange(TC.Properties.PUSH));
+        cloudOptions.put("Pull Files", () -> ThoughtsPCS.getInstance().firePropertyChange(TC.Properties.PULL));
         cloudOptions.put(null, null);
-        cloudOptions.put("Cloud Settings", () -> pcs.firePropertyChange(TC.Properties.CLOUD_SETTINGS));
+        cloudOptions.put("Cloud Settings", () -> ThoughtsPCS.getInstance().firePropertyChange(TC.Properties.CLOUD_SETTINGS));
         menuMap.put("Cloud", cloudOptions);
 
 

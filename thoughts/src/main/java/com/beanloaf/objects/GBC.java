@@ -124,19 +124,15 @@ public class GBC extends GridBagConstraints {
     }
 
 
-
     public static class Fill {
-
         public final static int NONE = GridBagConstraints.NONE;
         public final static int HORIZONTAL = GridBagConstraints.HORIZONTAL;
         public final static int BOTH = GridBagConstraints.BOTH;
         public final static int VERTICAL = GridBagConstraints.VERTICAL;
 
-
     }
 
     public static class Anchor {
-
         public final static int ABOVE_BASE_LINE = GridBagConstraints.ABOVE_BASELINE;
         public final static int ABOVE_BASELINE_LEADING = GridBagConstraints.ABOVE_BASELINE_LEADING;
         public final static int ABOVE_BASELINE_TRAILING = GridBagConstraints.ABOVE_BASELINE_TRAILING;
@@ -159,7 +155,6 @@ public class GBC extends GridBagConstraints {
         public final static int WEST = GridBagConstraints.WEST;
         public final static int NORTHWEST = GridBagConstraints.NORTHWEST;
         public final static int CENTER = GridBagConstraints.CENTER;
-
 
     }
 

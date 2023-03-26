@@ -6,6 +6,7 @@ import java.awt.event.WindowEvent;
 
 import javax.swing.*;
 
+import com.beanloaf.events.ThoughtsPCS;
 import com.beanloaf.objects.GBC;
 import com.beanloaf.res.TC;
 
@@ -105,7 +106,7 @@ public final class SettingsWindow extends JFrame{
 
         final JButton openCloudButton = new JButton("Open Cloud settings");
         openCloudButton.setFont(TC.Fonts.h4);
-        openCloudButton.addActionListener(event -> main.thoughtsPCS.firePropertyChange(TC.Properties.CLOUD_SETTINGS));
+        openCloudButton.addActionListener(event -> ThoughtsPCS.getInstance().firePropertyChange(TC.Properties.CLOUD_SETTINGS));
         cloudPanel.add(openCloudButton, panelConstraints.increaseGridY().setFill(GBC.Fill.NONE).setWeightY(0.6).setInsets(0));
 
 

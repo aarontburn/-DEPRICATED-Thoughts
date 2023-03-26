@@ -45,7 +45,7 @@ import com.beanloaf.res.TC;
  */
 public class Thoughts implements PropertyChangeListener {
 
-    public final ThoughtsPCS thoughtsPCS = new ThoughtsPCS(this);
+    public final ThoughtsPCS thoughtsPCS = ThoughtsPCS.getInstance(this);
     public ThoughtObject selectedFile;
     public JFrame window;
     public JPanel container;
@@ -102,7 +102,7 @@ public class Thoughts implements PropertyChangeListener {
                     this.unsortedThoughtList).setContentFields(0);
         }
 
-        thoughtsPCS.addPropertyChangeListener(this);
+        ThoughtsPCS.getInstance().addPropertyChangeListener(this);
 
 
         this.ready = true;
@@ -115,7 +115,7 @@ public class Thoughts implements PropertyChangeListener {
         this.window.setFocusable(true);
         this.window.setSize(settings.getWindowWidth(), settings.getWindowHeight());
         this.window.setLocation(new Point(settings.getWindowX(), settings.getWindowY()));
-        this.window.setJMenuBar(new MenuBar(thoughtsPCS));
+        this.window.setJMenuBar(new MenuBar());
 
         this.window.addWindowListener(new WindowAdapter() {
             @Override
@@ -124,7 +124,7 @@ public class Thoughts implements PropertyChangeListener {
                 settings.check();
 
                 if (settings.isPushOnClose()) {
-                    thoughtsPCS.firePropertyChange(TC.Properties.PUSH);
+                    ThoughtsPCS.getInstance().firePropertyChange(TC.Properties.PUSH);
                 }
                 settings.changeWindowDimension(window.getSize());
                 settings.changeIsMaximized(
@@ -287,14 +287,14 @@ public class Thoughts implements PropertyChangeListener {
         leftPanel.createTabs();
         leftPanel.setTagModel();
 
-        thoughtsPCS.firePropertyChange(TC.Properties.SET_TAB_INDEX, selectedTab);
+        ThoughtsPCS.getInstance().firePropertyChange(TC.Properties.SET_TAB_INDEX, selectedTab);
 
         if (this.db.isOnline && this.db.getList() != null) {
             this.db.refreshPushPullLabels();
         }
 
         final long endTime = System.currentTimeMillis();
-//        System.out.println("Total refresh time: " + (endTime - startTime) + "ms");
+        System.out.println("Total refresh time: " + (endTime - startTime) + "ms");
     }
 
     @Override
@@ -311,7 +311,7 @@ public class Thoughts implements PropertyChangeListener {
     }
 
 
-    public class KeyBinds implements KeyEventDispatcher {
+    public static class KeyBinds implements KeyEventDispatcher {
         @Override
         public boolean dispatchKeyEvent(final KeyEvent event) {
             // 401 is key-down
@@ -324,39 +324,39 @@ public class Thoughts implements PropertyChangeListener {
             switch (key) {
                 case KeyEvent.VK_Z -> { // Undo
                     if (c) {
-                        thoughtsPCS.firePropertyChange(TC.Properties.UNDO);
+                        ThoughtsPCS.getInstance().firePropertyChange(TC.Properties.UNDO);
                     }
                 }
                 case KeyEvent.VK_Y -> { // Redo
                     if (c) {
-                        thoughtsPCS.firePropertyChange(TC.Properties.REDO);
+                        ThoughtsPCS.getInstance().firePropertyChange(TC.Properties.REDO);
                     }
                 }
                 case KeyEvent.VK_N -> { // New File
                     if (c) {
-                        thoughtsPCS.firePropertyChange(TC.Properties.NEW_FILE);
+                        ThoughtsPCS.getInstance().firePropertyChange(TC.Properties.NEW_FILE);
                     }
                 }
                 case KeyEvent.VK_D -> { // Delete File
                     if (c) {
-                        thoughtsPCS.firePropertyChange(TC.Properties.DELETE);
+                        ThoughtsPCS.getInstance().firePropertyChange(TC.Properties.DELETE);
                     }
                 }
                 case KeyEvent.VK_Q -> { // Sort File
                     if (c) {
-                        thoughtsPCS.firePropertyChange(TC.Properties.SORT);
+                        ThoughtsPCS.getInstance().firePropertyChange(TC.Properties.SORT);
                     }
                 }
                 case KeyEvent.VK_P -> { // Push/Pull
                     if (c) {
                         if (event.isShiftDown()) { // Pull
-                            thoughtsPCS.firePropertyChange(TC.Properties.PULL);
+                            ThoughtsPCS.getInstance().firePropertyChange(TC.Properties.PULL);
                         } else { // Push
-                            thoughtsPCS.firePropertyChange(TC.Properties.PUSH);
+                            ThoughtsPCS.getInstance().firePropertyChange(TC.Properties.PUSH);
                         }
                     }
                 }
-                case KeyEvent.VK_F5 -> thoughtsPCS.firePropertyChange(TC.Properties.REFRESH);
+                case KeyEvent.VK_F5 -> ThoughtsPCS.getInstance().firePropertyChange(TC.Properties.REFRESH);
 
                 default -> {
                 }

@@ -12,6 +12,7 @@ import java.nio.file.Paths;
 import java.util.*;
 
 import com.beanloaf.events.SaveNewFile;
+import com.beanloaf.events.ThoughtsPCS;
 import com.beanloaf.objects.ThoughtObject;
 import com.beanloaf.res.TC;
 import com.beanloaf.view.Thoughts;
@@ -38,11 +39,15 @@ public class FirebaseHandler implements PropertyChangeListener {
 
     public FirebaseHandler(final Thoughts main) {
         this.main = main;
-        this.main.thoughtsPCS.addPropertyChangeListener(this);
+        ThoughtsPCS.getInstance().addPropertyChangeListener(this);
         checkUserFile();
     }
 
     public void checkUserFile() {
+        if (user != null) {
+            return;
+        }
+
 
         try (BufferedReader reader = Files.newBufferedReader(Paths.get(TC.Paths.LOGIN_DIRECTORY.toURI()))) {
             final JSONObject json = (JSONObject) new JSONParser().parse(reader);
@@ -100,7 +105,7 @@ public class FirebaseHandler implements PropertyChangeListener {
         final ThoughtUser returningUser = AuthHandler.signIn(email, password);
         if (returningUser != null) {
             user = returningUser;
-            main.thoughtsPCS.firePropertyChange(TC.Properties.CONNECTED);
+            ThoughtsPCS.getInstance().firePropertyChange(TC.Properties.CONNECTED);
             return true;
         }
         System.err.println("Error logging in user.");
@@ -116,7 +121,7 @@ public class FirebaseHandler implements PropertyChangeListener {
         final ThoughtUser newUser = AuthHandler.signUp(displayName, email, password);
         if (newUser != null) {
             user = newUser;
-            main.thoughtsPCS.firePropertyChange(TC.Properties.CONNECTED);
+            ThoughtsPCS.getInstance().firePropertyChange(TC.Properties.CONNECTED);
             return true;
         }
         System.err.println("Error registering new user.");
@@ -337,14 +342,14 @@ public class FirebaseHandler implements PropertyChangeListener {
 
     public void refreshPushPullLabels() {
         if (!isOnline || user == null) {
-            this.main.thoughtsPCS.firePropertyChange(TC.Properties.DISCONNECTED);
+            ThoughtsPCS.getInstance().firePropertyChange(TC.Properties.DISCONNECTED);
             return;
         }
 
-        this.main.thoughtsPCS.firePropertyChange(TC.Properties.UNPULLED_FILES,
+        ThoughtsPCS.getInstance().firePropertyChange(TC.Properties.UNPULLED_FILES,
                 Math.max(this.objectList.size() - this.main.sortedThoughtList.size(), 0));
 
-        this.main.thoughtsPCS.firePropertyChange(TC.Properties.UNPUSHED_FILES,
+        ThoughtsPCS.getInstance().firePropertyChange(TC.Properties.UNPUSHED_FILES,
                 Math.max(this.main.sortedThoughtList.size() - this.objectList.size(), 0));
     }
 

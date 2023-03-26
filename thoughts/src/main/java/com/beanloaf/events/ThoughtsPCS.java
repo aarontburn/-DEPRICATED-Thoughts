@@ -7,7 +7,27 @@ import java.beans.PropertyChangeSupport;
 
 public class ThoughtsPCS extends PropertyChangeSupport {
 
-    public ThoughtsPCS(final Thoughts main) {
+    public static ThoughtsPCS instance;
+
+    public static ThoughtsPCS getInstance() {
+        if (instance == null) {
+            throw new RuntimeException();
+        }
+        return instance;
+
+    }
+
+
+    public static ThoughtsPCS getInstance(final Thoughts main) {
+        if (instance == null) {
+            instance = new ThoughtsPCS(main);
+        }
+        return instance;
+    }
+
+
+
+    private ThoughtsPCS(final Thoughts main) {
         super(main);
     }
 

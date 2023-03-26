@@ -75,6 +75,8 @@ public final class CloudSettingsWindow extends JFrame {
         contentContainer.setPreferredSize(new Dimension(700, 500));
         this.add(contentContainer);
 
+
+
         authHandler.checkUserFile();
 
 

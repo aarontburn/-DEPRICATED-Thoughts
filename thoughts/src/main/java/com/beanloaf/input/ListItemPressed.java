@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.swing.JList;
 
+import com.beanloaf.events.ThoughtsPCS;
 import com.beanloaf.tagobjects.ListItems;
 import com.beanloaf.objects.ThoughtObject;
 import com.beanloaf.res.TC;
@@ -33,7 +34,7 @@ public class ListItemPressed extends MouseAdapter {
     public void mousePressed(final MouseEvent event) {
         final int selectedIndex = this.list.getSelectedIndex();
         setContentFields(selectedIndex);
-        this.main.thoughtsPCS.firePropertyChange(TC.Properties.LIST_ITEM_PRESSED);
+        ThoughtsPCS.getInstance().firePropertyChange(TC.Properties.LIST_ITEM_PRESSED);
 
     }
 
@@ -61,7 +62,7 @@ public class ListItemPressed extends MouseAdapter {
 
         }
 
-        this.main.thoughtsPCS.firePropertyChange(TC.Properties.TEXT, obj);
+        ThoughtsPCS.getInstance().firePropertyChange(TC.Properties.TEXT, obj);
 
         this.main.ready = true;
 
@@ -72,7 +73,7 @@ public class ListItemPressed extends MouseAdapter {
             return;
         }
         this.main.selectedFile = obj;
-        this.main.thoughtsPCS.firePropertyChange(TC.Properties.TEXT, obj);
+        ThoughtsPCS.getInstance().firePropertyChange(TC.Properties.TEXT, obj);
 
     }
 

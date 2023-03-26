@@ -1,5 +1,6 @@
 package com.beanloaf.view;
 
+import com.beanloaf.events.ThoughtsPCS;
 import com.beanloaf.objects.GBC;
 import com.beanloaf.tagobjects.ListItems;
 import com.beanloaf.objects.ThoughtObject;
@@ -34,7 +35,7 @@ public class LeftPanel extends JPanel implements PropertyChangeListener {
     public LeftPanel(final Thoughts main) {
         super(new GridBagLayout());
         this.main = main;
-        main.thoughtsPCS.addPropertyChangeListener(this);
+        ThoughtsPCS.getInstance().addPropertyChangeListener(this);
 
         this.setPreferredSize(new Dimension(450, 0));
         this.setMinimumSize(new Dimension(0, 0));
@@ -52,7 +53,7 @@ public class LeftPanel extends JPanel implements PropertyChangeListener {
                         return;
                     }
                     final JPanel panel = (JPanel) scroll.getViewport().getView();
-                    if ((panel.getHeight() == 0 && panel.getWidth() == 0) || panel.getComponents().length < 2) {
+                    if (panel.getHeight() == 0 && panel.getWidth() == 0 || panel.getComponents().length < 2) {
                         return;
                     }
                     final JPanel listContainer = (JPanel) panel.getComponent(1);

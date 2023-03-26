@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 import javax.swing.JButton;
 
 import com.beanloaf.events.SaveNewFile;
+import com.beanloaf.events.ThoughtsPCS;
 import com.beanloaf.objects.ThoughtObject;
 import com.beanloaf.res.TC;
 import com.beanloaf.view.Thoughts;
@@ -90,7 +91,7 @@ public class FileActionButtonPressed implements ActionListener {
                 final ThoughtObject tObj = new SaveNewFile(title, tag, body).save();
                 l.setContentFields(tObj);
                 this.main.leftPanel.leftTabs.setSelectedIndex(0);
-                this.main.thoughtsPCS.firePropertyChange(TC.Properties.FOCUS_TITLE_FIELD);
+                ThoughtsPCS.getInstance().firePropertyChange(TC.Properties.FOCUS_TITLE_FIELD);
             }
             default ->
                     throw new IllegalArgumentException(action + " is not a valid argument in FileActionButtonPressed.");

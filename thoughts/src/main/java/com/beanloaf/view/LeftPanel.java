@@ -13,13 +13,12 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridBagLayout;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -55,14 +54,18 @@ public class LeftPanel extends JPanel implements PropertyChangeListener {
         this.setMinimumSize(new Dimension(0, 0));
 
 
-        final GBC constraints = new GBC().setAnchor(GBC.Anchor.NORTH);
+        final GBC constraints = new GBC();
+
+        final JLabel searchBarGhostText = new JLabel("Search for...");
+        searchBarGhostText.setFont(TC.Fonts.h5);
+        searchBarGhostText.setEnabled(false);
+        this.add(searchBarGhostText, new GBC().setAnchor(GBC.Anchor.NORTHWEST).setInsets(5, 10, 0, 0).setWeightY(0.001));
 
         searchBar = new JTextField();
         searchBar.setFont(TC.Fonts.h5);
         searchBar.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(final MouseEvent event) {
-
+            public void mousePressed(final MouseEvent event) {
                 if (!searchBar.getText().isEmpty()) {
                     searchBar.setText("");
                     ThoughtsPCS.getInstance().firePropertyChange(TC.Properties.REFRESH);
@@ -70,16 +73,36 @@ public class LeftPanel extends JPanel implements PropertyChangeListener {
 
             }
         });
+
+        searchBar.getDocument().addDocumentListener(new DocumentListener() {
+            public void changedUpdate(final DocumentEvent event) {
+                keyTyped();
+            }
+
+            public void removeUpdate(DocumentEvent e) {
+                keyTyped();
+            }
+
+            public void insertUpdate(DocumentEvent e) {
+                keyTyped();
+            }
+
+            public void keyTyped() {
+                searchBarGhostText.setText(searchBar.getText().isEmpty() ? "Search for..." : " ");
+
+            }
+        });
+
         searchBar.addKeyListener(new KeyAdapter() {
             @Override
             public void keyTyped(final KeyEvent event) {
                 if (event.getKeyChar() == KeyEvent.VK_ENTER) {
                     ThoughtsPCS.getInstance().firePropertyChange(TC.Properties.REFRESH);
                 }
-
             }
         });
-        this.add(searchBar, constraints.setFill(GBC.Fill.HORIZONTAL).setWeightY(0.001));
+
+        this.add(searchBar, constraints.setFill(GBC.Fill.HORIZONTAL).setWeightY(0.001).setAnchor(GBC.Anchor.NORTH));
 
 
         this.leftTabs = new JTabbedPane(JTabbedPane.LEFT);
@@ -241,11 +264,18 @@ public class LeftPanel extends JPanel implements PropertyChangeListener {
             case TC.Properties.SET_TAB_INDEX -> {
                 final int index = (Integer) event.getNewValue();
 
-                try {
-                    leftTabs.setSelectedIndex(index);
-                } catch (final Exception e) {
-                    leftTabs.setSelectedIndex(index - 1);
-                }
+                boolean validTab = false;
+                int indexMod = 0;
+
+                do {
+                    try {
+                        leftTabs.setSelectedIndex(index - indexMod);
+                        validTab = true;
+                    } catch (final Exception e) {
+                        indexMod++;
+                    }
+                } while (!validTab);
+
             }
 
             default -> {

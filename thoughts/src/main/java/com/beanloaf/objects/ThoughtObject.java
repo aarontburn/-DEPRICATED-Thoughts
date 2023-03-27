@@ -1,6 +1,8 @@
 package com.beanloaf.objects;
 
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Objects;
@@ -51,9 +53,9 @@ public class ThoughtObject {
             return;
         }
         try (BufferedWriter fWriter = Files.newBufferedWriter(Paths.get(exportDirectory + getTitle() + ".txt"))) {
-            fWriter.write("Title: " + getTitle() + "\n" +
-                    "Created on: " + getDate() + "\n\n" +
-                    getBody());
+            fWriter.write("Title: " + getTitle() + "\n"
+                    + "Created on: " + getDate() + "\n\n"
+                    + getBody());
 
         } catch (IOException e) {
             e.printStackTrace();

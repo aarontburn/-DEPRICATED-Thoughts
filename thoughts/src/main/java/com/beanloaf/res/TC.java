@@ -1,22 +1,31 @@
 package com.beanloaf.res;
 
-import javax.swing.*;
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.plaf.basic.BasicScrollBarUI;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Font;
 import java.io.File;
 
 /**
- * Holds constants for Thoughts
+ * Holds constants for Thoughts.
  *
  * @author beanloaf
  */
 public final class TC {
 
-
     public static final String DEFAULT_TITLE = "<untitled>";
     public static final String DEFAULT_BODY = "<description>";
     public static final String DEFAULT_TAG = "<untagged>";
     public static final String DEFAULT_DATE = "<date>";
+
+    private TC() {
+
+    }
 
 
     public static class Properties {

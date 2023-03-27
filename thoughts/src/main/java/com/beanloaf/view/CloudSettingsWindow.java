@@ -8,8 +8,16 @@ import com.beanloaf.objects.GBC;
 import com.beanloaf.res.TC;
 import org.json.simple.JSONObject;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.GridBagLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.BufferedWriter;
@@ -224,6 +232,7 @@ public final class CloudSettingsWindow extends JFrame {
 
     }
 
+    @SuppressWarnings("checkstyle:LineLength")
     private void createRegisterFields() {
         if (authHandler.user != null) {
             changeDisplay(this::userSignedInScreen);

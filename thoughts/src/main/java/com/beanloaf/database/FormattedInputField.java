@@ -3,8 +3,11 @@ package com.beanloaf.database;
 import com.beanloaf.objects.GBC;
 import com.beanloaf.res.TC;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+import java.awt.GridBagLayout;
 
 public class FormattedInputField extends JPanel {
 

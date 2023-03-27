@@ -4,7 +4,7 @@ import com.beanloaf.res.TC;
 import com.beanloaf.view.Thoughts;
 
 import javax.swing.undo.UndoManager;
-import java.awt.*;
+import java.awt.Color;
 
 public class BodyTextArea extends AbstractTextArea {
 

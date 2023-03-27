@@ -4,11 +4,12 @@ import com.beanloaf.events.TextAreaFocusListener;
 import com.beanloaf.objects.GBC;
 import com.beanloaf.view.Thoughts;
 
-import javax.swing.*;
+import javax.swing.JTextArea;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.undo.UndoManager;
-import java.awt.*;
+import java.awt.Font;
+import java.awt.GridBagLayout;
 
 public abstract class AbstractTextArea extends JTextArea implements DocumentListener {
 

@@ -5,7 +5,7 @@ import com.beanloaf.view.Thoughts;
 
 import java.beans.PropertyChangeSupport;
 
-public class ThoughtsPCS extends PropertyChangeSupport {
+public final class ThoughtsPCS extends PropertyChangeSupport {
 
     public static ThoughtsPCS instance;
 

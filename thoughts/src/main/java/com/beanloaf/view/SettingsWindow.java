@@ -1,16 +1,22 @@
 package com.beanloaf.view;
 
-import java.awt.*;
+import java.awt.GridBagLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
+import javax.swing.SwingConstants;
 
 import com.beanloaf.events.ThoughtsPCS;
 import com.beanloaf.objects.GBC;
 import com.beanloaf.res.TC;
 
-public final class SettingsWindow extends JFrame{
+public final class SettingsWindow extends JFrame {
 
     private static SettingsWindow instance;
 
@@ -108,7 +114,6 @@ public final class SettingsWindow extends JFrame{
         openCloudButton.setFont(TC.Fonts.h4);
         openCloudButton.addActionListener(event -> ThoughtsPCS.getInstance().firePropertyChange(TC.Properties.CLOUD_SETTINGS));
         cloudPanel.add(openCloudButton, panelConstraints.increaseGridY().setFill(GBC.Fill.NONE).setWeightY(0.6).setInsets(0));
-
 
 
     }

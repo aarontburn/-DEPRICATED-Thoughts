@@ -1,7 +1,7 @@
 package com.beanloaf.textfields;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JLabel;
+import java.awt.Font;
 
 public class GhostText extends JLabel {
 

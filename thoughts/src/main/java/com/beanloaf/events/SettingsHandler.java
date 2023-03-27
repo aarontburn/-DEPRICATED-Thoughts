@@ -55,7 +55,7 @@ public class SettingsHandler {
     }
 
     public void createSettingsFile() {
-        try (BufferedWriter fWriter = Files.newBufferedWriter(Paths.get(TC.Paths.SETTINGS_DIRECTORY.toURI()))){
+        try (BufferedWriter fWriter = Files.newBufferedWriter(Paths.get(TC.Paths.SETTINGS_DIRECTORY.toURI()))) {
             TC.Paths.SETTINGS_DIRECTORY.createNewFile();
 
             final HashMap<String, Object> textContent = new HashMap<>();

@@ -3,7 +3,7 @@ package com.beanloaf.database;
 import com.beanloaf.objects.GBC;
 import com.beanloaf.res.TC;
 
-import javax.swing.*;
+import javax.swing.JButton;
 import java.awt.event.ActionListener;
 
 public class PasswordLoginField extends FormattedInputField {

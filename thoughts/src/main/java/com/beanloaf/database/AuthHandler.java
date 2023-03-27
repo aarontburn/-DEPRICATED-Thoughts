@@ -17,6 +17,10 @@ import java.util.Map;
 
 public final class AuthHandler {
 
+    private AuthHandler() {
+
+    }
+
     private static final String KEY = "IFEXUYKTPFATGSCXPFHE6OC2LBSEG4JYIJGDC4RNIFWXUUS7L5HEOM2CJ4YWYMA";
 
     private static final Base32 b32 = new Base32();

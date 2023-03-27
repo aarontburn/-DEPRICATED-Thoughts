@@ -54,7 +54,7 @@ public class ThoughtObject {
         }
         try (BufferedWriter fWriter = Files.newBufferedWriter(Paths.get(exportDirectory + getTitle() + ".txt"))) {
             fWriter.write("Title: " + getTitle() + "\n"
-                    + "Created on: " + getDate() + "\n\n"
+                    + "Created on: " + getDate() + "\n\n\n\n\n"
                     + getBody());
 
         } catch (IOException e) {

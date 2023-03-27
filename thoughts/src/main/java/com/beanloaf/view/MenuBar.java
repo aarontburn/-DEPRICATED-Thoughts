@@ -44,7 +44,7 @@ public class MenuBar extends JMenuBar {
 
         /* Tools */
         final Map<String, Runnable> toolOptions = new LinkedHashMap<>();
-        toolOptions.put("Export", () -> System.out.println("placeholder"));
+        toolOptions.put("Export", () -> ThoughtsPCS.getInstance().firePropertyChange(TC.Properties.EXPORT));
         toolOptions.put("Settings", () -> ThoughtsPCS.getInstance().firePropertyChange(TC.Properties.OPEN_SETTINGS_WINDOW));
         menuMap.put("Tools", toolOptions);
 

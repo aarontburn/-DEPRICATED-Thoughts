@@ -1,13 +1,6 @@
 package com.beanloaf.view;
 
-import java.awt.AWTEvent;
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.GridBagLayout;
-import java.awt.KeyEventDispatcher;
-import java.awt.KeyboardFocusManager;
-import java.awt.Point;
-import java.awt.Toolkit;
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -96,10 +89,12 @@ public class Thoughts implements PropertyChangeListener {
 
         refreshThoughtList();
 
-        if (this.unsortedThoughtList.isEmpty()) {
+        if (!this.unsortedThoughtList.isEmpty()) {
             new ListItemPressed(this,
                     this.leftPanel.unsortedListLabel,
                     this.unsortedThoughtList).setContentFields(0);
+        } else {
+            new ListItemPressed(this).setContentFields(0);
         }
 
         ThoughtsPCS.getInstance().addPropertyChangeListener(this);
@@ -268,7 +263,11 @@ public class Thoughts implements PropertyChangeListener {
         /* UNSORTED FILES */
         for (final File file : Objects.requireNonNull(unsortedFileDirectory)) {
             final ThoughtObject content = readFileContents(file);
-            if (content != null) {
+            if (content != null && (content.getTitle().toLowerCase().contains(leftPanel.searchBar.getText().toLowerCase())
+                    || content.getTag().toLowerCase().contains(leftPanel.searchBar.getText().toLowerCase())
+                    || content.getDate().toLowerCase().contains(leftPanel.searchBar.getText().toLowerCase())
+                    || content.getBody().toLowerCase().contains(leftPanel.searchBar.getText().toLowerCase()))) {
+
                 unsortedThoughtList.add(content);
                 unsortedListModel.addElement(content.getTitle());
                 unsortedFiles.add(file);
@@ -278,7 +277,10 @@ public class Thoughts implements PropertyChangeListener {
         /* SORTED FILES */
         for (final File file : Objects.requireNonNull(sortedFileDirectory)) {
             final ThoughtObject content = readFileContents(file);
-            if (content != null) {
+            if (content != null && (content.getTitle().toLowerCase().contains(leftPanel.searchBar.getText().toLowerCase())
+                    || content.getTag().toLowerCase().contains(leftPanel.searchBar.getText().toLowerCase())
+                    || content.getDate().toLowerCase().contains(leftPanel.searchBar.getText().toLowerCase())
+                    || content.getBody().toLowerCase().contains(leftPanel.searchBar.getText().toLowerCase()))) {
                 sortedThoughtList.add(content);
                 sortedListModel.addElement(content.getTitle());
                 sortedFiles.add(file);
@@ -304,6 +306,16 @@ public class Thoughts implements PropertyChangeListener {
             case TC.Properties.EXIT -> window.dispatchEvent(new WindowEvent(window, WindowEvent.WINDOW_CLOSING));
             case TC.Properties.REFRESH -> refreshThoughtList();
             case TC.Properties.CLOUD_SETTINGS -> CloudSettingsWindow.getInstance(db);
+            case TC.Properties.EXPORT -> {
+                if (selectedFile == null) {
+                    return;
+                }
+
+                final FileDialog fd = new FileDialog(window, "Export", FileDialog.SAVE);
+                fd.setFile(selectedFile.getTitle() + ".txt");
+                fd.setVisible(true);
+                selectedFile.exportAsText(fd.getDirectory());
+            }
 
             default -> {
             }

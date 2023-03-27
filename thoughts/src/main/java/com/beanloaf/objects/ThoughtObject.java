@@ -42,10 +42,22 @@ public class ThoughtObject {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        } else {
-            System.out.println("here");
         }
 
+    }
+
+    public void exportAsText(final String exportDirectory) {
+        if (exportDirectory == null) {
+            return;
+        }
+        try (BufferedWriter fWriter = Files.newBufferedWriter(Paths.get(exportDirectory + getTitle() + ".txt"))) {
+            fWriter.write("Title: " + getTitle() + "\n" +
+                    "Created on: " + getDate() + "\n\n" +
+                    getBody());
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void editTitle(final String newTitle) {

@@ -39,28 +39,26 @@ public class ListItemPressed extends MouseAdapter {
     }
 
 
+
+
     public void setContentFields(final int index) {
         this.main.ready = false;
 
         main.refreshThoughtList();
 
         ThoughtObject obj = new ThoughtObject(
+                "Thoughts",
                 "",
-                "",
-                "",
-                "",
+                "by @beanloaf",
+                "Get started by creating or selecting a file.",
                 null);
-
-        if (index < 0) {
-            this.main.selectedFile = null;
-            this.main.leftPanel.leftTabs.setSelectedIndex(0);
-        }
 
         if (this.arrayList != null && this.arrayList.size() > index) {
             obj = this.arrayList.get(index);
-            this.main.selectedFile = obj;
 
         }
+
+        this.main.selectedFile = obj.getPath() != null ? obj : null;
 
         ThoughtsPCS.getInstance().firePropertyChange(TC.Properties.TEXT, obj);
 

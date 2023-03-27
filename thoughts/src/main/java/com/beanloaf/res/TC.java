@@ -33,13 +33,13 @@ public final class TC {
         public static final String UNPULLED_FILES = "unpulled files";
         public static final String TEXT = "text";
         public static final String LIST_ITEM_PRESSED = "list item pressed";
-        public static final String LIST_TAB_PRESSED = "list tab pressed";
         public static final String SET_TAB_INDEX = "set tab index";
         public static final String FOCUS_TITLE_FIELD = "focus text field";
         public static final String OPEN_SETTINGS_WINDOW = "open settings window";
         public static final String EXIT = "exit";
         public static final String REFRESH = "refresh";
         public static final String CLOUD_SETTINGS = "cloud settings";
+        public static final String EXPORT = "export";
 
     }
 

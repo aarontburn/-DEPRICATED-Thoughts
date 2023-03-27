@@ -343,7 +343,7 @@ public final class CloudSettingsWindow extends JFrame {
             final Map<String, String> textContent = new HashMap<>();
 
             textContent.put("email", email);
-            textContent.put("password", "".equals(password) ? password : AuthHandler.sp(password, false));
+            textContent.put("password", password != null && password.isEmpty() ? password : AuthHandler.sp(password, false));
 
             final JSONObject objJson = new JSONObject(textContent);
             fWriter.write(objJson.toJSONString());

@@ -25,11 +25,10 @@ import java.beans.PropertyChangeListener;
 
 public class RightPanel extends JPanel implements PropertyChangeListener {
 
-    private final static String NOT_CONNECTED_MESSAGE = "Not connected";
+    private static final String NOT_CONNECTED_MESSAGE = "Not connected";
 
     private final Thoughts main;
     public JLabel dateLabel, pushLabel, pullLabel;
-
 
     public AbstractTextArea titleTextArea, tagTextArea, bodyTextArea;
     public final UndoManager undoManager = new UndoManager();
@@ -140,7 +139,7 @@ public class RightPanel extends JPanel implements PropertyChangeListener {
                 .setInsets(10, 15, 0, 0);
 
 
-        userNameLabel = new JLabel(main.db.user == null  ? NOT_CONNECTED_MESSAGE : "Logged in as: " + main.db.user.displayName());
+        userNameLabel = new JLabel(main.db.user == null ? NOT_CONNECTED_MESSAGE : "Logged in as: " + main.db.user.displayName());
         userNameLabel.setFont(TC.Fonts.h4);
         settingsBar.add(userNameLabel, settingConstraints.setGridWidth(GBC.Grid.REMAINDER));
 
@@ -237,7 +236,7 @@ public class RightPanel extends JPanel implements PropertyChangeListener {
                 pushButton.setEnabled(false);
             }
             case TC.Properties.CONNECTED -> {
-                userNameLabel.setText(main.db.user == null  ? NOT_CONNECTED_MESSAGE : "Logged in as: " + main.db.user.displayName());
+                userNameLabel.setText(main.db.user == null ? NOT_CONNECTED_MESSAGE : "Logged in as: " + main.db.user.displayName());
                 pullButton.setEnabled(true);
                 pushButton.setEnabled(true);
             }
@@ -246,16 +245,20 @@ public class RightPanel extends JPanel implements PropertyChangeListener {
             case TC.Properties.TEXT -> {
 
                 final ThoughtObject textObject = (ThoughtObject) event.getNewValue();
+
+                final boolean enabledFields = textObject.getPath() != null;
+
+                titleTextArea.setEnabled(enabledFields);
+                tagTextArea.setEnabled(enabledFields);
+                bodyTextArea.setEnabled(enabledFields);
+
                 titleTextArea.setText(textObject.getTitle());
                 tagTextArea.setText(textObject.getTag());
-                dateLabel.setText("Created on: " + textObject.getDate());
+                dateLabel.setText(enabledFields ? "Created on: " + textObject.getDate() : " ");
                 bodyTextArea.setText(textObject.getBody());
                 undoManager.discardAllEdits();
 
                 bodyTextArea.setCaretPosition(0);
-
-
-
 
             }
             case TC.Properties.LIST_ITEM_PRESSED -> checkEmpty();

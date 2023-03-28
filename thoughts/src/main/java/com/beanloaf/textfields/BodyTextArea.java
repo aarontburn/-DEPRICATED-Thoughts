@@ -1,39 +1,168 @@
 package com.beanloaf.textfields;
 
+import com.beanloaf.events.TextAreaFocusListener;
+import com.beanloaf.objects.GBC;
 import com.beanloaf.res.TC;
 import com.beanloaf.view.Thoughts;
 
+import javax.swing.JTextPane;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.text.AbstractDocument;
+import javax.swing.text.BoxView;
+import javax.swing.text.ComponentView;
+import javax.swing.text.Element;
+import javax.swing.text.IconView;
+import javax.swing.text.LabelView;
+import javax.swing.text.ParagraphView;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledEditorKit;
+import javax.swing.text.View;
+import javax.swing.text.ViewFactory;
 import javax.swing.undo.UndoManager;
 import java.awt.Color;
 
-public class BodyTextArea extends AbstractTextArea {
+public class BodyTextArea extends JTextPane implements DocumentListener {
+
+    public final Thoughts main;
+    public final UndoManager undoManager;
+    private final GhostText ghostText;
+    private boolean isItalic;
+    private boolean isBold;
+    private boolean isUnderlined;
 
     public BodyTextArea(final Thoughts main, final UndoManager undoManager) {
-        super(TC.DEFAULT_BODY, TC.Fonts.p, main, undoManager);
-        this.setTabSize(2);
+        super();
+
+        this.main = main;
+        this.undoManager = undoManager;
+
+        this.setFont(TC.Fonts.p);
         this.setName("bodyTextArea");
+        this.setEditorKit(new WrapEditorKit());
+
+        defaultDocumentSettings();
+
+        ghostText = new GhostText(TC.DEFAULT_BODY, TC.Fonts.p);
+        this.add(ghostText, new GBC().setAnchor(GBC.Anchor.NORTHWEST));
+
+        this.setBackground(main.settings.isLightMode()
+                ? Color.LIGHT_GRAY
+                : new Color(32, 32, 32));
+
+    }
+
+    private void defaultDocumentSettings() {
+        this.getDocument().addDocumentListener(this);
+        this.getDocument().putProperty("labelType", this);
+        this.getDocument().addUndoableEditListener(undoManager);
+        this.addFocusListener(new TextAreaFocusListener(this.main));
+
+    }
+
+    public void toggleUnderline() {
+        isUnderlined = !isUnderlined;
+        setTextDecoration();
+    }
+
+    public void toggleBold() {
+        isBold = !isBold;
+        setTextDecoration();
+    }
+
+    public void toggleItalic() {
+        isItalic = !isItalic;
+        setTextDecoration();
+    }
+
+    private void setTextDecoration() {
+        final SimpleAttributeSet set = new SimpleAttributeSet();
+        StyleConstants.setBold(set, isBold);
+        StyleConstants.setItalic(set, isItalic);
+        StyleConstants.setUnderline(set, isUnderlined);
+
+        this.setCharacterAttributes(set, true);
+
+    }
 
 
-        if (main.settings.isLightMode()) {
-            this.setBackground(Color.LIGHT_GRAY);
-        } else {
-            this.setBackground(new Color(32, 32, 32));
+    private void textChanged() {
+        if (this.main.ready) {
+            ghostText.setDisplay(this.getText().isBlank());
+            if (this.main.selectedFile != null) {
+                this.main.selectedFile.editBody(this.getStyledDocument(), this.getText());
+            }
+        }
+    }
+
+    @Override
+    public void insertUpdate(final DocumentEvent event) {
+        textChanged();
+    }
+
+    @Override
+    public void removeUpdate(final DocumentEvent event) {
+        textChanged();
+    }
+
+    @Override
+    public void changedUpdate(final DocumentEvent event) {
+        textChanged();
+    }
+
+    private static class WrapEditorKit extends StyledEditorKit {
+        final ViewFactory defaultFactory = new WrapColumnFactory();
+
+        public ViewFactory getViewFactory() {
+            return defaultFactory;
+        }
+    }
+
+    private static class WrapColumnFactory implements ViewFactory {
+        public View create(final Element elem) {
+            final String kind = elem.getName();
+            if (kind != null) {
+                switch (kind) {
+                    case AbstractDocument.ContentElementName -> {
+                        return new WrapLabelView(elem);
+                    }
+                    case AbstractDocument.ParagraphElementName -> {
+                        return new ParagraphView(elem);
+                    }
+                    case AbstractDocument.SectionElementName -> {
+                        return new BoxView(elem, View.Y_AXIS);
+                    }
+                    case StyleConstants.ComponentElementName -> {
+                        return new ComponentView(elem);
+                    }
+                    case StyleConstants.IconElementName -> {
+                        return new IconView(elem);
+                    }
+                    default -> {
+                    }
+                }
+            }
+            return new LabelView(elem);
+        }
+    }
+
+    private static class WrapLabelView extends LabelView {
+        WrapLabelView(final Element elem) {
+            super(elem);
         }
 
-        this.setLineWrap(true);
-        this.setWrapStyleWord(true);
-
-    }
-
-
-    @Override
-    void attachEventHandlers() {
-
-    }
-
-    @Override
-    void editEvent() {
-        this.main.selectedFile.editBody(this.getText());
+        public float getMinimumSpan(final int axis) {
+            switch (axis) {
+                case View.X_AXIS -> {
+                    return 0;
+                }
+                case View.Y_AXIS -> {
+                    return super.getMinimumSpan(axis);
+                }
+                default -> throw new IllegalArgumentException("Invalid axis: " + axis);
+            }
+        }
     }
 
 

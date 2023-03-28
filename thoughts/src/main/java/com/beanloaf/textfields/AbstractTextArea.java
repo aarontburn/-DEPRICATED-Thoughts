@@ -28,8 +28,7 @@ public abstract class AbstractTextArea extends JTextArea implements DocumentList
         attachEventHandlers();
 
         ghostText = new GhostText(text, font);
-        this.add(ghostText, new GBC(0, 0, 0.1, 0.1)
-                .setAnchor(GBC.Anchor.NORTHWEST));
+        this.add(ghostText, new GBC().setAnchor(GBC.Anchor.NORTHWEST));
 
     }
 

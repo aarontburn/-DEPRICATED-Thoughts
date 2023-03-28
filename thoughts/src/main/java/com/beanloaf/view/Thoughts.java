@@ -14,10 +14,8 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.BufferedReader;
 import java.io.File;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -36,7 +34,7 @@ import com.beanloaf.objects.GBC;
 import com.beanloaf.res.theme.ThoughtsThemeDark;
 import com.beanloaf.res.theme.ThoughtsThemeLight;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
+import org.json.simple.JSONValue;
 
 import com.beanloaf.database.FirebaseHandler;
 import com.beanloaf.events.SettingsHandler;
@@ -216,20 +214,20 @@ public class Thoughts implements PropertyChangeListener {
     }
 
     public ThoughtObject readFileContents(final File filePath) {
-        try (BufferedReader reader = Files.newBufferedReader(Paths.get(filePath.toURI()))) {
-            final StringBuilder sb = new StringBuilder();
-            String line = reader.readLine();
-            while (line != null) {
-                sb.append(line);
-                line = reader.readLine();
-            }
-            final JSONObject json = (JSONObject) new JSONParser().parse(sb.toString());
+        try {
+            final String jsonString = new String(Files.readAllBytes(filePath.toPath()));
+
+            final JSONObject data = (JSONObject) JSONValue.parse(jsonString);
+
+
             return new ThoughtObject(
-                    json.get("title").toString().trim(),
-                    json.get("date").toString().trim(),
-                    json.get("tag").toString().trim(),
-                    json.get("body").toString().trim(),
-                    filePath);
+                    data.get("title").toString().trim(),
+                    data.get("date").toString().trim(),
+                    data.get("tag").toString().trim(),
+                    data.get("body").toString().trim(),
+                    filePath,
+                    data.get("styles").toString());
+
         } catch (Exception e) {
             System.err.printf("Found invalid file '%s'.", filePath.toPath());
         }
@@ -379,6 +377,25 @@ public class Thoughts implements PropertyChangeListener {
                         }
                     }
                 }
+                case KeyEvent.VK_U -> { // Underline
+                    if (c) {
+                        ThoughtsPCS.getInstance().firePropertyChange(TC.Properties.TOGGLE_UNDERLINE);
+                    }
+                }
+
+                case KeyEvent.VK_B -> { // Bold
+                    if (c) {
+                        ThoughtsPCS.getInstance().firePropertyChange(TC.Properties.TOGGLE_BOLD);
+                    }
+                }
+
+                case KeyEvent.VK_I -> { // Italics
+                    if (c) {
+                        ThoughtsPCS.getInstance().firePropertyChange(TC.Properties.TOGGLE_ITALIC);
+                    }
+                }
+
+
                 case KeyEvent.VK_F5 -> ThoughtsPCS.getInstance().firePropertyChange(TC.Properties.REFRESH);
 
                 default -> {

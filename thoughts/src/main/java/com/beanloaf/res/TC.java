@@ -49,6 +49,9 @@ public final class TC {
         public static final String REFRESH = "refresh";
         public static final String CLOUD_SETTINGS = "cloud settings";
         public static final String EXPORT = "export";
+        public static final String TOGGLE_UNDERLINE = "underline";
+        public static final String TOGGLE_ITALIC = "italic";
+        public static final String TOGGLE_BOLD = "bold";
 
     }
 

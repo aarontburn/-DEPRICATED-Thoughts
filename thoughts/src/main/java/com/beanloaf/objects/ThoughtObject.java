@@ -5,12 +5,19 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import com.beanloaf.res.TC;
+
+import javax.swing.text.AttributeSet;
+import javax.swing.text.StyledDocument;
 
 public class ThoughtObject {
 
@@ -20,27 +27,42 @@ public class ThoughtObject {
     private String body;
     private File file;
 
+    private String stylesList;
+
+
     public ThoughtObject(final String title,
                          final String date,
                          final String tag,
                          final String body,
                          final File file) {
+        this(title, date, tag, body, file, "");
+    }
+
+    public ThoughtObject(final String title,
+                         final String date,
+                         final String tag,
+                         final String body,
+                         final File file,
+                         final String stylesList) {
         this.title = title;
         this.tag = tag;
         this.date = date;
         this.body = body;
         this.file = file;
+        this.stylesList = stylesList;
     }
 
     public void saveFile() {
         if (this.file != null) {
             try (BufferedWriter fWriter = Files.newBufferedWriter(Paths.get(this.file.toURI()))) {
-                final ConcurrentHashMap<String, String> textContent = new ConcurrentHashMap<>();
-                textContent.put("title", this.title);
-                textContent.put("date", this.date);
-                textContent.put("tag", this.tag);
-                textContent.put("body", this.body);
-                fWriter.write(new JSONObject(textContent).toJSONString());
+
+                final ConcurrentHashMap<String, Object> data = new ConcurrentHashMap<>();
+                data.put("title", this.title);
+                data.put("date", this.date);
+                data.put("tag", this.tag);
+                data.put("body", this.body);
+                data.put("styles", this.stylesList);
+                fWriter.write(new JSONObject(data).toJSONString());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -72,10 +94,25 @@ public class ThoughtObject {
         saveFile();
     }
 
-    public void editBody(final String newBody) {
+    public void editBody(final StyledDocument doc, final String newBody) {
         this.body = newBody;
+
+        final List<JSONObject> styles = new ArrayList<>();
+        for (int i = 0; i < doc.getLength(); i++) {
+            final AttributeSet attrs = doc.getCharacterElement(i).getAttributes();
+            final ConcurrentHashMap<String, Object> obj = new ConcurrentHashMap<>();
+            final Enumeration<?> e = attrs.getAttributeNames();
+            while (e.hasMoreElements()) {
+                final Object key = e.nextElement();
+                obj.put(key.toString(), attrs.getAttribute(key).toString());
+            }
+            styles.add(new JSONObject(obj));
+        }
+
+        this.stylesList = JSONArray.toJSONString(styles);
         saveFile();
     }
+
 
     public File getPath() {
         return this.file;
@@ -109,6 +146,10 @@ public class ThoughtObject {
             return this.tag;
         }
         return TC.DEFAULT_TAG;
+    }
+
+    public String getStylesList() {
+        return this.stylesList;
     }
 
     public void setName(final String title) {

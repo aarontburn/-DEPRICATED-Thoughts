@@ -9,6 +9,10 @@ import com.beanloaf.textfields.BodyTextArea;
 import com.beanloaf.textfields.TagTextArea;
 import com.beanloaf.textfields.AbstractTextArea;
 import com.beanloaf.textfields.TitleTextArea;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -17,6 +21,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.text.*;
 import javax.swing.undo.UndoManager;
 import java.awt.Dimension;
 import java.awt.GridBagLayout;
@@ -30,7 +35,8 @@ public class RightPanel extends JPanel implements PropertyChangeListener {
     private final Thoughts main;
     public JLabel dateLabel, pushLabel, pullLabel;
 
-    public AbstractTextArea titleTextArea, tagTextArea, bodyTextArea;
+    public AbstractTextArea titleTextArea, tagTextArea;
+    public BodyTextArea bodyTextArea;
     public final UndoManager undoManager = new UndoManager();
     public JButton sortButton, deleteButton, newFileButton, pullButton, pushButton;
     private JLabel userNameLabel;
@@ -53,7 +59,9 @@ public class RightPanel extends JPanel implements PropertyChangeListener {
         /* Top */
         final JPanel topPanel = new JPanel(new GridBagLayout());
         topPanel.setOpaque(false);
-        this.add(topPanel, new GBC(0, 1).setAnchor(GBC.Anchor.WEST)
+
+        this.add(topPanel, new GBC(0, 1)
+                .setAnchor(GBC.Anchor.WEST)
                 .setInsets(-20, 10, -40, 0));
 
         final GBC topPanelConstraints = new GBC().setAnchor(GBC.Anchor.LINE_START);
@@ -83,10 +91,14 @@ public class RightPanel extends JPanel implements PropertyChangeListener {
                 .setAnchor(GBC.Anchor.NORTHEAST));
 
         bodyTextArea = new BodyTextArea(main, undoManager);
-        final JScrollPane bodyScroll = new JScrollPane(bodyTextArea,
-                JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        final JScrollPane bodyScroll = new JScrollPane(
+                bodyTextArea,
+                JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+
         bodyScroll.setBorder(null);
         bodyScroll.setPreferredSize(new Dimension(0, 0));
+        bodyScroll.setMaximumSize(new Dimension(0, 0));
         bodyScroll.getVerticalScrollBar().setUI(new TC.ScrollBar());
 
         this.add(bodyScroll, new GBC(0, 3, 0.1, 0.9)
@@ -242,10 +254,12 @@ public class RightPanel extends JPanel implements PropertyChangeListener {
             }
             case TC.Properties.UNPULLED_FILES -> pullLabel.setText(event.getNewValue() + " files can be pulled.");
             case TC.Properties.UNPUSHED_FILES -> pushLabel.setText(event.getNewValue() + " files not pushed.");
+
             case TC.Properties.TEXT -> {
+                final StyledDocument doc = bodyTextArea.getStyledDocument();
+                bodyTextArea.getInputAttributes().removeAttributes(bodyTextArea.getInputAttributes());
 
                 final ThoughtObject textObject = (ThoughtObject) event.getNewValue();
-
                 final boolean enabledFields = textObject.getPath() != null;
 
                 titleTextArea.setEnabled(enabledFields);
@@ -258,11 +272,37 @@ public class RightPanel extends JPanel implements PropertyChangeListener {
                 bodyTextArea.setText(textObject.getBody());
                 undoManager.discardAllEdits();
 
+
+                try {
+                    final JSONArray stylesArray = (JSONArray) new JSONParser().parse(textObject.getStylesList());
+                    for (int i = 0; i < stylesArray.size(); i++) {
+                        final JSONObject obj = (JSONObject) stylesArray.get(i);
+                        final SimpleAttributeSet attrs = new SimpleAttributeSet();
+                        for (final Object key : obj.keySet()) {
+                            switch ((String) key) {
+                                case "bold" -> StyleConstants.setBold(attrs, Boolean.parseBoolean((String) obj.get(key)));
+                                case "italic" -> StyleConstants.setItalic(attrs, Boolean.parseBoolean((String) obj.get(key)));
+                                case "underline" -> StyleConstants.setUnderline(attrs, Boolean.parseBoolean((String) obj.get(key)));
+                                default -> {
+                                }
+                            }
+                        }
+
+                        doc.setCharacterAttributes(i, 1, attrs, true);
+                    }
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
+
                 bodyTextArea.setCaretPosition(0);
 
             }
             case TC.Properties.LIST_ITEM_PRESSED -> checkEmpty();
             case TC.Properties.FOCUS_TITLE_FIELD -> selectTextField(titleTextArea);
+            case TC.Properties.TOGGLE_UNDERLINE -> bodyTextArea.toggleUnderline();
+            case TC.Properties.TOGGLE_ITALIC -> bodyTextArea.toggleItalic();
+            case TC.Properties.TOGGLE_BOLD -> bodyTextArea.toggleBold();
 
             default -> {
             }

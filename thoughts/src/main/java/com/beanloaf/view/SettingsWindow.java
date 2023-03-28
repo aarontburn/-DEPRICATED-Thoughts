@@ -20,7 +20,6 @@ public final class SettingsWindow extends JFrame {
 
     private static SettingsWindow instance;
 
-
     private final Thoughts main;
 
     private JTabbedPane tabs;
@@ -85,8 +84,7 @@ public final class SettingsWindow extends JFrame {
                 panelConstraints.increaseGridY().setWeightY(0.01));
 
         generalSettingsPanel.add(createCheckboxPanel("Pull on startup:", "pull"),
-                panelConstraints.increaseGridY().setWeightY(0.01));
-
+                panelConstraints.increaseGridY());
 
         generalSettingsPanel.add(createCheckboxPanel("Light mode:", "lightMode"),
                 panelConstraints.increaseGridY().setWeightY(0.9));
@@ -107,7 +105,7 @@ public final class SettingsWindow extends JFrame {
         final JLabel openCloudText = new JLabel(
                 "<html>To change cloud settings, press the button below to open an external window.</html>", SwingConstants.CENTER);
         openCloudText.setFont(TC.Fonts.h5);
-        cloudPanel.add(openCloudText, panelConstraints.increaseGridY().setFill(GBC.Fill.HORIZONTAL).setWeightY(0.1).setInsets(15));
+        cloudPanel.add(openCloudText, panelConstraints.increaseGridY().setFill(GBC.Fill.HORIZONTAL).setInsets(15));
 
 
         final JButton openCloudButton = new JButton("Open Cloud settings");

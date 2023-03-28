@@ -31,7 +31,6 @@ public final class CloudSettingsWindow extends JFrame {
 
     private static CloudSettingsWindow instance;
 
-
     private final FirebaseHandler authHandler;
     private JPanel contentContainer;
 
@@ -71,22 +70,18 @@ public final class CloudSettingsWindow extends JFrame {
         this.setLocationRelativeTo(null);
         this.getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
 
-
         final JLabel displayLabel = new JLabel("Thoughts: Cloud Integration", SwingConstants.CENTER);
         displayLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         displayLabel.setFont(TC.Fonts.h2);
         displayLabel.setPreferredSize(new Dimension(700, 100));
         this.add(displayLabel);
 
-
         contentContainer = new JPanel(new GridBagLayout());
         contentContainer.setPreferredSize(new Dimension(700, 500));
         this.add(contentContainer);
 
 
-
         authHandler.checkUserFile();
-
 
         if (authHandler.user == null) {
             createLoginRegisterButtons();
@@ -160,6 +155,8 @@ public final class CloudSettingsWindow extends JFrame {
 
     private void createLoginRegisterButtons() {
 
+        final GBC constraints = new GBC();
+
         final JButton loginButton = new JButton("Login");
         loginButton.setFont(TC.Fonts.h4);
         loginButton.setPreferredSize(new Dimension(150, 75));
@@ -167,13 +164,13 @@ public final class CloudSettingsWindow extends JFrame {
             changeDisplay(this::createLoginFields);
             authHandler.checkUserFile();
         });
-        contentContainer.add(loginButton, new GBC());
+        contentContainer.add(loginButton, constraints);
 
         final JButton registerButton = new JButton("Register");
         registerButton.setFont(TC.Fonts.h4);
         registerButton.setPreferredSize(new Dimension(150, 75));
         registerButton.addActionListener(event -> changeDisplay(this::createRegisterFields));
-        contentContainer.add(registerButton, new GBC(1, 0));
+        contentContainer.add(registerButton, constraints.increaseGridX());
     }
 
     private void createLoginFields() {
@@ -232,7 +229,6 @@ public final class CloudSettingsWindow extends JFrame {
 
     }
 
-    @SuppressWarnings("checkstyle:LineLength")
     private void createRegisterFields() {
         if (authHandler.user != null) {
             changeDisplay(this::userSignedInScreen);

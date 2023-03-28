@@ -69,22 +69,22 @@ public class RightPanel extends JPanel implements PropertyChangeListener {
         final GBC titlePanelConstraints = new GBC().setAnchor(GBC.Anchor.LINE_START);
         final JPanel titlePanel = new JPanel(new GridBagLayout());
         titlePanel.setOpaque(false);
-        titlePanel.add(createCheckBox("lockTitle"), titlePanelConstraints.setGridX(0).setWeightY(0.1));
+        titlePanel.add(createCheckBox("lockTitle"), titlePanelConstraints);
         titleTextArea = new TitleTextArea(main, undoManager);
-        titlePanel.add(titleTextArea, titlePanelConstraints.setGridX(1).setWeightY(0.9));
-        topPanel.add(titlePanel, topPanelConstraints.setGridY(0));
+        titlePanel.add(titleTextArea, titlePanelConstraints.increaseGridX().setWeightY(0.9));
+        topPanel.add(titlePanel, topPanelConstraints);
 
         final GBC tagPanelConstraints = new GBC().setAnchor(GBC.Anchor.LINE_START);
         final JPanel tagPanel = new JPanel(new GridBagLayout());
         tagPanel.add(createCheckBox("lockTag"), tagPanelConstraints);
         tagTextArea = new TagTextArea(main, undoManager);
-        tagPanel.add(tagTextArea, tagPanelConstraints.setGridX(1).setWeightY(0.9));
-        topPanel.add(tagPanel, topPanelConstraints.setGridY(1));
+        tagPanel.add(tagTextArea, tagPanelConstraints.increaseGridX().setWeightY(0.9));
+        topPanel.add(tagPanel, topPanelConstraints.increaseGridY());
 
 
         dateLabel = new JLabel("Created on: " + TC.DEFAULT_DATE);
         dateLabel.setFont(TC.Fonts.h4);
-        topPanel.add(dateLabel, topPanelConstraints.setGridY(2));
+        topPanel.add(dateLabel, topPanelConstraints.increaseGridY());
 
         /* Bottom */
         this.add(createCheckBox("lockBody"), new GBC(0, 2, 0.1, 0.001)
@@ -124,19 +124,20 @@ public class RightPanel extends JPanel implements PropertyChangeListener {
         sortButton.setName("sort");
         sortButton.setFont(TC.Fonts.h4);
         sortButton.addActionListener(new FileActionButtonPressed(this.main));
-        buttonPanel.add(sortButton, buttonConstraints.setGridX(0));
-
-        deleteButton = new JButton("Delete");
-        deleteButton.setName("delete");
-        deleteButton.setFont(TC.Fonts.h4);
-        deleteButton.addActionListener(new FileActionButtonPressed(this.main));
-        buttonPanel.add(deleteButton, buttonConstraints.setGridX(3));
+        buttonPanel.add(sortButton, buttonConstraints);
 
         newFileButton = new JButton("New File");
         newFileButton.setName("newFile");
         newFileButton.setFont(TC.Fonts.h4);
         newFileButton.addActionListener(new FileActionButtonPressed(this.main));
-        buttonPanel.add(newFileButton, buttonConstraints.setGridX(2));
+        buttonPanel.add(newFileButton, buttonConstraints.increaseGridX());
+
+        deleteButton = new JButton("Delete");
+        deleteButton.setName("delete");
+        deleteButton.setFont(TC.Fonts.h4);
+        deleteButton.addActionListener(new FileActionButtonPressed(this.main));
+        buttonPanel.add(deleteButton, buttonConstraints.increaseGridX());
+
     }
 
     private void createSettingsBar() {
@@ -145,7 +146,7 @@ public class RightPanel extends JPanel implements PropertyChangeListener {
                 .setAnchor(GBC.Anchor.WEST)
                 .setFill(GBC.Fill.BOTH));
 
-        final GBC settingConstraints = new GBC().setWeightX(0.01)
+        final GBC settingConstraints = new GBC()
                 .setFill(GBC.Fill.HORIZONTAL)
                 .setAnchor(GBC.Anchor.LINE_START)
                 .setInsets(10, 15, 0, 0);
@@ -291,7 +292,7 @@ public class RightPanel extends JPanel implements PropertyChangeListener {
                         doc.setCharacterAttributes(i, 1, attrs, true);
                     }
                 } catch (ParseException e) {
-                    e.printStackTrace();
+//                    e.printStackTrace();
                 }
 
 

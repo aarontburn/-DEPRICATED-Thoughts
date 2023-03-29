@@ -18,7 +18,10 @@ import javax.swing.event.DocumentListener;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridBagLayout;
-import java.awt.event.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -79,11 +82,11 @@ public class LeftPanel extends JPanel implements PropertyChangeListener {
                 keyTyped();
             }
 
-            public void removeUpdate(DocumentEvent e) {
+            public void removeUpdate(final DocumentEvent event) {
                 keyTyped();
             }
 
-            public void insertUpdate(DocumentEvent e) {
+            public void insertUpdate(final DocumentEvent event) {
                 keyTyped();
             }
 

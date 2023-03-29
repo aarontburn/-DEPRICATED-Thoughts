@@ -53,6 +53,10 @@ public final class TC {
         public static final String TOGGLE_ITALIC = "italic";
         public static final String TOGGLE_BOLD = "bold";
 
+
+
+        public static final String TEST = "test";
+
     }
 
     public static class Paths {

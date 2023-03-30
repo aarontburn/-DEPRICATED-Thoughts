@@ -5,23 +5,17 @@ import com.beanloaf.objects.GBC;
 import com.beanloaf.tagobjects.ListItems;
 import com.beanloaf.objects.ThoughtObject;
 import com.beanloaf.res.TC;
+import com.beanloaf.textfields.SearchBar;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
-import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridBagLayout;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -32,19 +26,13 @@ public class LeftPanel extends JPanel implements PropertyChangeListener {
 
     private static final Dimension TAB_DIM = new Dimension(150, 25);
 
-
-    /**
-     * Number of tags on the displayed.
-     * <p>
-     * Default to 2 for sorted/unsorted.
-     */
     public int numTags = 2;
 
     private final Thoughts main;
 
     public ListItems unsortedListLabel, sortedListLabel;
 
-    public final JTextField searchBar;
+    public final SearchBar searchBar;
 
     public final JTabbedPane leftTabs;
 
@@ -59,52 +47,7 @@ public class LeftPanel extends JPanel implements PropertyChangeListener {
 
         final GBC constraints = new GBC();
 
-        final JLabel searchBarGhostText = new JLabel("Search for...");
-        searchBarGhostText.setFont(TC.Fonts.h5);
-        searchBarGhostText.setEnabled(false);
-        this.add(searchBarGhostText, new GBC().setAnchor(GBC.Anchor.NORTHWEST).setInsets(5, 10, 0, 0).setWeightY(0.001));
-
-        searchBar = new JTextField();
-        searchBar.setFont(TC.Fonts.h5);
-        searchBar.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(final MouseEvent event) {
-                if (!searchBar.getText().isEmpty()) {
-                    searchBar.setText("");
-                    ThoughtsPCS.getInstance().firePropertyChange(TC.Properties.REFRESH);
-                }
-
-            }
-        });
-
-        searchBar.getDocument().addDocumentListener(new DocumentListener() {
-            public void changedUpdate(final DocumentEvent event) {
-                keyTyped();
-            }
-
-            public void removeUpdate(final DocumentEvent event) {
-                keyTyped();
-            }
-
-            public void insertUpdate(final DocumentEvent event) {
-                keyTyped();
-            }
-
-            public void keyTyped() {
-                searchBarGhostText.setText(searchBar.getText().isEmpty() ? "Search for..." : " ");
-
-            }
-        });
-
-        searchBar.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyTyped(final KeyEvent event) {
-                if (event.getKeyChar() == KeyEvent.VK_ENTER) {
-                    ThoughtsPCS.getInstance().firePropertyChange(TC.Properties.REFRESH);
-                }
-            }
-        });
-
+        searchBar = new SearchBar();
         this.add(searchBar, constraints.setFill(GBC.Fill.HORIZONTAL).setWeightY(0.001).setAnchor(GBC.Anchor.NORTH));
 
 
@@ -115,23 +58,25 @@ public class LeftPanel extends JPanel implements PropertyChangeListener {
 
         this.leftTabs.addChangeListener(event -> {
             if (main.ready) {
-                try {
-                    final JScrollPane scroll = (JScrollPane) leftTabs.getSelectedComponent();
-                    if (scroll == null) {
-                        return;
-                    }
-                    final JPanel panel = (JPanel) scroll.getViewport().getView();
-                    if (panel.getHeight() == 0 && panel.getWidth() == 0 || panel.getComponents().length < 2) {
-                        return;
-                    }
-                    final JPanel listContainer = (JPanel) panel.getComponent(1);
-                    final ListItems list = (ListItems) listContainer.getComponent(0);
-                    if (!list.getValueIsAdjusting()) {
-                        list.getMouseEvent().setContentFields(0);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
+                return;
+            }
+
+            try {
+                final JScrollPane scroll = (JScrollPane) leftTabs.getSelectedComponent();
+                if (scroll == null) {
+                    return;
                 }
+                final JPanel panel = (JPanel) scroll.getViewport().getView();
+                if (panel.getHeight() == 0 && panel.getWidth() == 0 || panel.getComponents().length < 2) {
+                    return;
+                }
+                final JPanel listContainer = (JPanel) panel.getComponent(1);
+                final ListItems list = (ListItems) listContainer.getComponent(0);
+                if (!list.getValueIsAdjusting()) {
+                    list.getMouseEvent().setContentFields(0);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
 
         });

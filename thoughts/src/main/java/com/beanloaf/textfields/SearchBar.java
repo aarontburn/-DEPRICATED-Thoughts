@@ -2,6 +2,7 @@ package com.beanloaf.textfields;
 
 import com.beanloaf.events.ThoughtsPCS;
 import com.beanloaf.objects.GBC;
+import com.beanloaf.objects.ThoughtObject;
 import com.beanloaf.res.TC;
 
 import javax.swing.JTextPane;
@@ -50,20 +51,63 @@ public class SearchBar extends JTextPane {
 
     }
 
+    public static boolean searchFor(final ThoughtObject object, final String text) {
+        if (text.isBlank()) {
+            return true;
+        }
+
+        final String[] splitText = text.split(" ");
+
+        if (splitText.length == 1) {
+            return true;
+        }
+
+        switch (splitText[0]) {
+            case "!title" -> {
+                return object.getTitle().toLowerCase().contains(text.substring("!title".length()).toLowerCase().trim());
+            }
+            case "!tag" -> {
+                return object.getTag().toLowerCase().contains(text.substring("!tag".length()).toLowerCase().trim());
+            }
+
+            case "!date" -> {
+                return object.getDate().toLowerCase().contains(text.substring("!date".length()).toLowerCase().trim());
+
+            }
+            case "!body" -> {
+                return object.getBody().toLowerCase().contains(text.substring("!body".length()).toLowerCase().trim());
+            }
+
+            default -> {
+                return object.getTitle().toLowerCase().contains(text.toLowerCase().trim())
+                        || object.getTag().toLowerCase().contains(text.toLowerCase().trim())
+                        || object.getDate().toLowerCase().contains(text.toLowerCase().trim())
+                        || object.getBody().toLowerCase().contains(text.toLowerCase().trim());
+            }
+
+
+        }
+
+
+    }
+
     private void addEventListeners() {
         this.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(final MouseEvent event) {
                 if (!getText().isEmpty()) {
-                    setText("");
+                    final String keyword = setHighlight();
+
+                    setText(getText().trim().equals(keyword) || keyword.equals("")
+                            ? ""
+                            : keyword + " ");
+
                     ThoughtsPCS.getInstance().firePropertyChange(TC.Properties.REFRESH);
                 }
             }
         });
-        this.getDocument().putProperty("filterNewlines", true);
         this.getDocument().addDocumentListener(new DocumentListener() {
             public void changedUpdate(final DocumentEvent event) {
-
             }
 
             public void removeUpdate(final DocumentEvent event) {
@@ -93,7 +137,7 @@ public class SearchBar extends JTextPane {
 
     }
 
-    public void setHighlight() {
+    public String setHighlight() {
         final String[] splitText = this.getText().split(" ");
 
         final StyleContext cont = StyleContext.getDefaultStyleContext();
@@ -105,9 +149,10 @@ public class SearchBar extends JTextPane {
                 this.getStyledDocument().setCharacterAttributes(0, keywordLength, keyWordColor, true);
                 this.getStyledDocument().setCharacterAttributes(keywordLength, getStyledDocument().getLength(), defaultColor, true);
             });
-        } else {
-            SwingUtilities.invokeLater(() -> this.getStyledDocument().setCharacterAttributes(0, getText().length(), defaultColor, true));
+            return splitText[0];
         }
+        SwingUtilities.invokeLater(() -> this.getStyledDocument().setCharacterAttributes(0, getText().length(), defaultColor, true));
+        return "";
     }
 
 

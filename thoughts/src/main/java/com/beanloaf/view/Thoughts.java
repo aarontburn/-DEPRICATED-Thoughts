@@ -32,11 +32,11 @@ import javax.swing.border.Border;
 import javax.swing.plaf.basic.BasicSplitPaneDivider;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 
-import com.beanloaf.events.Search;
 import com.beanloaf.events.ThoughtsPCS;
 import com.beanloaf.objects.GBC;
 import com.beanloaf.res.theme.ThoughtsThemeDark;
 import com.beanloaf.res.theme.ThoughtsThemeLight;
+import com.beanloaf.textfields.SearchBar;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
@@ -75,8 +75,6 @@ public class Thoughts implements PropertyChangeListener {
     public final SettingsHandler settings = new SettingsHandler();
     public final FirebaseHandler db = new FirebaseHandler(this);
 
-    private final Search search;
-
 
     public Thoughts() {
         if (settings.isLightMode()) {
@@ -88,7 +86,6 @@ public class Thoughts implements PropertyChangeListener {
         JFrame.setDefaultLookAndFeelDecorated(true);
 
         createGUI();
-        search = new Search(leftPanel.searchBar);
         this.window.setVisible(true);
         onStartUp();
 
@@ -278,7 +275,7 @@ public class Thoughts implements PropertyChangeListener {
         /* UNSORTED FILES */
         for (final File file : Objects.requireNonNull(unsortedFileDirectory)) {
             final ThoughtObject content = readFileContents(file);
-            if (content != null && search.searchFor(content)) {
+            if (content != null && SearchBar.searchFor(content, leftPanel.searchBar.getText())) {
 
                 unsortedThoughtList.add(content);
                 unsortedListModel.addElement(content.getTitle());
@@ -289,7 +286,7 @@ public class Thoughts implements PropertyChangeListener {
         /* SORTED FILES */
         for (final File file : Objects.requireNonNull(sortedFileDirectory)) {
             final ThoughtObject content = readFileContents(file);
-            if (content != null && search.searchFor(content)) {
+            if (content != null && SearchBar.searchFor(content, leftPanel.searchBar.getText())) {
                 sortedThoughtList.add(content);
                 sortedListModel.addElement(content.getTitle());
                 sortedFiles.add(file);

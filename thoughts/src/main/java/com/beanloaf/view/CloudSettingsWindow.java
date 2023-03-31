@@ -40,14 +40,12 @@ public final class CloudSettingsWindow extends JFrame {
         this.authHandler = auth;
         createUI();
         setVisible(true);
-
     }
 
 
     public static CloudSettingsWindow getInstance(final FirebaseHandler auth) {
         if (instance == null) {
             instance = new CloudSettingsWindow(auth);
-            instance.setVisible(true);
         } else {
             instance.toFront();
             instance.setExtendedState(JFrame.NORMAL);

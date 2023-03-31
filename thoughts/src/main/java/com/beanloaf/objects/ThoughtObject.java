@@ -100,11 +100,17 @@ public class ThoughtObject {
         final List<JSONObject> styles = new ArrayList<>();
         for (int i = 0; i < doc.getLength(); i++) {
             final AttributeSet attrs = doc.getCharacterElement(i).getAttributes();
-            final ConcurrentHashMap<String, Object> obj = new ConcurrentHashMap<>();
+            final ConcurrentHashMap<String, String> obj = new ConcurrentHashMap<>();
             final Enumeration<?> e = attrs.getAttributeNames();
             while (e.hasMoreElements()) {
                 final Object key = e.nextElement();
-                obj.put(key.toString(), attrs.getAttribute(key).toString());
+
+                if ((Boolean) attrs.getAttribute(key)) {
+
+
+                    obj.put(key.toString().substring(0, 1), "t");
+                }
+
             }
             styles.add(new JSONObject(obj));
         }

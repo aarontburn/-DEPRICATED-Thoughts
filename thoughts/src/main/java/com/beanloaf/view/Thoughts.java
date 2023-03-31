@@ -232,7 +232,7 @@ public class Thoughts implements PropertyChangeListener {
                     data.get("styles").toString());
 
         } catch (Exception e) {
-            System.err.printf("Found invalid file '%s'.", filePath.toPath());
+            System.err.println("Found invalid file " + filePath.toPath());
         }
         return null;
     }
@@ -322,6 +322,7 @@ public class Thoughts implements PropertyChangeListener {
                 fd.setVisible(true);
                 selectedFile.exportAsText(fd.getDirectory());
             }
+            case TC.Properties.CREDITS -> CreditsWindow.getInstance();
 
             default -> {
             }

@@ -60,7 +60,7 @@ public class MenuBar extends JMenuBar {
 
         /* Help */
         final Map<String, Runnable> helpOptions = new LinkedHashMap<>();
-        helpOptions.put("Credits", () -> System.out.println("placeholder"));
+        helpOptions.put("Credits", () -> ThoughtsPCS.getInstance().firePropertyChange(TC.Properties.CREDITS));
         helpOptions.put("test", () -> ThoughtsPCS.getInstance().firePropertyChange(TC.Properties.TEST));
         helpOptions.put("GitHub", () -> {
             if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {

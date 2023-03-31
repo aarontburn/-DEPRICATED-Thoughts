@@ -282,13 +282,14 @@ public class RightPanel extends JPanel implements PropertyChangeListener {
                         final JSONObject obj = (JSONObject) stylesArray.get(i);
                         final SimpleAttributeSet attrs = new SimpleAttributeSet();
                         for (final Object key : obj.keySet()) {
-                            switch ((String) key) {
-                                case "bold" -> StyleConstants.setBold(attrs, Boolean.parseBoolean((String) obj.get(key)));
-                                case "italic" -> StyleConstants.setItalic(attrs, Boolean.parseBoolean((String) obj.get(key)));
-                                case "underline" -> StyleConstants.setUnderline(attrs, Boolean.parseBoolean((String) obj.get(key)));
-                                default -> {
-                                }
+
+                            switch (key.toString()) {
+                                case "b" -> StyleConstants.setBold(attrs, true);
+                                case "u" -> StyleConstants.setUnderline(attrs, true);
+                                case "i" -> StyleConstants.setItalic(attrs, true);
+                                default -> throw new IllegalArgumentException();
                             }
+
                         }
 
                         doc.setCharacterAttributes(i, 1, attrs, true);

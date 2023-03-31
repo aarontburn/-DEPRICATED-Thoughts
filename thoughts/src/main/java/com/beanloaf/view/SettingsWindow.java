@@ -28,7 +28,6 @@ public final class SettingsWindow extends JFrame {
     public static SettingsWindow getInstance(final Thoughts main) {
         if (instance == null) {
             instance = new SettingsWindow(main);
-            instance.setVisible(true);
         } else {
             instance.toFront();
             instance.setExtendedState(JFrame.NORMAL);

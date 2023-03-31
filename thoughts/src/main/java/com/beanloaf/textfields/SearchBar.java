@@ -58,24 +58,20 @@ public class SearchBar extends JTextPane {
 
         final String[] splitText = text.split(" ");
 
-        if (splitText.length == 1) {
-            return true;
-        }
-
         switch (splitText[0]) {
             case "!title" -> {
-                return object.getTitle().toLowerCase().contains(text.substring("!title".length()).toLowerCase().trim());
+                return splitText.length == 1 || object.getTitle().toLowerCase().contains(text.substring("!title".length()).toLowerCase().trim());
             }
             case "!tag" -> {
-                return object.getTag().toLowerCase().contains(text.substring("!tag".length()).toLowerCase().trim());
+                return splitText.length == 1 || object.getTag().toLowerCase().contains(text.substring("!tag".length()).toLowerCase().trim());
             }
 
             case "!date" -> {
-                return object.getDate().toLowerCase().contains(text.substring("!date".length()).toLowerCase().trim());
+                return splitText.length == 1 || object.getDate().toLowerCase().contains(text.substring("!date".length()).toLowerCase().trim());
 
             }
             case "!body" -> {
-                return object.getBody().toLowerCase().contains(text.substring("!body".length()).toLowerCase().trim());
+                return splitText.length == 1 || object.getBody().toLowerCase().contains(text.substring("!body".length()).toLowerCase().trim());
             }
 
             default -> {

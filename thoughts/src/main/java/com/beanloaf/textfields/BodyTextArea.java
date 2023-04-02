@@ -6,22 +6,16 @@ import com.beanloaf.res.TC;
 import com.beanloaf.view.Thoughts;
 
 import javax.swing.JTextPane;
+import javax.swing.event.CaretEvent;
+import javax.swing.event.CaretListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.text.AbstractDocument;
-import javax.swing.text.BoxView;
-import javax.swing.text.ComponentView;
-import javax.swing.text.Element;
-import javax.swing.text.IconView;
-import javax.swing.text.LabelView;
-import javax.swing.text.ParagraphView;
-import javax.swing.text.SimpleAttributeSet;
-import javax.swing.text.StyleConstants;
-import javax.swing.text.StyledEditorKit;
-import javax.swing.text.View;
-import javax.swing.text.ViewFactory;
+import javax.swing.text.*;
 import javax.swing.undo.UndoManager;
 import java.awt.Color;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.Enumeration;
 
 public class BodyTextArea extends JTextPane implements DocumentListener {
 
@@ -59,30 +53,61 @@ public class BodyTextArea extends JTextPane implements DocumentListener {
         this.getDocument().addUndoableEditListener(undoManager);
         this.addFocusListener(new TextAreaFocusListener(this.main));
 
+        this.addCaretListener(event -> {
+            if (getSelectedText() != null) {
+                return;
+            }
+
+            final AttributeSet set = getStyledDocument().getCharacterElement(getCaretPosition()).getAttributes();
+
+            final Enumeration<?> e = set.getAttributeNames();
+
+            boolean foundBold = false;
+            boolean foundUnderline = false;
+            boolean foundItalic = false;
+            while (e.hasMoreElements()) {
+                final Object key = e.nextElement();
+                System.out.println(key);
+                switch (key.toString()) {
+                    case "underline" -> foundUnderline = (Boolean) set.getAttribute(key);
+                    case "bold" -> foundBold = (Boolean) set.getAttribute(key);
+                    case "italic" -> foundItalic = (Boolean) set.getAttribute(key);
+                    default -> throw new IllegalArgumentException();
+                }
+            }
+            isBold = foundBold;
+            isUnderlined = foundUnderline;
+            isItalic = foundItalic;
+
+            System.out.println(foundBold + " " + foundUnderline + " " + foundItalic);
+
+            setTextDecoration(false);
+        });
+
     }
 
     public void toggleUnderline() {
         isUnderlined = !isUnderlined;
-        setTextDecoration();
+        setTextDecoration(true);
     }
 
     public void toggleBold() {
         isBold = !isBold;
-        setTextDecoration();
+        setTextDecoration(true);
     }
 
     public void toggleItalic() {
         isItalic = !isItalic;
-        setTextDecoration();
+        setTextDecoration(true);
     }
 
-    private void setTextDecoration() {
+    private void setTextDecoration(final boolean replace) {
         final SimpleAttributeSet set = new SimpleAttributeSet();
         StyleConstants.setBold(set, isBold);
         StyleConstants.setItalic(set, isItalic);
         StyleConstants.setUnderline(set, isUnderlined);
 
-        this.setCharacterAttributes(set, true);
+        this.setCharacterAttributes(set, replace);
 
     }
 

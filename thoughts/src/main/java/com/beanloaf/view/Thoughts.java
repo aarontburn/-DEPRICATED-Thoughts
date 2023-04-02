@@ -302,7 +302,7 @@ public class Thoughts implements PropertyChangeListener {
         }
 
         final long endTime = System.currentTimeMillis();
-        System.out.println("Total refresh time: " + (endTime - startTime) + "ms");
+//        System.out.println("Total refresh time: " + (endTime - startTime) + "ms");
     }
 
     @Override

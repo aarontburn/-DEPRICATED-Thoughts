@@ -76,7 +76,8 @@ public class ThoughtObject {
         }
         try (BufferedWriter fWriter = Files.newBufferedWriter(Paths.get(exportDirectory + getTitle() + ".txt"))) {
             fWriter.write("Title: " + getTitle() + "\n"
-                    + "Created on: " + getDate() + "\n\n\n\n\n"
+                    + "Tag: " + getTag() + "\n"
+                    + "Created on: " + getDate() + "\n\n\n\n"
                     + getBody());
 
         } catch (IOException e) {
@@ -106,8 +107,6 @@ public class ThoughtObject {
                 final Object key = e.nextElement();
 
                 if ((Boolean) attrs.getAttribute(key)) {
-
-
                     obj.put(key.toString().substring(0, 1), "t");
                 }
 

@@ -123,16 +123,8 @@ public class ThoughtObject {
         return this.file;
     }
 
-    public void setPath(final File str) {
-        this.file = str;
-    }
-
     public String getBody() {
-
-        if (!this.body.isBlank()) {
-            return this.body;
-        }
-        return TC.DEFAULT_BODY;
+        return this.body.isBlank() ? TC.DEFAULT_BODY : this.body;
     }
 
     public void setBody(final String str) {
@@ -140,17 +132,11 @@ public class ThoughtObject {
     }
 
     public String getTitle() {
-        if (!this.title.isBlank()) {
-            return this.title;
-        }
-        return TC.DEFAULT_TITLE;
+        return this.title.isBlank() ? TC.DEFAULT_TITLE : this.title;
     }
 
     public String getTag() {
-        if (!this.tag.isBlank()) {
-            return this.tag;
-        }
-        return TC.DEFAULT_TAG;
+        return this.tag.isBlank() ? TC.DEFAULT_TAG : this.tag;
     }
 
     public String getStylesList() {

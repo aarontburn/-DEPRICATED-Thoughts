@@ -219,9 +219,7 @@ public class Thoughts implements PropertyChangeListener {
     public ThoughtObject readFileContents(final File filePath) {
         try {
             final String jsonString = new String(Files.readAllBytes(filePath.toPath()));
-
             final JSONObject data = (JSONObject) JSONValue.parse(jsonString);
-
 
             return new ThoughtObject(
                     data.get("title").toString().trim(),

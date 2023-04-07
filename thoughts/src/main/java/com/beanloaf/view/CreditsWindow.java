@@ -111,7 +111,7 @@ public class CreditsWindow extends JFrame {
                         
                         <br>
                         <p style="font-size:15px;">
-                        Questions? Comments? Suggestions? Email me at aarontburnham@hotmail.com</p>
+                        Questions? Comments? Suggestions? Email me at beanloafmusic@gmail.com</p>
                 
                     </div>
                 

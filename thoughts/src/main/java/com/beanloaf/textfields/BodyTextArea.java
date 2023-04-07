@@ -67,7 +67,6 @@ public class BodyTextArea extends JTextPane implements DocumentListener {
             boolean foundItalic = false;
             while (e.hasMoreElements()) {
                 final Object key = e.nextElement();
-                System.out.println(key);
                 switch (key.toString()) {
                     case "underline" -> foundUnderline = (Boolean) set.getAttribute(key);
                     case "bold" -> foundBold = (Boolean) set.getAttribute(key);
@@ -78,8 +77,6 @@ public class BodyTextArea extends JTextPane implements DocumentListener {
             isBold = foundBold;
             isUnderlined = foundUnderline;
             isItalic = foundItalic;
-
-            System.out.println(foundBold + " " + foundUnderline + " " + foundItalic);
 
             setTextDecoration(false);
         });

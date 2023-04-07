@@ -23,6 +23,8 @@ public final class TC {
     public static final String DEFAULT_TAG = "<untagged>";
     public static final String DEFAULT_DATE = "<date>";
 
+    public static final Dimension ZERO_DIM = new Dimension(0, 0);
+
     private TC() {
 
     }
@@ -113,10 +115,9 @@ public final class TC {
 
         protected JButton createZeroButton() {
             final JButton button = new JButton();
-            final Dimension zeroDim = new Dimension(0, 0);
-            button.setPreferredSize(zeroDim);
-            button.setMinimumSize(zeroDim);
-            button.setMaximumSize(zeroDim);
+            button.setPreferredSize(TC.ZERO_DIM);
+            button.setMinimumSize(TC.ZERO_DIM);
+            button.setMaximumSize(TC.ZERO_DIM);
             return button;
         }
     }

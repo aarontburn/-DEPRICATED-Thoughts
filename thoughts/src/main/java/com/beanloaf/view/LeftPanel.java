@@ -42,7 +42,7 @@ public class LeftPanel extends JPanel implements PropertyChangeListener {
         ThoughtsPCS.getInstance().addPropertyChangeListener(this);
 
         this.setPreferredSize(new Dimension(450, 0));
-        this.setMinimumSize(new Dimension(0, 0));
+        this.setMinimumSize(TC.ZERO_DIM);
 
 
         final GBC constraints = new GBC();
@@ -57,10 +57,9 @@ public class LeftPanel extends JPanel implements PropertyChangeListener {
         this.leftTabs.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 
         this.leftTabs.addChangeListener(event -> {
-            if (main.ready) {
+            if (!main.ready) {
                 return;
             }
-
             try {
                 final JScrollPane scroll = (JScrollPane) leftTabs.getSelectedComponent();
                 if (scroll == null) {

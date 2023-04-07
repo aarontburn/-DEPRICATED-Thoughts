@@ -50,7 +50,7 @@ public class RightPanel extends JPanel implements PropertyChangeListener {
         this.main = main;
         this.setLayout(new GridBagLayout());
         this.setPreferredSize(new Dimension(750, 0));
-        this.setMinimumSize(new Dimension(0, 0));
+        this.setMinimumSize(TC.ZERO_DIM);
         ThoughtsPCS.getInstance().addPropertyChangeListener(this);
         createUI();
     }
@@ -99,8 +99,8 @@ public class RightPanel extends JPanel implements PropertyChangeListener {
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
         bodyScroll.setBorder(null);
-        bodyScroll.setPreferredSize(new Dimension(0, 0));
-        bodyScroll.setMaximumSize(new Dimension(0, 0));
+        bodyScroll.setPreferredSize(TC.ZERO_DIM);
+        bodyScroll.setMaximumSize(TC.ZERO_DIM);
         bodyScroll.getVerticalScrollBar().setUI(new TC.ScrollBar());
 
         this.add(bodyScroll, new GBC(0, 3, 0.1, 0.9)

@@ -85,7 +85,7 @@ public final class SettingsWindow extends JFrame {
         generalSettingsPanel.add(createCheckboxPanel("Pull on startup:", "pull"),
                 panelConstraints.increaseGridY());
 
-        generalSettingsPanel.add(createCheckboxPanel("Light mode:", "lightMode"),
+        generalSettingsPanel.add(createCheckboxPanel("Light mode (Requires Restart):", "lightMode"),
                 panelConstraints.increaseGridY().setWeightY(0.9));
 
     }
@@ -107,7 +107,7 @@ public final class SettingsWindow extends JFrame {
         cloudPanel.add(openCloudText, panelConstraints.increaseGridY().setFill(GBC.Fill.HORIZONTAL).setInsets(15));
 
 
-        final JButton openCloudButton = new JButton("Open Cloud settings");
+        final JButton openCloudButton = new JButton("Open Cloud Settings");
         openCloudButton.setFont(TC.Fonts.h4);
         openCloudButton.addActionListener(event -> ThoughtsPCS.getInstance().firePropertyChange(TC.Properties.CLOUD_SETTINGS));
         cloudPanel.add(openCloudButton, panelConstraints.increaseGridY().setFill(GBC.Fill.NONE).setWeightY(0.6).setInsets(0));

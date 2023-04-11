@@ -106,7 +106,6 @@ public class SettingsHandler {
 
     public void changePushOnClose(final boolean b) {
         this.pushOnClose = b;
-        System.out.println("pushonclose set to: " + this.pushOnClose);
         createSettingsFile();
     }
 

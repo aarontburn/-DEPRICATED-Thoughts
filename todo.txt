@@ -16,6 +16,7 @@ To do:
             
             
         - wrap highlighted words in quote, bracket, or paranthesis upon input
+        - ability to create bullet point lists
 
 
 Settings to modify

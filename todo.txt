@@ -13,6 +13,9 @@ To do:
         - Application Icon:
             - Apply Icon to all popout windows (cloud window, settings window)
             - Invert Icon color based on light/dark mode
+            
+            
+        - wrap highlighted words in quote, bracket, or paranthesis upon input
 
 
 Settings to modify

@@ -67,7 +67,7 @@ public class MenuBar extends JMenuBar {
                 try {
                     Desktop.getDesktop().browse(new URI("https://github.com/beanloaf/Thoughts"));
                 } catch (Exception e) {
-                    throw new RuntimeException(e);
+                    e.printStackTrace();
                 }
             }
         });

@@ -1,21 +1,20 @@
 package com.beanloaf.textfields;
 
 import com.beanloaf.events.TextAreaFocusListener;
+import com.beanloaf.events.ThoughtsPCS;
 import com.beanloaf.objects.GBC;
 import com.beanloaf.res.TC;
 import com.beanloaf.view.Thoughts;
 
 import javax.swing.JTextPane;
-import javax.swing.event.CaretEvent;
-import javax.swing.event.CaretListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.*;
 import javax.swing.undo.UndoManager;
 import java.awt.Color;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.util.Enumeration;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.util.*;
 
 public class BodyTextArea extends JTextPane implements DocumentListener {
 
@@ -28,6 +27,7 @@ public class BodyTextArea extends JTextPane implements DocumentListener {
 
     public BodyTextArea(final Thoughts main, final UndoManager undoManager) {
         super();
+
 
         this.main = main;
         this.undoManager = undoManager;
@@ -45,13 +45,47 @@ public class BodyTextArea extends JTextPane implements DocumentListener {
                 ? Color.LIGHT_GRAY
                 : new Color(32, 32, 32));
 
+
     }
+
 
     private void defaultDocumentSettings() {
         this.getDocument().addDocumentListener(this);
         this.getDocument().putProperty("labelType", this);
         this.getDocument().addUndoableEditListener(undoManager);
         this.addFocusListener(new TextAreaFocusListener(this.main));
+
+        this.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyTyped(final KeyEvent event) {
+                final String currentText = getText();
+
+                final char eventChar = event.getKeyChar();
+                final Character endChar = TC.SURROUND_CHARS.get(eventChar);
+                if (endChar != null && getSelectedText() != null) {
+                    event.consume();
+                    final int selectionStart = getSelectionStart();
+                    final int selectionEnd = getSelectionEnd();
+                    String selectedText = getSelectedText();
+
+                    if (selectedText.charAt(selectedText.length() - 1) == ' ') {
+                        selectedText = eventChar + selectedText.substring(0, selectedText.length() - 1) + endChar + " ";
+                    } else {
+                        selectedText = eventChar + selectedText + endChar;
+                    }
+
+
+                    setText(currentText.substring(0, selectionStart)
+                            + selectedText
+                            + currentText.substring(selectionEnd));
+
+                    setCaretPosition(selectionEnd);
+
+
+                }
+            }
+        });
+
 
         this.addCaretListener(event -> {
             if (getSelectedText() != null) {
@@ -115,7 +149,10 @@ public class BodyTextArea extends JTextPane implements DocumentListener {
             if (this.main.selectedFile != null) {
                 this.main.selectedFile.editBody(this.getStyledDocument(), this.getText());
             }
+
         }
+
+
     }
 
     @Override

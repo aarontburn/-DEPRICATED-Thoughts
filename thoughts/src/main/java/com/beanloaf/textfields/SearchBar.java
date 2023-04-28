@@ -60,18 +60,22 @@ public class SearchBar extends JTextPane {
 
         switch (splitText[0]) {
             case "!title" -> {
-                return splitText.length == 1 || object.getTitle().toLowerCase().contains(text.substring("!title".length()).toLowerCase().trim());
+                return splitText.length == 1
+                        || object.getTitle().toLowerCase().contains(text.substring("!title".length()).toLowerCase().trim());
             }
             case "!tag" -> {
-                return splitText.length == 1 || object.getTag().toLowerCase().contains(text.substring("!tag".length()).toLowerCase().trim());
+                return splitText.length == 1
+                        || object.getTag().toLowerCase().contains(text.substring("!tag".length()).toLowerCase().trim());
             }
 
             case "!date" -> {
-                return splitText.length == 1 || object.getDate().toLowerCase().contains(text.substring("!date".length()).toLowerCase().trim());
+                return splitText.length == 1
+                        || object.getDate().toLowerCase().contains(text.substring("!date".length()).toLowerCase().trim());
 
             }
             case "!body" -> {
-                return splitText.length == 1 || object.getBody().toLowerCase().contains(text.substring("!body".length()).toLowerCase().trim());
+                return splitText.length == 1
+                        || object.getBody().toLowerCase().contains(text.substring("!body".length()).toLowerCase().trim());
             }
 
             default -> {

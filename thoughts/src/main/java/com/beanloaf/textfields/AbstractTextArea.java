@@ -51,6 +51,10 @@ public abstract class AbstractTextArea extends JTextArea implements DocumentList
                 editEvent();
             }
         }
+
+
+
+
     }
 
     @Override

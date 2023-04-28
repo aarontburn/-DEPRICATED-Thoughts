@@ -292,7 +292,11 @@ public class RightPanel extends JPanel implements PropertyChangeListener {
 
                         }
 
-                        doc.setCharacterAttributes(i, 1, attrs, true);
+                        try {
+                            doc.setCharacterAttributes(i, 1, attrs, true);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                 } catch (ParseException e) {
 //                    e.printStackTrace();

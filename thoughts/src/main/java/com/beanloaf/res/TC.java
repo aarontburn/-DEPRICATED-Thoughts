@@ -10,6 +10,11 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
+import static java.util.Map.entry;
 
 /**
  * Holds constants for Thoughts.
@@ -22,8 +27,17 @@ public final class TC {
     public static final String DEFAULT_BODY = "<description>";
     public static final String DEFAULT_TAG = "<untagged>";
     public static final String DEFAULT_DATE = "<date>";
-
     public static final Dimension ZERO_DIM = new Dimension(0, 0);
+
+    public static final Map<Character, Character> SURROUND_CHARS = Map.ofEntries(
+            entry('(', ')'),
+            entry('[', ']'),
+            entry('{', '}'),
+            entry('\'', '\''),
+            entry('"', '"'),
+            entry('<', '>')
+    );
+
 
     private TC() {
 

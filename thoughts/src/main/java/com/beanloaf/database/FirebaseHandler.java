@@ -206,8 +206,7 @@ public class FirebaseHandler implements PropertyChangeListener {
                 final String date = new String(b32.decode((String) ((JSONObject) json.get(path)).get("Date")));
                 final String body = new String(b32.decode(((String) ((JSONObject) json.get(path)).get("Body"))
                         .replace("\\n", "\n").replace("\\t", "\t")));
-                final String styles = new String(b32.decode((String) ((JSONObject) json.get(path)).get("Styles")));
-                objectList.add(new ThoughtObject(title, date, tag, body, new File(filePath), styles));
+                objectList.add(new ThoughtObject(title, date, tag, body, new File(filePath)));
 
             }
 
@@ -229,14 +228,13 @@ public class FirebaseHandler implements PropertyChangeListener {
         try {
             final String path = obj.getPath().getName().replace(".json", "").replace(" ", "_");
 
-            final String json = String.format("{\"%s\": { \"Body\": \"%s\", \"Date\": \"%s\", \"Tag\": \"%s\", \"Title\": \"%s\", \"Styles\": \"%s\"}}",
+            final String json = String.format("{\"%s\": { \"Body\": \"%s\", \"Date\": \"%s\", \"Tag\": \"%s\", \"Title\": \"%s\"}}",
                     BaseEncoding.base32().encode(path.getBytes()).replace("=", ""),
                     BaseEncoding.base32().encode(obj.getBody().getBytes()),
                     BaseEncoding.base32().encode(obj.getDate().getBytes()),
                     BaseEncoding.base32().encode(obj.getTag().getBytes()),
                     BaseEncoding.base32().encode(obj.getTitle().replace("\n", "\\\\n")
-                            .replace("\t", "\\\\t").getBytes()),
-                    BaseEncoding.base32().encode(obj.getStylesList().getBytes()));
+                            .replace("\t", "\\\\t").getBytes()));
 
             final HttpURLConnection connection = (HttpURLConnection) new URL(apiURL).openConnection();
             connection.setRequestProperty("X-HTTP-Method-Override", "PATCH");

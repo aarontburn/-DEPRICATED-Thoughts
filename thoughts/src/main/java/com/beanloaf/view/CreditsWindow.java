@@ -1,10 +1,8 @@
 package com.beanloaf.view;
 
-import com.beanloaf.objects.GBC;
 import com.beanloaf.res.TC;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 

@@ -10,9 +10,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.io.File;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import static java.util.Map.entry;
 
@@ -65,9 +63,6 @@ public final class TC {
         public static final String REFRESH = "refresh";
         public static final String CLOUD_SETTINGS = "cloud settings";
         public static final String EXPORT = "export";
-        public static final String TOGGLE_UNDERLINE = "underline";
-        public static final String TOGGLE_ITALIC = "italic";
-        public static final String TOGGLE_BOLD = "bold";
         public static final String CREDITS = "credits";
 
         public static final String TEST = "test";

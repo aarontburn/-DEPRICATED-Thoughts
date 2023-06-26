@@ -1,7 +1,6 @@
 package com.beanloaf.textfields;
 
 import com.beanloaf.events.TextAreaFocusListener;
-import com.beanloaf.events.ThoughtsPCS;
 import com.beanloaf.objects.GBC;
 import com.beanloaf.res.TC;
 import com.beanloaf.view.Thoughts;
@@ -14,16 +13,12 @@ import javax.swing.undo.UndoManager;
 import java.awt.Color;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.util.*;
 
 public class BodyTextArea extends JTextPane implements DocumentListener {
 
     public final Thoughts main;
     public final UndoManager undoManager;
     private final GhostText ghostText;
-    private boolean isItalic;
-    private boolean isBold;
-    private boolean isUnderlined;
 
     public BodyTextArea(final Thoughts main, final UndoManager undoManager) {
         super();
@@ -87,67 +82,16 @@ public class BodyTextArea extends JTextPane implements DocumentListener {
         });
 
 
-        this.addCaretListener(event -> {
-            if (getSelectedText() != null) {
-                return;
-            }
-
-            final AttributeSet set = getStyledDocument().getCharacterElement(getCaretPosition()).getAttributes();
-
-            final Enumeration<?> e = set.getAttributeNames();
-
-            boolean foundBold = false;
-            boolean foundUnderline = false;
-            boolean foundItalic = false;
-            while (e.hasMoreElements()) {
-                final Object key = e.nextElement();
-                switch (key.toString()) {
-                    case "underline" -> foundUnderline = (Boolean) set.getAttribute(key);
-                    case "bold" -> foundBold = (Boolean) set.getAttribute(key);
-                    case "italic" -> foundItalic = (Boolean) set.getAttribute(key);
-                    default -> throw new IllegalArgumentException();
-                }
-            }
-            isBold = foundBold;
-            isUnderlined = foundUnderline;
-            isItalic = foundItalic;
-
-            setTextDecoration(false);
-        });
 
     }
 
-    public void toggleUnderline() {
-        isUnderlined = !isUnderlined;
-        setTextDecoration(true);
-    }
-
-    public void toggleBold() {
-        isBold = !isBold;
-        setTextDecoration(true);
-    }
-
-    public void toggleItalic() {
-        isItalic = !isItalic;
-        setTextDecoration(true);
-    }
-
-    private void setTextDecoration(final boolean replace) {
-        final SimpleAttributeSet set = new SimpleAttributeSet();
-        StyleConstants.setBold(set, isBold);
-        StyleConstants.setItalic(set, isItalic);
-        StyleConstants.setUnderline(set, isUnderlined);
-
-        this.setCharacterAttributes(set, replace);
-
-    }
 
 
     private void textChanged() {
         if (this.main.ready) {
             ghostText.setDisplay(this.getText().isBlank());
             if (this.main.selectedFile != null) {
-                this.main.selectedFile.editBody(this.getStyledDocument(), this.getText());
+                this.main.selectedFile.editBody(this.getText());
             }
 
         }

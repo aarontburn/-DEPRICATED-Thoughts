@@ -98,7 +98,7 @@ public class SearchBar extends JTextPane {
                 if (!getText().isEmpty()) {
                     final String keyword = setHighlight();
 
-                    setText(getText().trim().equals(keyword) || keyword.equals("")
+                    setText(getText().trim().equals(keyword) || keyword.isEmpty()
                             ? ""
                             : keyword + " ");
 

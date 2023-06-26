@@ -9,10 +9,6 @@ import com.beanloaf.textfields.BodyTextArea;
 import com.beanloaf.textfields.TagTextArea;
 import com.beanloaf.textfields.AbstractTextArea;
 import com.beanloaf.textfields.TitleTextArea;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -21,8 +17,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.text.SimpleAttributeSet;
-import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 import javax.swing.undo.UndoManager;
 import java.awt.Dimension;
@@ -274,43 +268,11 @@ public class RightPanel extends JPanel implements PropertyChangeListener {
                 dateLabel.setText(enabledFields ? "Created on: " + textObject.getDate() : " ");
                 bodyTextArea.setText(textObject.getBody());
                 undoManager.discardAllEdits();
-
-
-                try {
-                    final JSONArray stylesArray = (JSONArray) new JSONParser().parse(textObject.getStylesList());
-                    for (int i = 0; i < stylesArray.size(); i++) {
-                        final JSONObject obj = (JSONObject) stylesArray.get(i);
-                        final SimpleAttributeSet attrs = new SimpleAttributeSet();
-                        for (final Object key : obj.keySet()) {
-
-                            switch (key.toString()) {
-                                case "b" -> StyleConstants.setBold(attrs, true);
-                                case "u" -> StyleConstants.setUnderline(attrs, true);
-                                case "i" -> StyleConstants.setItalic(attrs, true);
-                                default -> throw new IllegalArgumentException();
-                            }
-
-                        }
-
-                        try {
-                            doc.setCharacterAttributes(i, 1, attrs, true);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                } catch (ParseException e) {
-//                    e.printStackTrace();
-                }
-
-
                 bodyTextArea.setCaretPosition(0);
 
             }
             case TC.Properties.LIST_ITEM_PRESSED -> checkEmpty();
             case TC.Properties.FOCUS_TITLE_FIELD -> selectTextField(titleTextArea);
-            case TC.Properties.TOGGLE_UNDERLINE -> bodyTextArea.toggleUnderline();
-            case TC.Properties.TOGGLE_ITALIC -> bodyTextArea.toggleItalic();
-            case TC.Properties.TOGGLE_BOLD -> bodyTextArea.toggleBold();
 
             default -> {
             }

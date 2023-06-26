@@ -15,33 +15,23 @@ public class SaveNewFile {
     private final String body;
     private final String fileName;
 
-    private final String styleList;
 
     public SaveNewFile(final String title,
                        final String tag,
                        final String body) {
-        this(title, tag, body, "", "", "");
-    }
-
-    public SaveNewFile(final String title,
-                       final String tag,
-                       final String body,
-                       final String date) {
-        this(title, tag, body, date, "", "");
+        this(title, tag, body, "", "");
     }
 
     public SaveNewFile(final String title,
                        final String tag,
                        final String body,
                        final String date,
-                       final String file,
-                       final String styleList) {
+                       final String file) {
         this.title = title;
         this.tag = tag;
         this.body = body;
         this.date = date;
         this.fileName = file;
-        this.styleList = styleList;
 
     }
 
@@ -51,7 +41,6 @@ public class SaveNewFile {
         this.body = tObj.getBody();
         this.date = tObj.getDate();
         this.fileName = tObj.getPath().getName();
-        this.styleList = tObj.getStylesList();
 
 
     }
@@ -75,7 +64,7 @@ public class SaveNewFile {
         try {
             if (!newFile.isFile() && !new File(sortedFileName).isFile()) {
                 newFile.createNewFile();
-                final ThoughtObject tObj = new ThoughtObject(this.title, this.date, this.tag, this.body, newFile, this.styleList);
+                final ThoughtObject tObj = new ThoughtObject(this.title, this.date, this.tag, this.body, newFile);
                 tObj.saveFile();
                 return tObj;
             }
@@ -97,7 +86,7 @@ public class SaveNewFile {
         try {
             if (!newFile.isFile() && !new File(unsortedFileName).isFile()) {
                 newFile.createNewFile();
-                final ThoughtObject tObj = new ThoughtObject(this.title, this.date, this.tag, this.body, newFile, this.styleList);
+                final ThoughtObject tObj = new ThoughtObject(this.title, this.date, this.tag, this.body, newFile);
                 tObj.saveFile();
                 return tObj;
             } else {

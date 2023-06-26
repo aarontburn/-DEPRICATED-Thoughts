@@ -226,8 +226,7 @@ public class Thoughts implements PropertyChangeListener {
                     data.get("date").toString().trim(),
                     data.get("tag").toString().trim(),
                     data.get("body").toString().trim(),
-                    filePath,
-                    data.get("styles").toString());
+                    filePath);
 
         } catch (Exception e) {
             System.err.println("Found invalid file " + filePath.toPath());
@@ -373,24 +372,6 @@ public class Thoughts implements PropertyChangeListener {
                         }
                     }
                 }
-                case KeyEvent.VK_U -> { // Underline
-                    if (c) {
-                        ThoughtsPCS.getInstance().firePropertyChange(TC.Properties.TOGGLE_UNDERLINE);
-                    }
-                }
-
-                case KeyEvent.VK_B -> { // Bold
-                    if (c) {
-                        ThoughtsPCS.getInstance().firePropertyChange(TC.Properties.TOGGLE_BOLD);
-                    }
-                }
-
-                case KeyEvent.VK_I -> { // Italics
-                    if (c) {
-                        ThoughtsPCS.getInstance().firePropertyChange(TC.Properties.TOGGLE_ITALIC);
-                    }
-                }
-
 
                 case KeyEvent.VK_F5 -> ThoughtsPCS.getInstance().firePropertyChange(TC.Properties.REFRESH);
 

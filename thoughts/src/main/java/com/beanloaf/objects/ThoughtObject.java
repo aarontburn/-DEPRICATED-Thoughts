@@ -8,9 +8,12 @@ import java.nio.file.Paths;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.beanloaf.tagobjects.TagListItem;
 import org.json.simple.JSONObject;
 
 import com.beanloaf.res.TC;
+
+import javax.swing.text.html.HTML;
 
 public class ThoughtObject {
 
@@ -20,6 +23,7 @@ public class ThoughtObject {
     private String body;
     private File file;
 
+    private TagListItem parent;
 
 
     public ThoughtObject(final String title,
@@ -35,17 +39,19 @@ public class ThoughtObject {
     }
 
     public void saveFile() {
-        if (this.file != null) {
-            try (BufferedWriter fWriter = Files.newBufferedWriter(Paths.get(this.file.toURI()))) {
-                final ConcurrentHashMap<String, Object> data = new ConcurrentHashMap<>();
-                data.put("title", this.title);
-                data.put("date", this.date);
-                data.put("tag", this.tag);
-                data.put("body", this.body);
-                fWriter.write(new JSONObject(data).toJSONString());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        if (file == null) {
+            return;
+        }
+
+        try (BufferedWriter fWriter = Files.newBufferedWriter(Paths.get(this.file.toURI()))) {
+            final ConcurrentHashMap<String, Object> data = new ConcurrentHashMap<>();
+            data.put("title", this.title);
+            data.put("date", this.date);
+            data.put("tag", this.tag);
+            data.put("body", this.body);
+            fWriter.write(new JSONObject(data).toJSONString());
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
     }
@@ -63,6 +69,14 @@ public class ThoughtObject {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void setParent(final TagListItem parent) {
+        this.parent = parent;
+    }
+
+    public TagListItem getParent() {
+        return this.parent;
     }
 
     public void editTitle(final String newTitle) {

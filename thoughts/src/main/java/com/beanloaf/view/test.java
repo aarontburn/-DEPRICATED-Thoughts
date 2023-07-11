@@ -6,8 +6,7 @@ public class test {
 
 
     public static void main(String[] args) {
-        ThoughtsThemeDark.setup();
-        CreditsWindow.getInstance();
+        System.out.println("B".compareTo("h"));
 
 
 

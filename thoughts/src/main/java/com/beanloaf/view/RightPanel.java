@@ -5,6 +5,7 @@ import com.beanloaf.input.FileActionButtonPressed;
 import com.beanloaf.objects.GBC;
 import com.beanloaf.objects.ThoughtObject;
 import com.beanloaf.res.TC;
+import com.beanloaf.tagobjects.TagListItem;
 import com.beanloaf.textfields.BodyTextArea;
 import com.beanloaf.textfields.TagTextArea;
 import com.beanloaf.textfields.AbstractTextArea;
@@ -36,6 +37,7 @@ public class RightPanel extends JPanel implements PropertyChangeListener {
     public final UndoManager undoManager = new UndoManager();
     public JButton sortButton, deleteButton, newFileButton, pullButton, pushButton;
     private JLabel userNameLabel;
+
 
 
     public RightPanel(final Thoughts main) {
@@ -105,6 +107,7 @@ public class RightPanel extends JPanel implements PropertyChangeListener {
         createFileButtons();
 
     }
+
 
     private void createFileButtons() {
         // Buttons
@@ -256,7 +259,18 @@ public class RightPanel extends JPanel implements PropertyChangeListener {
                 final StyledDocument doc = bodyTextArea.getStyledDocument();
                 bodyTextArea.getInputAttributes().removeAttributes(bodyTextArea.getInputAttributes());
 
-                final ThoughtObject textObject = (ThoughtObject) event.getNewValue();
+                ThoughtObject textObject = (ThoughtObject) event.getNewValue();
+
+                if (textObject == null) {
+                    textObject = new ThoughtObject(
+                            "Thoughts",
+                            "",
+                            "by @beanloaf",
+                            "Get started by creating or selecting a file.",
+                            null);
+                }
+
+
                 final boolean enabledFields = textObject.getPath() != null;
 
                 titleTextArea.setEnabled(enabledFields);

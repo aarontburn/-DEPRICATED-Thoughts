@@ -56,8 +56,6 @@ public class Thoughts implements PropertyChangeListener {
     public JFrame window;
     public JPanel container;
 
-    public final List<File> unsortedFiles = new ArrayList<>();
-    public final List<File> sortedFiles = new ArrayList<>();
     public final List<ThoughtObject> unsortedThoughtList = new ArrayList<>();
     public final List<ThoughtObject> sortedThoughtList = new ArrayList<>();
 
@@ -67,8 +65,6 @@ public class Thoughts implements PropertyChangeListener {
 
     public JSplitPane splitPane;
 
-    public final DefaultListModel<String> unsortedListModel = new DefaultListModel<>();
-    public final DefaultListModel<String> sortedListModel = new DefaultListModel<>();
     public final List<String> tagList = new ArrayList<>();
 
     public boolean ready;
@@ -103,11 +99,11 @@ public class Thoughts implements PropertyChangeListener {
         refreshThoughtList();
 
         if (!this.unsortedThoughtList.isEmpty()) {
-            new ListItemPressed(this,
-                    this.leftPanel.unsortedListLabel,
-                    this.unsortedThoughtList).setContentFields(0);
+            ThoughtsPCS.getInstance().firePropertyChange(TC.Properties.TEXT, null);
+
         } else {
-            new ListItemPressed(this).setContentFields(0);
+            ThoughtsPCS.getInstance().firePropertyChange(TC.Properties.TEXT, leftPanel.unsortedListLabel.get(0));
+
         }
 
         ThoughtsPCS.getInstance().addPropertyChangeListener(this);
@@ -256,27 +252,20 @@ public class Thoughts implements PropertyChangeListener {
         leftPanel.numTags = 2;
 
         // Stores currently selected tab
-        final int selectedTab = leftPanel.leftTabs.getSelectedIndex();
+//        final int selectedTab = leftPanel.leftTabs.getSelectedIndex();
 
-        leftPanel.leftTabs.removeAll();
+//        leftPanel.leftTabs.removeAll();
 
         // Resets all models and lists
         unsortedThoughtList.clear();
         sortedThoughtList.clear();
-        unsortedFiles.clear();
-        sortedFiles.clear();
-        unsortedListModel.clear();
-        sortedListModel.clear();
         tagList.clear();
 
         /* UNSORTED FILES */
         for (final File file : Objects.requireNonNull(unsortedFileDirectory)) {
             final ThoughtObject content = readFileContents(file);
             if (content != null && SearchBar.searchFor(content, leftPanel.searchBar.getText())) {
-
                 unsortedThoughtList.add(content);
-                unsortedListModel.addElement(content.getTitle());
-                unsortedFiles.add(file);
             }
         }
 
@@ -285,21 +274,23 @@ public class Thoughts implements PropertyChangeListener {
             final ThoughtObject content = readFileContents(file);
             if (content != null && SearchBar.searchFor(content, leftPanel.searchBar.getText())) {
                 sortedThoughtList.add(content);
-                sortedListModel.addElement(content.getTitle());
-                sortedFiles.add(file);
             }
         }
-        leftPanel.createTabs();
-        leftPanel.setTagModel();
 
-        ThoughtsPCS.getInstance().firePropertyChange(TC.Properties.SET_TAB_INDEX, selectedTab);
+
+
+        leftPanel.populateTagList();
+//        leftPanel.createTabs();
+//        leftPanel.setTagModel();
+
+//        ThoughtsPCS.getInstance().firePropertyChange(TC.Properties.SET_TAB_INDEX, selectedTab);
 
         if (this.db.isOnline && this.db.getList() != null) {
             this.db.refreshPushPullLabels();
         }
 
         final long endTime = System.currentTimeMillis();
-//        System.out.println("Total refresh time: " + (endTime - startTime) + "ms");
+        System.out.println("Total refresh time: " + (endTime - startTime) + "ms");
     }
 
     @Override

@@ -308,10 +308,7 @@ public final class CloudSettingsWindow extends JFrame {
         contentContainer.add(backButton, new GBC().setAnchor(GBC.Anchor.NORTHWEST));
 
         final FormattedInputField emailInputField = new FormattedInputField("Email");
-        emailInputField.setText(
-                "".equals(authHandler.registeredEmail)
-                        ? ""
-                        : authHandler.registeredEmail);
+        emailInputField.setText(authHandler.registeredEmail.isEmpty() ? "" : authHandler.registeredEmail);
         contentContainer.add(emailInputField, constraints.setWeightY(0.3));
 
         final JLabel errorLabel = new JLabel(" ");

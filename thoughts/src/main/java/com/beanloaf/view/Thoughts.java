@@ -1,17 +1,7 @@
 package com.beanloaf.view;
 
-import java.awt.AWTEvent;
-import java.awt.Color;
-import java.awt.FileDialog;
-import java.awt.Graphics;
-import java.awt.GridBagLayout;
-import java.awt.KeyEventDispatcher;
-import java.awt.KeyboardFocusManager;
-import java.awt.Point;
-import java.awt.Toolkit;
-import java.awt.event.KeyEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.*;
+import java.awt.event.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -21,28 +11,20 @@ import java.util.List;
 import java.util.Objects;
 
 import javax.imageio.ImageIO;
-import javax.swing.DefaultListModel;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JSplitPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JTextArea;
-import javax.swing.border.Border;
-import javax.swing.plaf.basic.BasicSplitPaneDivider;
-import javax.swing.plaf.basic.BasicSplitPaneUI;
+import javax.swing.*;
 
 import com.beanloaf.events.ThoughtsPCS;
-import com.beanloaf.objects.GBC;
+import com.beanloaf.objects.ThoughtsFrame;
 import com.beanloaf.res.theme.ThoughtsThemeDark;
 import com.beanloaf.res.theme.ThoughtsThemeLight;
 import com.beanloaf.textfields.SearchBar;
+;
+import net.miginfocom.swing.MigLayout;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
 import com.beanloaf.database.FirebaseHandler;
 import com.beanloaf.events.SettingsHandler;
-import com.beanloaf.input.ListItemPressed;
 import com.beanloaf.objects.ThoughtObject;
 import com.beanloaf.res.TC;
 
@@ -53,7 +35,7 @@ public class Thoughts implements PropertyChangeListener {
 
     public final ThoughtsPCS thoughtsPCS = ThoughtsPCS.getInstance(this);
     public ThoughtObject selectedFile;
-    public JFrame window;
+    public ThoughtsFrame window;
     public JPanel container;
 
     public final List<ThoughtObject> unsortedThoughtList = new ArrayList<>();
@@ -63,9 +45,6 @@ public class Thoughts implements PropertyChangeListener {
 
     public LeftPanel leftPanel;
 
-    public JSplitPane splitPane;
-
-    public final List<String> tagList = new ArrayList<>();
 
     public boolean ready;
     public final SettingsHandler settings = new SettingsHandler();
@@ -82,10 +61,15 @@ public class Thoughts implements PropertyChangeListener {
         JFrame.setDefaultLookAndFeelDecorated(true);
 
         createGUI();
+        this.window.getContentPane().add(this.container);
+
+        this.window.pack();
         this.window.setVisible(true);
+
         onStartUp();
 
     }
+
 
     private void onStartUp() {
         if (!TC.Paths.UNSORTED_DIRECTORY_PATH.isDirectory()) {
@@ -98,11 +82,11 @@ public class Thoughts implements PropertyChangeListener {
 
         refreshThoughtList();
 
-        if (!this.unsortedThoughtList.isEmpty()) {
+        if (this.unsortedThoughtList.isEmpty() || leftPanel.unsortedListLabel == null) {
             ThoughtsPCS.getInstance().firePropertyChange(TC.Properties.TEXT, null);
 
         } else {
-            ThoughtsPCS.getInstance().firePropertyChange(TC.Properties.TEXT, leftPanel.unsortedListLabel.get(0));
+            leftPanel.unsortedListLabel.click();
 
         }
 
@@ -114,12 +98,8 @@ public class Thoughts implements PropertyChangeListener {
 
     private void createGUI() {
 
-        this.window = new JFrame("Thoughts");
-        this.window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.window.setFocusable(true);
-        this.window.setSize(settings.getWindowWidth(), settings.getWindowHeight());
+        this.window = new ThoughtsFrame("Thoughts", settings.getWindowWidth(), settings.getWindowHeight());
         this.window.setLocation(new Point(settings.getWindowX(), settings.getWindowY()));
-        this.window.setJMenuBar(new MenuBar());
 
         this.window.addWindowListener(new WindowAdapter() {
             @Override
@@ -140,17 +120,10 @@ public class Thoughts implements PropertyChangeListener {
 
         this.window.setExtendedState(settings.isMaximized() ? JFrame.MAXIMIZED_BOTH : JFrame.NORMAL);
 
-        try {
-            this.window.setIconImage(ImageIO.read(new File(TC.Paths.ICON_DIRECTORY + "icon.png")));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
         KeyboardFocusManager.getCurrentKeyboardFocusManager()
                 .addKeyEventDispatcher(new KeyBinds());
 
-        this.container = new JPanel(new GridBagLayout());
-        this.window.add(this.container);
 
         Toolkit.getDefaultToolkit().addAWTEventListener(event -> {
             if (!ready) {
@@ -175,49 +148,32 @@ public class Thoughts implements PropertyChangeListener {
             }
 
         }, AWTEvent.MOUSE_EVENT_MASK);
+        this.container = new JPanel(new MigLayout());
+        this.container.setPreferredSize(new Dimension(settings.getWindowWidth(), settings.getWindowHeight()));
+
 
         createCenterPanel();
 
     }
 
     private void createCenterPanel() {
-        this.splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-        this.splitPane.resetToPreferredSizes();
-        this.splitPane.setDividerSize(10);
-        this.splitPane.setUI(new BasicSplitPaneUI() {
-            @Override
-            public BasicSplitPaneDivider createDefaultDivider() {
-                return new BasicSplitPaneDivider(this) {
-                    public void setBorder(final Border border) {
-                    }
-
-                    @Override
-                    public void paint(final Graphics graphics) {
-                        graphics.setColor(new Color(48, 48, 48));
-                        graphics.fillRect(0, 0, getSize().width, getSize().height);
-                        super.paint(graphics);
-                    }
-                };
-            }
-
-        });
-
-        this.container.add(splitPane, new GBC(0, 1, 0.1, 1)
-                .setFill(GBC.Fill.BOTH));
         leftPanel = new LeftPanel(this);
         rightPanel = new RightPanel(this);
-        splitPane.setLeftComponent(leftPanel);
-        splitPane.setRightComponent(rightPanel);
+
+        this.container.add(leftPanel, "west, w 35%, h 100%");
+        this.container.add(rightPanel, "east, w 65%, h 100%");
+
 
         db.refreshPushPullLabels();
     }
 
-    public ThoughtObject readFileContents(final File filePath) {
+
+    public ThoughtObject readFileContents(final File filePath, final boolean isSorted) {
         try {
             final String jsonString = new String(Files.readAllBytes(filePath.toPath()));
             final JSONObject data = (JSONObject) JSONValue.parse(jsonString);
 
-            return new ThoughtObject(
+            return new ThoughtObject(isSorted,
                     data.get("title").toString().trim(),
                     data.get("date").toString().trim(),
                     data.get("tag").toString().trim(),
@@ -248,22 +204,19 @@ public class Thoughts implements PropertyChangeListener {
         final long startTime = System.currentTimeMillis();
         final File[] unsortedFileDirectory = TC.Paths.UNSORTED_DIRECTORY_PATH.listFiles();
         final File[] sortedFileDirectory = TC.Paths.SORTED_DIRECTORY_PATH.listFiles();
-        // Resets number of tags to 2
-        leftPanel.numTags = 2;
 
-        // Stores currently selected tab
-//        final int selectedTab = leftPanel.leftTabs.getSelectedIndex();
-
-//        leftPanel.leftTabs.removeAll();
+        final ThoughtObject selected = selectedFile;
 
         // Resets all models and lists
         unsortedThoughtList.clear();
         sortedThoughtList.clear();
-        tagList.clear();
+        leftPanel.thoughtListByTag.clear();
+
+
 
         /* UNSORTED FILES */
         for (final File file : Objects.requireNonNull(unsortedFileDirectory)) {
-            final ThoughtObject content = readFileContents(file);
+            final ThoughtObject content = readFileContents(file, false);
             if (content != null && SearchBar.searchFor(content, leftPanel.searchBar.getText())) {
                 unsortedThoughtList.add(content);
             }
@@ -271,19 +224,23 @@ public class Thoughts implements PropertyChangeListener {
 
         /* SORTED FILES */
         for (final File file : Objects.requireNonNull(sortedFileDirectory)) {
-            final ThoughtObject content = readFileContents(file);
+            final ThoughtObject content = readFileContents(file, true);
             if (content != null && SearchBar.searchFor(content, leftPanel.searchBar.getText())) {
                 sortedThoughtList.add(content);
             }
         }
 
-
+        unsortedThoughtList.sort(ThoughtObject::compareTo);
+        sortedThoughtList.sort(ThoughtObject::compareTo);
 
         leftPanel.populateTagList();
-//        leftPanel.createTabs();
-//        leftPanel.setTagModel();
 
-//        ThoughtsPCS.getInstance().firePropertyChange(TC.Properties.SET_TAB_INDEX, selectedTab);
+        if (leftPanel.selectedTag != null) leftPanel.selectedTag.click();
+        ThoughtsPCS.getInstance().firePropertyChange(TC.Properties.TEXT, selected);
+
+
+
+
 
         if (this.db.isOnline && this.db.getList() != null) {
             this.db.refreshPushPullLabels();
@@ -292,6 +249,7 @@ public class Thoughts implements PropertyChangeListener {
         final long endTime = System.currentTimeMillis();
         System.out.println("Total refresh time: " + (endTime - startTime) + "ms");
     }
+
 
     @Override
     public void propertyChange(final PropertyChangeEvent event) {
@@ -312,6 +270,9 @@ public class Thoughts implements PropertyChangeListener {
             }
             case TC.Properties.CREDITS -> CreditsWindow.getInstance();
 
+            case TC.Properties.TEST -> {
+                System.out.println(leftPanel.getWidth());
+            }
             default -> {
             }
         }

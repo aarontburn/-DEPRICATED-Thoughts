@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import com.beanloaf.events.SaveNewFile;
 import com.beanloaf.events.ThoughtsPCS;
 import com.beanloaf.objects.ThoughtObject;
 import com.beanloaf.res.TC;
@@ -74,7 +73,7 @@ public class FirebaseHandler implements PropertyChangeListener {
             }
 
 
-            if (validInfo && signInUser(registeredEmail, AuthHandler.sp(registeredPassword, true))) {
+            if (validInfo && isConnectedToInternet() && signInUser(registeredEmail, AuthHandler.sp(registeredPassword, true))) {
                 start();
             }
 
@@ -102,11 +101,6 @@ public class FirebaseHandler implements PropertyChangeListener {
     }
 
     public boolean signInUser(final String email, final String password) {
-        if (user != null) {
-            System.err.println("Error: a user is already logged in! Sign out first.");
-            return false;
-        }
-
         final ThoughtUser returningUser = AuthHandler.signIn(email, password);
         if (returningUser != null) {
             user = returningUser;
@@ -119,10 +113,6 @@ public class FirebaseHandler implements PropertyChangeListener {
     }
 
     public boolean registerNewUser(final String displayName, final String email, final String password) {
-        if (user != null) {
-            System.err.println("Error: a user is already logged in! Sign out first.");
-            return false;
-        }
         final ThoughtUser newUser = AuthHandler.signUp(displayName, email, password);
         if (newUser != null) {
             user = newUser;
@@ -206,7 +196,7 @@ public class FirebaseHandler implements PropertyChangeListener {
                 final String date = new String(b32.decode((String) ((JSONObject) json.get(path)).get("Date")));
                 final String body = new String(b32.decode(((String) ((JSONObject) json.get(path)).get("Body"))
                         .replace("\\n", "\n").replace("\\t", "\t")));
-                objectList.add(new ThoughtObject(title, date, tag, body, new File(filePath)));
+                objectList.add(new ThoughtObject(true, title, date, tag, body, new File(filePath)));
 
             }
 
@@ -226,7 +216,7 @@ public class FirebaseHandler implements PropertyChangeListener {
         }
 
         try {
-            final String path = obj.getPath().getName().replace(".json", "").replace(" ", "_");
+            final String path = obj.getFile().replace(".json", "").replace(" ", "_");
 
             final String json = String.format("{\"%s\": { \"Body\": \"%s\", \"Date\": \"%s\", \"Tag\": \"%s\", \"Title\": \"%s\"}}",
                     BaseEncoding.base32().encode(path.getBytes()).replace("=", ""),
@@ -274,7 +264,7 @@ public class FirebaseHandler implements PropertyChangeListener {
         try {
             final File[] sortedFileDirectory = TC.Paths.SORTED_DIRECTORY_PATH.listFiles();
             for (final File file : Objects.requireNonNull(sortedFileDirectory)) {
-                final ThoughtObject tObj = this.main.readFileContents(file);
+                final ThoughtObject tObj = this.main.readFileContents(file, true);
                 if (tObj != null) {
                     addEntryIntoDatabase(tObj);
                 }
@@ -297,7 +287,7 @@ public class FirebaseHandler implements PropertyChangeListener {
         try {
             if (this.objectList != null) {
                 for (final ThoughtObject tObj : this.objectList) {
-                    new SaveNewFile(tObj).fbSave();
+                    tObj.saveFile();
                 }
                 this.main.refreshThoughtList();
                 return true;
@@ -322,7 +312,7 @@ public class FirebaseHandler implements PropertyChangeListener {
         }
         try {
 
-            final String path = obj.getPath().getName().replace(".json", "").replace(" ", "_");
+            final String path = obj.getFile().replace(".json", "").replace(" ", "_");
             final URL url = new URL(DATABASE_URL + user.localId + "/" + BaseEncoding.base32().encode(path.getBytes()).replace("=", "") + ".json?auth=" + user.idToken());
             final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("DELETE");

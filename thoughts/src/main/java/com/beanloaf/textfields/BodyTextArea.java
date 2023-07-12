@@ -41,6 +41,7 @@ public class BodyTextArea extends JTextPane implements DocumentListener {
                 : new Color(32, 32, 32));
 
 
+
     }
 
 
@@ -88,10 +89,13 @@ public class BodyTextArea extends JTextPane implements DocumentListener {
 
 
     private void textChanged() {
+
         if (this.main.ready) {
-            ghostText.setDisplay(this.getText().isBlank());
+//            System.out.println("Text: " + getText() + " " + this.getText().isEmpty());
+
+            ghostText.setDisplay(this.getText().isEmpty());
             if (this.main.selectedFile != null) {
-                this.main.selectedFile.editBody(this.getText());
+                this.main.selectedFile.setBody(this.getText());
             }
 
         }

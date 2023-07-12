@@ -1,28 +1,22 @@
 package com.beanloaf.view;
 
 import com.beanloaf.events.ThoughtsPCS;
-import com.beanloaf.objects.GBC;
+import com.beanloaf.tagobjects.ListItem;
 import com.beanloaf.tagobjects.TagListItem;
 import com.beanloaf.objects.ThoughtObject;
 import com.beanloaf.res.TC;
 import com.beanloaf.textfields.SearchBar;
+import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 
 public class LeftPanel extends JPanel implements PropertyChangeListener {
 
-
-    public int numTags = 2;
 
     private final Thoughts main;
 
@@ -30,58 +24,51 @@ public class LeftPanel extends JPanel implements PropertyChangeListener {
 
     public final SearchBar searchBar;
 
-//    public final JTabbedPane leftTabs;
-
     public final Map<String, TagListItem> thoughtListByTag = new HashMap<>();
 
     public final JPanel tagList, itemList;
     public TagListItem selectedTag;
 
+    public final CustomScrollPane tagScrollPane, itemScrollPane;
 
 
     public LeftPanel(final Thoughts main) {
-        super(new GridBagLayout());
+        super(new MigLayout());
         this.main = main;
         ThoughtsPCS.getInstance().addPropertyChangeListener(this);
 
-        this.setPreferredSize(new Dimension(450, 0));
-        this.setMinimumSize(TC.ZERO_DIM);
-
-
-        final GBC constraints = new GBC();
 
         searchBar = new SearchBar();
-        this.add(searchBar, constraints.setFill(GBC.Fill.HORIZONTAL).setWeightY(0.001).setAnchor(GBC.Anchor.NORTH));
+        this.add(searchBar, "north, cell 0 0 2 1");
 
 
-        final JPanel tagItemList = new JPanel(new GridBagLayout());
-        tagItemList.setBorder(BorderFactory.createLineBorder(Color.white));
-        this.add(tagItemList, constraints.increaseGridY().setFill(GBC.Fill.BOTH).setWeightY(1));
+        tagList = new JPanel();
+        tagList.setLayout(new MigLayout());
+        tagScrollPane = new CustomScrollPane(tagList);
 
 
-        tagList = new JPanel(new GridBagLayout());
-        tagList.setBorder(BorderFactory.createLineBorder(Color.red));
-        tagItemList.add(createScrollView(tagList), new GBC().setWeightX(.4).setFill(GBC.Fill.BOTH));
+        this.add(tagScrollPane, "west, cell 1 0, w 45%, h 100%");
 
 
-        itemList = new JPanel(new GridBagLayout());
-        itemList.setBorder(BorderFactory.createLineBorder(Color.blue));
-        tagItemList.add(createScrollView(itemList), new GBC().setGridX(1).setWeightX(.6).setFill(GBC.Fill.BOTH));
+        itemList = new JPanel();
+        itemList.setLayout(new MigLayout());
+        itemScrollPane = new CustomScrollPane(itemList);
+        this.add(itemScrollPane, "east, cell 1 1, w 55%, h 100%");
 
 
     }
 
     public void populateTagList() {
-        final GBC constraints = new GBC().setAnchor(GBC.Anchor.NORTH).setFill(GBC.Fill.HORIZONTAL).setWeightXY(Double.MIN_VALUE, Double.MIN_VALUE);
+//        final int tagScrollDistance = tagScrollPane.getVerticalScrollBar().getValue();
+//        final int itemScrollDistance = itemScrollPane.getVerticalScrollBar().getValue();
+//        System.out.println(tagScrollDistance);
 
         tagList.removeAll();
-
-
         unsortedListLabel = new TagListItem(this, "Unsorted");
         sortedListLabel = new TagListItem(this, "Sorted");
 
-        tagList.add(unsortedListLabel, constraints);
-        tagList.add(sortedListLabel, constraints.increaseGridY());
+        tagList.add(unsortedListLabel, "north, w 100%");
+        tagList.add(sortedListLabel, "north, wrap, w 100%, h 3%");
 
         unsortedListLabel.setList(main.unsortedThoughtList);
         sortedListLabel.setList(main.sortedThoughtList);
@@ -97,48 +84,64 @@ public class LeftPanel extends JPanel implements PropertyChangeListener {
             }
             list.add(obj);
             obj.setParent(list);
-            tagList.add(list, constraints.increaseGridY());
-
 
         }
 
-        tagList.add(new JPanel(), constraints.increaseGridX().setWeightXY(1, 1));
+
+        final List<String> set = new ArrayList<>(thoughtListByTag.keySet());
+        set.sort(String.CASE_INSENSITIVE_ORDER);
+
+        for (final String tag : set) {
+            tagList.add(thoughtListByTag.get(tag), "north, wrap, w 100%, h 3%");
+
+        }
+
+//        tagScrollPane.getVerticalScrollBar().setValue(tagScrollDistance);
+//        itemScrollPane.getVerticalScrollBar().setValue(itemScrollDistance);
+
+    }
+
+    /*
+     *   Unused since we are refreshing the list every change. To increase performance, implement dynamic
+     *       tag list by removing and adding appropriate tags, and use this to validate the item list.
+     * */
+    public void validateItemList() {
+        for (final Component obj : itemList.getComponents()) {
+            if (obj.getClass() != ListItem.class) {
+                continue;
+            }
+
+            final ListItem listItem = (ListItem) obj;
+
+            if (!listItem.getText().equals(listItem.getThoughtObject().getTitle())) {
+                listItem.setText(listItem.getThoughtObject().getTitle());
+            }
+
+        }
 
     }
 
 
-    private JScrollPane createScrollView(final JPanel panel) {
-        final JScrollPane scroll = new JScrollPane(panel,
-                JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
-                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        scroll.setBorder(null);
-        scroll.getVerticalScrollBar().setUI(new TC.ScrollBar());
-        scroll.getVerticalScrollBar().setUnitIncrement(12);
-        return scroll;
-    }
+
 
     @Override
     public void propertyChange(final PropertyChangeEvent event) {
         switch (event.getPropertyName()) {
-            case TC.Properties.SET_TAB_INDEX -> {
-                final int index = (Integer) event.getNewValue();
-
-                boolean validTab = false;
-                int indexMod = 0;
-
-                do {
-                    try {
-//                        leftTabs.setSelectedIndex(index - indexMod);
-                        validTab = true;
-                    } catch (final Exception e) {
-                        indexMod++;
-                    }
-                } while (!validTab);
-
-            }
 
             default -> {
             }
+        }
+    }
+
+
+    public static class CustomScrollPane extends JScrollPane {
+
+
+        public CustomScrollPane(final JPanel panel) {
+            super(panel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+            this.setBorder(null);
+            this.getVerticalScrollBar().setUI(new TC.ScrollBar());
+            this.getVerticalScrollBar().setUnitIncrement(12);
         }
     }
 }

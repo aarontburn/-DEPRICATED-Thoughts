@@ -17,6 +17,8 @@ public class GhostText extends JLabel {
     }
 
     public void setDisplay(final boolean isDisplaying) {
+
+
         this.setText(isDisplaying ? displayText : "");
 
     }

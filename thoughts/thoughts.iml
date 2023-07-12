@@ -87,5 +87,6 @@
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-simple:2.0.6" level="project" />
     <orderEntry type="library" name="Maven: com.formdev:flatlaf-intellij-themes:3.0" level="project" />
     <orderEntry type="library" name="Maven: com.formdev:flatlaf:3.0" level="project" />
+    <orderEntry type="library" name="Maven: com.miglayout:miglayout:3.7.4" level="project" />
   </component>
 </module>

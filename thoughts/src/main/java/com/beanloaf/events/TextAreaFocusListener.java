@@ -16,6 +16,7 @@ public class TextAreaFocusListener implements FocusListener {
 
     @Override
     public void focusGained(final FocusEvent event) {
+//        main.leftPanel.validateItemList();
         final JTextComponent j = (JTextComponent) event.getComponent();
         if (j.getText().equals(TC.DEFAULT_TITLE)
                 || j.getText().equals(TC.DEFAULT_DATE)
@@ -28,9 +29,9 @@ public class TextAreaFocusListener implements FocusListener {
 
     @Override
     public void focusLost(final FocusEvent event) {
-        if (main != null) {
-            main.refreshThoughtList();
+//        main.leftPanel.validateItemList();
 
-        }
+        main.refreshThoughtList();
+
     }
 }

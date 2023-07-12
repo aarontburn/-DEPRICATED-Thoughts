@@ -1,11 +1,9 @@
 package com.beanloaf.view;
 
 import com.beanloaf.events.ThoughtsPCS;
-import com.beanloaf.input.FileActionButtonPressed;
 import com.beanloaf.objects.GBC;
 import com.beanloaf.objects.ThoughtObject;
 import com.beanloaf.res.TC;
-import com.beanloaf.tagobjects.TagListItem;
 import com.beanloaf.textfields.BodyTextArea;
 import com.beanloaf.textfields.TagTextArea;
 import com.beanloaf.textfields.AbstractTextArea;
@@ -22,6 +20,8 @@ import javax.swing.text.StyledDocument;
 import javax.swing.undo.UndoManager;
 import java.awt.Dimension;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
@@ -45,8 +45,8 @@ public class RightPanel extends JPanel implements PropertyChangeListener {
 
         this.main = main;
         this.setLayout(new GridBagLayout());
-        this.setPreferredSize(new Dimension(750, 0));
-        this.setMinimumSize(TC.ZERO_DIM);
+//        this.setPreferredSize(new Dimension(750, 0));
+//        this.setMinimumSize(TC.ZERO_DIM);
         ThoughtsPCS.getInstance().addPropertyChangeListener(this);
         createUI();
     }
@@ -122,19 +122,49 @@ public class RightPanel extends JPanel implements PropertyChangeListener {
         sortButton = new JButton("Sort/Unsort");
         sortButton.setName("sort");
         sortButton.setFont(TC.Fonts.h4);
-        sortButton.addActionListener(new FileActionButtonPressed(this.main));
+        sortButton.addActionListener(e -> {
+            if (main.selectedFile != null) {
+                main.selectedFile.sort();
+            }
+            main.refreshThoughtList();
+
+        });
         buttonPanel.add(sortButton, buttonConstraints);
 
         newFileButton = new JButton("New File");
         newFileButton.setName("newFile");
         newFileButton.setFont(TC.Fonts.h4);
-        newFileButton.addActionListener(new FileActionButtonPressed(this.main));
+        newFileButton.addActionListener(e -> {
+            final ThoughtObject newObj = new ThoughtObject(
+                    main.settings.isTitleLocked() ? main.rightPanel.titleTextArea.getText() : "",
+                    main.settings.isTagLocked() ? main.rightPanel.tagTextArea.getText() : "",
+                    main.settings.isBodyLocked() ? main.rightPanel.bodyTextArea.getText() : "");
+
+            newObj.saveFile();
+            main.refreshThoughtList();
+
+            ThoughtsPCS.getInstance().firePropertyChange(TC.Properties.TEXT, newObj);
+            ThoughtsPCS.getInstance().firePropertyChange(TC.Properties.FOCUS_TITLE_FIELD);
+        });
         buttonPanel.add(newFileButton, buttonConstraints.increaseGridX());
 
         deleteButton = new JButton("Delete");
         deleteButton.setName("delete");
         deleteButton.setFont(TC.Fonts.h4);
-        deleteButton.addActionListener(new FileActionButtonPressed(this.main));
+        deleteButton.addActionListener(e -> {
+            if (main.selectedFile == null) {
+                return;
+            }
+
+            if (main.selectedFile.isSorted()) {
+                this.main.db.removeEntryFromDatabase(main.selectedFile);
+            }
+
+            main.selectedFile.delete();
+            main.refreshThoughtList();
+
+            ThoughtsPCS.getInstance().firePropertyChange(TC.Properties.TEXT, main.selectedFile);
+        });
         buttonPanel.add(deleteButton, buttonConstraints.increaseGridX());
 
     }
@@ -256,13 +286,14 @@ public class RightPanel extends JPanel implements PropertyChangeListener {
             case TC.Properties.UNPUSHED_FILES -> pushLabel.setText(event.getNewValue() + " files not pushed.");
 
             case TC.Properties.TEXT -> {
-                final StyledDocument doc = bodyTextArea.getStyledDocument();
                 bodyTextArea.getInputAttributes().removeAttributes(bodyTextArea.getInputAttributes());
 
                 ThoughtObject textObject = (ThoughtObject) event.getNewValue();
 
+                main.selectedFile = textObject;
+
                 if (textObject == null) {
-                    textObject = new ThoughtObject(
+                    textObject = new ThoughtObject(false,
                             "Thoughts",
                             "",
                             "by @beanloaf",
@@ -271,16 +302,16 @@ public class RightPanel extends JPanel implements PropertyChangeListener {
                 }
 
 
-                final boolean enabledFields = textObject.getPath() != null;
+                final boolean enabledFields = textObject.getFile() != null;
 
                 titleTextArea.setEnabled(enabledFields);
                 tagTextArea.setEnabled(enabledFields);
                 bodyTextArea.setEnabled(enabledFields);
 
-                titleTextArea.setText(textObject.getTitle());
-                tagTextArea.setText(textObject.getTag());
+                titleTextArea.setText(textObject.getTitle().equals(TC.DEFAULT_TITLE) ? "" : textObject.getTitle());
+                tagTextArea.setText(textObject.getTag().equals(TC.DEFAULT_TAG) ? "" : textObject.getTag());
                 dateLabel.setText(enabledFields ? "Created on: " + textObject.getDate() : " ");
-                bodyTextArea.setText(textObject.getBody());
+                bodyTextArea.setText(textObject.getBody().equals(TC.DEFAULT_BODY) ? "" : textObject.getBody());
                 undoManager.discardAllEdits();
                 bodyTextArea.setCaretPosition(0);
 

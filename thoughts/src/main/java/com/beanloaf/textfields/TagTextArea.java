@@ -24,7 +24,7 @@ public class TagTextArea extends AbstractTextArea {
 
     @Override
     void editEvent() {
-        this.main.selectedFile.editTag(this.getText());
+        this.main.selectedFile.setTag(this.getText());
     }
 
 

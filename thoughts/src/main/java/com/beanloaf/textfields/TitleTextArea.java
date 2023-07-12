@@ -24,7 +24,7 @@ public class TitleTextArea extends AbstractTextArea {
 
     @Override
     void editEvent() {
-        this.main.selectedFile.editTitle(this.getText());
+        this.main.selectedFile.setTitle(this.getText());
     }
 
 }

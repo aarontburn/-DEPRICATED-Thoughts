@@ -16,7 +16,7 @@ import com.beanloaf.objects.ThoughtObject;
 import com.beanloaf.res.TC;
 import com.beanloaf.view.LeftPanel;
 
-public class TagListItem extends JPanel {
+public class TagListItem extends JPanel implements IdentifiableObject {
 //    private static final Dimension TAB_DIM = new Dimension(150, 50);
 
 
@@ -30,10 +30,14 @@ public class TagListItem extends JPanel {
 
     public final JTextArea label;
 
+    private String identifier;
+
     public TagListItem(final LeftPanel left, final String tag) {
         super(new GridBagLayout());
         this.tag = tag;
         this.left = left;
+        setIdentifier(tag);
+
 
         label = new JTextArea(tag);
         label.setFont(TC.Fonts.h4);
@@ -65,8 +69,6 @@ public class TagListItem extends JPanel {
     public void click() {
         left.itemList.removeAll();
 
-
-
         taggedObjects.sort(ThoughtObject::compareTo);
 
         for (final ThoughtObject obj : taggedObjects) {
@@ -79,7 +81,7 @@ public class TagListItem extends JPanel {
 
         left.selectedTag = thisList;
 
-        ThoughtsPCS.getInstance().firePropertyChange(TC.Properties.TEXT, get(0));
+        ThoughtsPCS.getInstance().firePropertyChange(TC.Properties.TEXT, getItem(0));
     }
 
 
@@ -88,7 +90,7 @@ public class TagListItem extends JPanel {
     }
 
 
-    public TagListItem add(final ThoughtObject obj) {
+    public TagListItem addItem(final ThoughtObject obj) {
         if (!this.taggedObjects.contains(obj)) {
             this.taggedObjects.add(obj);
         }
@@ -96,13 +98,18 @@ public class TagListItem extends JPanel {
         return this;
     }
 
-    public ThoughtObject get(final int index) {
+
+    public ThoughtObject getItem(final int index) {
         return taggedObjects.size() == 0 ? null : taggedObjects.get(index);
+    }
+
+    public void removeItem(final ThoughtObject obj) {
+        this.taggedObjects.remove(obj);
     }
 
     public void setList(final List<ThoughtObject> list) {
         for (final ThoughtObject obj : list) {
-            add(obj);
+            addItem(obj);
         }
     }
 
@@ -127,5 +134,18 @@ public class TagListItem extends JPanel {
     }
 
 
+    @Override
+    public void setIdentifier(final String identifier) {
+        this.identifier = identifier;
+    }
 
+    @Override
+    public String getIdentifier() {
+        return this.identifier;
+    }
+
+    @Override
+    public String toString() {
+        return "[TagListItem] ID: " + identifier;
+    }
 }

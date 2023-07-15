@@ -64,8 +64,8 @@ public final class TC {
         public static final String CLOUD_SETTINGS = "cloud settings";
         public static final String EXPORT = "export";
         public static final String CREDITS = "credits";
-
         public static final String TEST = "test";
+        public static final String REVAL_REPAINT = "reval repaint";
 
     }
 

@@ -13,19 +13,23 @@ import com.beanloaf.objects.ThoughtObject;
 import com.beanloaf.res.TC;
 import com.beanloaf.view.LeftPanel;
 
-public class ListItem extends JPanel {
+public class ListItem extends JPanel implements IdentifiableObject {
 
     private final ThoughtObject thoughtObject;
 
     public final JTextArea label;
 
     private final LeftPanel left;
+
+    private String identifier;
+
     public ListItem(final LeftPanel left, final ThoughtObject obj) {
         super(new GridBagLayout());
 
         this.thoughtObject = obj;
         this.left = left;
 
+        setIdentifier(obj.getFile());
         label = new JTextArea(obj.getTitle());
         label.setFont(TC.Fonts.h4);
         label.setLineWrap(true);
@@ -64,4 +68,18 @@ public class ListItem extends JPanel {
     }
 
 
+    @Override
+    public void setIdentifier(final String identifier) {
+        this.identifier = identifier;
+    }
+
+    @Override
+    public String getIdentifier() {
+        return this.identifier;
+    }
+
+    @Override
+    public String toString() {
+        return "ID: " + this.identifier + " Title: " + thoughtObject.getTitle();
+    }
 }

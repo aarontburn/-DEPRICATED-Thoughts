@@ -122,13 +122,7 @@ public class RightPanel extends JPanel implements PropertyChangeListener {
         sortButton = new JButton("Sort/Unsort");
         sortButton.setName("sort");
         sortButton.setFont(TC.Fonts.h4);
-        sortButton.addActionListener(e -> {
-            if (main.selectedFile != null) {
-                main.selectedFile.sort();
-            }
-            main.refreshThoughtList();
-
-        });
+        sortButton.addActionListener(e -> main.leftPanel.sort(main.selectedFile));
         buttonPanel.add(sortButton, buttonConstraints);
 
         newFileButton = new JButton("New File");

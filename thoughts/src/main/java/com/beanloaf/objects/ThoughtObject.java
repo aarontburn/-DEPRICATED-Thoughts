@@ -120,6 +120,8 @@ public class ThoughtObject implements Comparable<ThoughtObject> {
 
         final File f = new File(this.dir, this.file);
 
+        System.out.println(f.toString());
+
 
         switch (path[path.length - 1]) {
             case "unsorted": // unsorted -> sorted

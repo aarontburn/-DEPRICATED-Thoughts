@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 
 import com.beanloaf.events.ThoughtsPCS;
@@ -18,7 +17,7 @@ import com.beanloaf.objects.ThoughtsFrame;
 import com.beanloaf.res.theme.ThoughtsThemeDark;
 import com.beanloaf.res.theme.ThoughtsThemeLight;
 import com.beanloaf.textfields.SearchBar;
-;
+
 import net.miginfocom.swing.MigLayout;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
@@ -152,6 +151,8 @@ public class Thoughts implements PropertyChangeListener {
         this.container.setPreferredSize(new Dimension(settings.getWindowWidth(), settings.getWindowHeight()));
 
 
+        System.out.println(new File("test.txt").getAbsolutePath());
+
         createCenterPanel();
 
     }
@@ -269,9 +270,12 @@ public class Thoughts implements PropertyChangeListener {
                 selectedFile.exportAsText(fd.getDirectory());
             }
             case TC.Properties.CREDITS -> CreditsWindow.getInstance();
-
+            case TC.Properties.REVAL_REPAINT -> {
+                window.revalidate();
+                window.repaint();
+            }
             case TC.Properties.TEST -> {
-                System.out.println(leftPanel.getWidth());
+
             }
             default -> {
             }
